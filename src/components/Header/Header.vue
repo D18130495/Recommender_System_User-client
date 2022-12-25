@@ -3,19 +3,20 @@
     <header class="site-header">
       <Logo/>
 <!--      <Navigation />-->
-<!--      <Controls />-->
+      <Control/>
     </header>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Logo } from '../index'
+import Logo from './Logo.vue'
+import Control from './Control.vue'
 
 export default defineComponent({
   name: 'Header',
   components: {
-    Logo,
+    Logo, Control
   },
   props: {
     msg: String

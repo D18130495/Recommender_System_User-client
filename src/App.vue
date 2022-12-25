@@ -1,38 +1,49 @@
 <template>
-  <div id="App-Wrapper" :class="[appWrapperClass, theme]" :style="wrapperStyle">
+  <div id="App-Wrapper" :class="[appWrapperClass, theme]" style="min-height: 100vh">
     <div
       id="App-Container"
       class="app-container max-w-10/12 lg:max-w-screen-2xl px-3 lg:px-8"
       @keydown.meta.k.stop.prevent=""
       tabindex="-1"
-      :style="cssVariables">
+      :style="themeSetting">
       <Header/>
-      <div class="app-banner app-banner-image" :style="headerImage" />
-      <div class="app-banner app-banner-screen" :style="headerBaseBackground" />
+      <div class="app-banner app-banner-image" :style="headerImage"/>
+      <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
       <div class="relative z-10">
         <router-view v-slot="{ Component }">
           <transition name="fade-slide-y" mode="out-in">
-            <component :is="Component" />
+            <component :is="Component"/>
           </transition>
         </router-view>
       </div>
     </div>
     <div id="loading-bar-wrapper" :class="loadingBarClass"></div>
   </div>
+  <Footer id="footer" :style="themeSetting"/>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
+
 import { useAppStore } from '@/stores/app'
-import { Header } from "@/components/Header";
+import { useHeaderImageStore } from '@/stores/headerImage'
+
+import Header from "@/components/Header/Header.vue"
+
 
 export default defineComponent({
   name: 'App',
   components: {
-    Header,
+    Header
   },
   setup() {
     const appStore = useAppStore()
+    const commonStore = useHeaderImageStore()
+
+    const appWrapperClass = 'app-wrapper'
+    const loadingBarClass = ref({
+      'nprogress-custom-parent': false
+    })
 
     onBeforeMount(() => {
       initialApp()
@@ -53,64 +64,54 @@ export default defineComponent({
       // })
       appStore.websiteConfig = {'name': 'yushun', 'englishName': 'Recommender System'}
     }
+
+    return {
+      appWrapperClass,
+      loadingBarClass,
+      theme: computed(() => appStore.themeConfig.theme),
+      headerImage: computed(() => {
+        return {
+          backgroundImage: `url(${commonStore.headerImage}), url(${require('@/assets/default-cover.jpg')})`,
+          opacity: commonStore.headerImage !== '' ? 1 : 0
+        }
+      }),
+      headerBaseBackground: computed(() => {
+        return {
+          background: appStore.themeConfig.header_gradient_css,
+          opacity: commonStore.headerImage !== '' ? 0.90 : 1
+        }
+      }),
+      themeSetting: computed(() => {
+        if (appStore.themeConfig.theme === 'theme-dark') {
+          return `
+            --text-accent: ${appStore.themeConfig.gradient.color_1};
+            --text-sub-accent: ${appStore.themeConfig.gradient.color_3};
+            --main-gradient: ${appStore.themeConfig.header_gradient_css};
+          `
+        }
+        return `
+          --text-accent: ${appStore.themeConfig.gradient.color_3};
+          --text-sub-accent: ${appStore.themeConfig.gradient.color_2};
+          --main-gradient: ${appStore.themeConfig.header_gradient_css};
+        `
+      })
+    }
   }
 })
 </script>
 
 <style lang="scss">
-.arrow-left > .icon,
-.arrow-right > .icon {
-  display: inline !important;
+.app-wrapper {
+  @apply bg-ob-deep-900 min-w-full h-full pb-12;
+  transition-property: transform, border-radius;
+  transition-duration: 350ms;
+  transition-timing-function: ease;
+  transform-origin: 0 42%;
+  .app-container {
+    color: var(--text-normal);
+    margin: 0 auto;
+  }
 }
-.img-error {
-  display: none !important;
-}
-.el-drawer {
-  background-color: var(--background-primary) !important;
-}
-.el-dialog {
-  background-color: var(--background-primary) !important;
-}
-body {
-  background: var(--background-primary-alt);
-}
-
-*:focus {
-  outline: none;
-}
-
-//#app {
-//  @apply relative min-w-full min-h-screen h-full;
-//  font-family: Rubik, Avenir, Helvetica, Arial, sans-serif;
-//  .app-wrapper {
-//    @apply bg-ob-deep-900 min-w-full h-full pb-12;
-//    transition-property: transform, border-radius;
-//    transition-duration: 350ms;
-//    transition-timing-function: ease;
-//    transform-origin: 0 42%;
-//    .app-container {
-//      color: var(--text-normal);
-//      margin: 0 auto;
-//    }
-//  }
-//
-//  .header-wave {
-//    position: absolute;
-//    top: 100px;
-//    left: 0;
-//    z-index: 1;
-//  }
-//
-//  .App-Mobile-sidebar {
-//    @apply fixed top-0 bottom-0 left-0;
-//  }
-//  .App-Mobile-wrapper {
-//    @apply relative overflow-y-auto h-full -mr-4 pr-6 pl-4 pt-8 opacity-0;
-//    transition: all 0.85s cubic-bezier(0, 1.8, 1, 1.2);
-//    transform: translateY(-20%);
-//    width: 280px;
-//  }
-//}
 
 .app-banner {
   content: '';
@@ -123,8 +124,8 @@ body {
   z-index: 1;
   clip-path: polygon(
       100% 0,
-      0 0,
-      0 77.5%,
+      0% 0,
+      0% 77.5%,
       1% 77.4%,
       2% 77.1%,
       3% 76.6%,
@@ -236,8 +237,8 @@ body {
 }
 
 .app-banner-screen {
-  transition: ease-in-out opacity 300ms;
   z-index: 2;
   opacity: 0.91;
+  transition: ease-in-out opacity 300ms;
 }
 </style>

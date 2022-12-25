@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useCommonStore = defineStore('commonStore', {
+export const useHeaderImageStore = defineStore('headerImageStore', {
   state: () => {
     return {
       isMobile: false,

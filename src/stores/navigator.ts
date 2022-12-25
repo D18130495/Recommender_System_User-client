@@ -5,7 +5,6 @@ export const useNavigatorStore = defineStore('navigatorStore', {
     openMenu: false,
     openNavigator: false
   }),
-  getters: {},
   actions: {
     toggleMobileMenu() {
       const bodyEl = document.querySelector('body')

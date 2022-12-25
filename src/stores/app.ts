@@ -32,7 +32,7 @@ export const useAppStore = defineStore('appStore', {
           color_2: '#5433ff',
           color_3: '#ff0099'
         },
-        header_gradient_css: 'linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%)',
+        header_gradient_css: 'linear-gradient(130deg, #d10606, #b306d1, #0617d1)',
         background_gradient_style: {
           background: 'linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%)',
           '-webkit-background-clip': 'text',
@@ -61,9 +61,8 @@ export const useAppStore = defineStore('appStore', {
     initializeTheme(mode: string) {
       setTheme(mode)
     },
-    toggleTheme(isDark?: boolean) {
-      this.themeConfig.theme =
-        isDark === true || this.themeConfig.theme === 'theme-light' ? 'theme-dark' : 'theme-light'
+    toggleTheme(darkTheme?: boolean) {
+      this.themeConfig.theme = darkTheme === true || this.themeConfig.theme === 'theme-light' ? 'theme-dark' : 'theme-light'
       cookies.set('theme', this.themeConfig.theme, { expires: 7 })
       setTheme(this.themeConfig.theme)
     },

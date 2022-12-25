@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Header from '@/components/Header/src/Header.vue'
+import Header from '@/components/Header/Header.vue'
 
 export default {
   name: "Index",
