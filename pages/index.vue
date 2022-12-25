@@ -1,18 +1,16 @@
 <template>
   <div>
-<!--    <Button></Button>-->
     <Header></Header>
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header"
-import Button from "@/components/Button"
+import Header from '@/components/Header/src/Header.vue'
 
 export default {
   name: "Index",
   components: {
-    Header, Button
+    Header
   },
   data() {
     return {}
