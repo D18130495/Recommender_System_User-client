@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="page" class="site">
-      <div class="container">
+      <div class="auth-container">
         <div class="authform">
           <div class="play">
             <div class="wrapper">
@@ -99,14 +99,15 @@
   </div>
 </template>
 
-<script>
-import 'remixicon/fonts/remixicon.css'
-import '@/assets/auth/auth.css'
+<script lang="ts">
+import { defineComponent } from "vue"
 
-export default {
-  data() {
-    return {}
-  },
+import 'remixicon/fonts/remixicon.css'
+import '../../src/styles/auth.scss'
+
+
+export default defineComponent({
+  name: 'Authentication',
   methods: {
     showSignUp() {
       document.querySelector('.site').className = 'site signup-show';
@@ -115,5 +116,8 @@ export default {
       document.querySelector('.site').className = 'site signin-show';
     }
   }
-}
+})
 </script>
+
+<style lang="scss" scoped>
+</style>

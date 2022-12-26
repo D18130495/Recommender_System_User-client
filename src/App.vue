@@ -1,25 +1,31 @@
 <template>
-  <div id="App-Wrapper" :class="[appWrapperClass, theme]" style="min-height: 100vh">
-    <div
-      id="App-Container"
-      class="app-container max-w-10/12 lg:max-w-screen-2xl px-3 lg:px-8"
-      @keydown.meta.k.stop.prevent=""
-      tabindex="-1"
-      :style="themeSetting">
-      <Header/>
-      <div class="app-banner app-banner-image" :style="headerImage"/>
-      <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
-      <div class="relative z-10">
-        <router-view v-slot="{ Component }">
-          <transition name="fade-slide-y" mode="out-in">
-            <component :is="Component"/>
-          </transition>
-        </router-view>
+  <div v-if="!$route.meta.authentication">
+    <div id="App-Wrapper" :class="[appWrapperClass, theme]" style="min-height: 100vh">
+      <div
+        id="App-Container"
+        class="app-container max-w-10/12 lg:max-w-screen-2xl px-3 lg:px-8"
+        @keydown.meta.k.stop.prevent=""
+        tabindex="-1"
+        :style="themeSetting">
+        <Header/>
+        <div class="app-banner app-banner-image" :style="headerImage"/>
+        <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
+        <div class="relative z-10">
+          <router-view v-slot="{ Component }">
+            <transition name="fade-slide-y" mode="out-in">
+              <component :is="Component"/>
+            </transition>
+          </router-view>
+        </div>
       </div>
+      <div id="loading-bar-wrapper" :class="loadingBarClass"></div>
     </div>
-    <div id="loading-bar-wrapper" :class="loadingBarClass"></div>
+    <Footer id="footer" :class="[theme]" :style="themeSetting"/>
   </div>
-  <Footer id="footer" :style="themeSetting"/>
+
+  <div v-if="$route.meta.authentication">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,12 +35,13 @@ import { useAppStore } from '@/stores/app'
 import { useHeaderImageStore } from '@/stores/headerImage'
 
 import Header from "@/components/Header/Header.vue"
+import Footer from "@/components/Footer/Footer.vue"
 
 
 export default defineComponent({
   name: 'App',
   components: {
-    Header
+    Header, Footer
   },
   setup() {
     const appStore = useAppStore()
@@ -62,7 +69,7 @@ export default defineComponent({
       //   appStore.tagCount = data.data.tagCount
       //   appStore.websiteConfig = data.data.websiteConfigDTO
       // })
-      appStore.websiteConfig = {'name': 'yushun', 'englishName': 'Recommender System'}
+      appStore.websiteConfig = {'name': 'yushun', 'englishName': 'Recommender System', 'author': 'Yushun Zeng'}
     }
 
     return {
@@ -86,13 +93,12 @@ export default defineComponent({
           return `
             --text-accent: ${appStore.themeConfig.gradient.color_1};
             --text-sub-accent: ${appStore.themeConfig.gradient.color_3};
-            --main-gradient: ${appStore.themeConfig.header_gradient_css};
           `
         }
+
         return `
           --text-accent: ${appStore.themeConfig.gradient.color_3};
           --text-sub-accent: ${appStore.themeConfig.gradient.color_2};
-          --main-gradient: ${appStore.themeConfig.header_gradient_css};
         `
       })
     }

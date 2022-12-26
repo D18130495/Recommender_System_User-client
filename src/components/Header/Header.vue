@@ -2,7 +2,7 @@
   <div class="header-container">
     <header class="site-header">
       <Logo/>
-<!--      <Navigation />-->
+      <Navigation/>
       <Control/>
     </header>
   </div>
@@ -11,12 +11,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Logo from './Logo.vue'
+import Navigation from "./Navigation.vue"
 import Control from './Control.vue'
+
 
 export default defineComponent({
   name: 'Header',
   components: {
-    Logo, Control
+    Logo, Navigation, Control
   },
   props: {
     msg: String

@@ -52,7 +52,7 @@ body {
   font-weight: 400;
   line-height: 1.8;
   color: var(--dark-color);
-  background-image: url("@/static/1.jpg");
+  background-image: url("@/assets/images/1.jpg");
 }
 
 input::placeholder {
@@ -60,7 +60,7 @@ input::placeholder {
   color: var(--grey-color);
 }
 
-.container {
+.auth-container {
   max-width: 1100px;
   width: 100%;
   padding: 0 30px;
@@ -81,7 +81,7 @@ input::placeholder {
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  box-shadow: rgb(149 157 165 /20%) 0 8px 24px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
   overflow: hidden;
 }
 
@@ -235,7 +235,7 @@ form .actions label i {
   padding: 10px;
   line-height: 1;
   border-radius: 50%;
-  background-color: rgb(255 255 255 / 25%);
+  background-color: rgba(255, 255, 255, 0.25);
   color: var(--white-color);
   cursor: pointer;
   transform: translateX(50px);

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import  { computed, defineComponent, toRef, toRefs, reactive, getCurrentInstance, nextTick } from 'vue'
-import ThemeSwitch from "./ThemeSwitch.vue";
+import ThemeSwitch from "./ControlButton/ThemeSwitch.vue";
 
 
 export default defineComponent({
