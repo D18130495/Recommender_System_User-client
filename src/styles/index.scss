@@ -14,17 +14,6 @@
 
 @import './transitions.scss';
 
-/* Global transition animation */
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 0.5s;
-}
-
-.page-enter,
-.page-leave-active {
-  opacity: 0;
-}
-
 .stroke-ob-bright {
   stroke: var(--text-bright) !important;
 }

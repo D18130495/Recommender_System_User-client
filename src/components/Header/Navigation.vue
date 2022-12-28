@@ -6,7 +6,7 @@
         v-for="route in routes"
         :key="route.path">
         <div
-          class="nav-link text-sm block px-1.5 py-0.5 rounded-md relative uppercase cursor-pointer"
+          class="nav-link text-sm block px-1.5 py-0.5 rounded-md relative cursor-pointer"
           @click="pushPage(route.path)"
           v-if="route.children && route.children.length === 0"
           :data-menu="route.name">
@@ -19,7 +19,6 @@
 </template>
 
 <script lang="ts">
-// @ts-nocheck
 import { defineComponent, onMounted, reactive, toRef, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 

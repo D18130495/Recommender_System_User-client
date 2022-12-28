@@ -7,7 +7,7 @@ function resolve(dir) {
 
 module.exports = defineConfig({
   devServer: {
-    port: 8080
+    port: 9000
   },
   configureWebpack: {
     resolve: {

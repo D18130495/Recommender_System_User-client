@@ -1,15 +1,29 @@
 <template>
   <div class="block">
-    123
+    <Title v-if="themeConfig.feature"></Title>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { computed, defineComponent } from "vue"
+
+import { useAppStore } from '@/stores/app'
+
+import Title from "../components/Title/Title.vue"
 
 
 export default defineComponent({
-  name: 'Home'
+  name: 'Home',
+  components: {
+    Title
+  },
+  setup() {
+    const appStore = useAppStore()
+
+    return {
+      themeConfig: computed(() => appStore.themeConfig)
+    }
+  }
 })
 </script>
 

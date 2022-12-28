@@ -1,5 +1,16 @@
 // global transition css
 
+/* Global transition animation */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+
+.page-enter,
+.page-leave-active {
+  opacity: 0;
+}
+
 /* bouncy-transition */
 .fade-bounce-y-enter-active {
   transition: all 0.2s cubic-bezier(0, 1.8, 1, 1.2);

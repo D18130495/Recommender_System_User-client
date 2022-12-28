@@ -1,19 +1,21 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+
 import router from './router/index'
 // import './router/guard'
 import '@/styles/index.scss'
 import 'normalize.css/normalize.css'
 import { createPinia } from 'pinia'
-// import { i18n } from './locales'
 import VueClickAway from 'vue3-click-away'
 import lazyPlugin from 'vue3-lazy'
-// import { registerSvgIcon } from '@/icons'
 // import { registerObSkeleton } from '@/components/LoadingSkeleton'
 import 'prismjs/themes/prism.css'
 import 'prismjs'
 import 'element-plus/theme-chalk/index.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import { components, plugins } from '@/plugins/element-plus'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import infiniteScroll from 'vue3-infinite-scroll-better'
 import v3ImgPreview from 'v3-img-preview'
@@ -25,7 +27,7 @@ pinia.use(piniaPluginPersistedstate)
 export const app = createApp(App)
   .use(router)
   .use(pinia)
-  // .use(i18n)
+  .use(ElementPlus)
   .use(VueClickAway)
   .use(infiniteScroll)
   .use(v3ImgPreview, {})
@@ -33,6 +35,11 @@ export const app = createApp(App)
     loading: require('@/assets/default-cover.jpg'),
     error: require('@/assets/default-cover.jpg')
   })
+
+// icon
+for(const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
 
 // components.forEach((component) => {
 //   app.component(component.name, component)
@@ -42,7 +49,6 @@ export const app = createApp(App)
 //   app.use(plugin)
 // })
 
-// registerSvgIcon(app)
 // registerObSkeleton(app)
 app.mount('#app')
 

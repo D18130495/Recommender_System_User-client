@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-// import { i18n } from '@/locales/index'
 import cookies from 'js-cookie'
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
