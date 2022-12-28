@@ -1,5 +1,25 @@
 <template>
   <div class="header-controls absolute top-10 right-0 flex flex-row" @keydown.k="handleOpenModel" tabindex="0">
+    <template v-if="userInfo === ''">
+      <span class="mr-3" @click="redirectLogin">Login</span>
+    </template>
+    <template v-else-if="userInfo !== ''">
+      <OptionList hover>
+        <span class="mr-2">
+          <div class="flex-shrink-0">
+            <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-9">
+              <img class="avatar-img" :src="userInfo.avatar" alt="" />
+              <div>{{ userInfo }}</div>
+            </div>
+          </div>
+        </span>
+        <OptionListBlock>
+          <OptionListItem @click="openUserProfile">Profile</OptionListItem>
+          <OptionListItem @click="handleLogout">Logout</OptionListItem>
+        </OptionListBlock>
+      </OptionList>
+    </template>
+
     <span class="ob-drop-shadow" data-dia="light-switch">
       <ThemeSwitch/>
     </span>
@@ -8,15 +28,43 @@
 
 <script lang="ts">
 import  { computed, defineComponent, toRef, toRefs, reactive, getCurrentInstance, nextTick } from 'vue'
-import ThemeSwitch from "./ControlButton/ThemeSwitch.vue";
+import { useRouter } from 'vue-router'
+
+import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
+import OptionList from "./OptionList/OptionList.vue"
+import OptionListBlock from "./OptionList/OptionListBlock.vue"
+import OptionListItem from "./OptionList/OptionListItem.vue"
+
+import { useUserStore } from "@/stores/user"
 
 
 export default defineComponent({
   name: 'Controls',
   components: {
-    ThemeSwitch
+    ThemeSwitch, OptionList, OptionListBlock, OptionListItem
   },
   setup() {
+    const userStore = useUserStore()
+    const router = useRouter()
+
+    const redirectLogin = () => {
+      router.push({ path: '/authentication' })
+    }
+
+    const handleLogout = () => {
+      console.log('logout')
+    }
+
+    const openUserProfile = () => {
+      console.log('profile')
+    }
+
+    return {
+      userInfo: toRef(userStore.$state, 'userInfo'),
+      redirectLogin,
+      handleLogout,
+      openUserProfile
+    }
   }
 })
 </script>
@@ -25,24 +73,30 @@ export default defineComponent({
 .my-el-button {
   width: 300px !important;
 }
+
 .el-button {
   width: 300px;
 }
+
 .el-dialog__headerbtn {
   outline: none !important;
 }
+
 .el-input-group__append {
   background-color: var(--background-primary-alt) !important;
 }
+
 .el-form-item__label {
   text-align: left;
   width: 70px;
   color: var(--text-normal) !important;
 }
+
 .el-input__inner {
   color: var(--text-normal) !important;
   background-color: var(--background-primary-alt) !important;
 }
+
 .el-input__wrapper {
   background: var(--background-primary-alt) !important;
 }
@@ -53,10 +107,12 @@ export default defineComponent({
   color: var(--text-normal);
   cursor: pointer;
 }
+
 #submit-button {
   outline: none;
   background: #0fb6d6;
 }
+
 .header-controls {
   span {
     display: flex;
@@ -66,14 +122,17 @@ export default defineComponent({
     cursor: pointer;
     transition: opacity 250ms ease;
     padding-right: 0.5rem;
+
     &[no-hover-effect] {
       &:hover {
         opacity: 1;
       }
     }
+
     &:hover {
       opacity: 0.5;
     }
+
     .svg-icon {
       stroke: #fff;
       height: 2rem;
@@ -82,11 +141,13 @@ export default defineComponent({
       pointer-events: none;
     }
   }
+
   .search-bar {
     @apply bg-transparent flex flex-row px-0 mr-2 rounded-full;
     opacity: 0;
     width: 0;
     transition: 300ms all ease-out;
+
     &.active {
       @apply bg-ob-deep-800;
       opacity: 0.95;
@@ -95,27 +156,32 @@ export default defineComponent({
         width: initial;
       }
     }
+
     &:focus {
       appearance: none;
       outline: none;
     }
+
     input {
       @apply flex flex-1 bg-transparent text-ob-normal px-6 box-border;
       width: 0;
       appearance: none;
       outline: none;
     }
+
     svg {
       @apply float-right;
     }
   }
 }
+
 .avatar-img {
   transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 800ms;
   transform: rotate(-360deg);
 }
+
 .avatar-img:hover {
   transform: rotate(360deg);
 }

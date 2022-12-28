@@ -23,7 +23,7 @@
     <Footer id="footer" :class="[theme]" :style="themeSetting"/>
   </div>
 
-  <div v-if="$route.meta.authentication">
+  <div v-else-if="$route.meta.authentication">
     <router-view></router-view>
   </div>
 </template>
