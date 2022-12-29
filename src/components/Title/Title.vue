@@ -1,6 +1,6 @@
 <template>
   <div id="feature">
-    <el-carousel class="rounded-2xl" :interval="100000" arrow="hover" indicator-position="outside" height="448px">
+    <el-carousel class="rounded-2xl" :interval="5000" arrow="hover" indicator-position="outside" height="448px">
       <el-carousel-item class="rounded-2xl" v-for="item in 5" :key="item">
         <TitleScrolling class="title-scrolling"/>
       </el-carousel-item>

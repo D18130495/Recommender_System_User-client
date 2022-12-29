@@ -3,8 +3,8 @@
     <div
       class="slider"
       :style="{
-        transform: toggleStyle.transform,
-        backgroundColor: toggleStyle.background
+        transform: switchStyle.transform,
+        backgroundColor: switchStyle.background
       }">
     </div>
   </div>
@@ -25,7 +25,7 @@ export default defineComponent({
       changeTransform()
     })
 
-    let toggleStyle = reactive({
+    let switchStyle = reactive({
       transform: '',
       background: '#6e40c9'
     })
@@ -40,13 +40,14 @@ export default defineComponent({
 
     const changeTransform = () => {
       const transform = buttonStatus ? '18px' : '0'
-      toggleStyle.transform = `translateX(${transform})`
-      toggleStyle.background = buttonStatus ? '#6e40c9' : '#100E16'
+
+      switchStyle.transform = `translateX(${transform})`
+      switchStyle.background = buttonStatus ? '#6e40c9' : '#100E16'
     }
 
     return {
       changeStatus,
-      toggleStyle
+      switchStyle
     }
   }
 })

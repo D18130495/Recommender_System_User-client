@@ -12,12 +12,14 @@ import lazyPlugin from 'vue3-lazy'
 import 'prismjs/themes/prism.css'
 import 'prismjs'
 import 'element-plus/theme-chalk/index.css'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-// import { components, plugins } from '@/plugins/element-plus'
+
+// import { components, plugins } from '@/plugins/element-plus
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import infiniteScroll from 'vue3-infinite-scroll-better'
+// import infiniteScroll from 'vue3-infinite-scroll-better'
 import v3ImgPreview from 'v3-img-preview'
 // import api from './api/api'
 
@@ -29,7 +31,7 @@ export const app = createApp(App)
   .use(pinia)
   .use(ElementPlus)
   .use(VueClickAway)
-  .use(infiniteScroll)
+  // .use(infiniteScroll)
   .use(v3ImgPreview, {})
   .use(lazyPlugin, {
     loading: require('@/assets/default-cover.jpg'),

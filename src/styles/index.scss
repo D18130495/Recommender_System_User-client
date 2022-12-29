@@ -1,16 +1,20 @@
-@import './theme-variables.scss';
+@import './theme.scss';
 
 /* Base css */
 @import 'tailwindcss/base';
 
-/* Components css */
-@import 'tailwindcss/components';
-@import './components/article.scss';
-@import './components/sidebar-box.scss';
-@import './components/search-modal.scss';
-
 /* Utilities css */
 @import 'tailwindcss/utilities';
+
+/* Components css */
+@import 'tailwindcss/components';
+
+@import './auth.scss';
+@import './model.scss';
+@import './nprogress.scss';
+@import './components/article.scss';
+@import './components/sidebar-box.scss';
+
 
 @import './transitions.scss';
 

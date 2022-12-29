@@ -1,14 +1,13 @@
 <template>
   <div v-if="!$route.meta.authentication">
-    <div id="App-Wrapper" :class="[appWrapperClass, theme]" style="min-height: 100vh">
+    <div id="App-Wrapper" :class="[appWrapperClass, theme]" :style="wrapperStyle">
       <div
         id="App-Container"
         class="app-container max-w-10/12 lg:max-w-screen-2xl px-3 lg:px-8"
-        @keydown.meta.k.stop.prevent=""
         tabindex="-1"
         :style="themeSetting">
         <Header/>
-        <div class="app-banner app-banner-image" :style="headerImage"/>
+        <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
           <router-view v-slot="{ Component }">
@@ -29,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
+import { computed, defineComponent, onBeforeMount, ref } from 'vue'
 
 import { useAppStore } from '@/stores/app'
 import { useHeaderImageStore } from '@/stores/headerImage'
@@ -48,16 +47,41 @@ export default defineComponent({
     const commonStore = useHeaderImageStore()
 
     const appWrapperClass = 'app-wrapper'
+    const wrapperStyle = ref({ 'min-height': '100vh' })
+
     const loadingBarClass = ref({
       'nprogress-custom-parent': false
     })
 
+    // before page loaded
     onBeforeMount(() => {
       initialApp()
     })
 
+    // initial app
     const initialApp = () => {
+      initialPage()
+      initialTheme()
       fetchWebsiteConfig()
+    }
+
+    // initial page height
+    const initialPage = () => {
+      let wrapperHeight = screen.height
+      const footerHeight = document.getElementById('footer')?.getBoundingClientRect().height
+
+      if(typeof footerHeight === 'number') {
+        wrapperHeight = wrapperHeight - footerHeight * 2
+      }
+
+      wrapperStyle.value = {
+        'min-height': wrapperHeight + 'px'
+      }
+    }
+
+    // initial page theme
+    const initialTheme = () => {
+      appStore.initializeTheme(appStore.themeConfig.theme)
     }
 
     const fetchWebsiteConfig = () => {
@@ -73,8 +97,6 @@ export default defineComponent({
     }
 
     return {
-      appWrapperClass,
-      loadingBarClass,
       theme: computed(() => appStore.themeConfig.theme),
       headerImage: computed(() => {
         return {
@@ -100,7 +122,10 @@ export default defineComponent({
           --text-accent: ${appStore.themeConfig.gradient.color_3};
           --text-sub-accent: ${appStore.themeConfig.gradient.color_2};
         `
-      })
+      }),
+      wrapperStyle: computed(() => wrapperStyle.value),
+      appWrapperClass,
+      loadingBarClass
     }
   }
 })

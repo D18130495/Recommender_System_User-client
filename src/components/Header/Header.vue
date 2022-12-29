@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import Logo from './Logo.vue'
 import Navigation from "./Navigation.vue"
 import Control from './Control.vue'

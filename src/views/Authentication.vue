@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div id="page" class="site">
+    <div id="page" :class="[siteClass]" :style="siteStyle">
       <div class="auth-container">
         <div class="authform">
           <div class="play">
-            <div class="wwwwrapper">
+            <div class="wrapper">
               <div class="card one"></div>
               <div class="card two"></div>
               <div class="card three"></div>
@@ -99,21 +99,47 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
 import 'remixicon/fonts/remixicon.css'
-import '@/styles/auth.scss'
 
-export default {
-  data() {
-    return {}
-  },
-  methods: {
-    showSignUp() {
-      document.querySelector('.site').className = 'site signup-show';
-    },
-    showSignIn() {
-      document.querySelector('.site').className = 'site signin-show';
+
+export default defineComponent({
+  name: 'Authentication',
+  setup() {
+    const siteStyle = ref({ 'padding': '200px 0' })
+    let siteClass = 'site'
+
+    onBeforeMount(() => {
+      initialApp()
+    })
+
+    const initialApp = () => {
+      let pageHeight = innerHeight
+      const authForm = document.getElementById('authform')
+      const authFormHeight = authForm?.clientHeight
+
+      pageHeight = (pageHeight - authFormHeight!) / 2
+
+      siteStyle.value = {
+        'padding': pageHeight + 'px 0'
+      }
+    }
+
+    const showSignUp = () => {
+      document.querySelector('.site')!.className = 'site signup-show';
+    }
+
+    const showSignIn = () => {
+      document.querySelector('.site')!.className = 'site signin-show';
+    }
+
+    return {
+      siteClass,
+      siteStyle: computed(() => siteStyle.value),
+      showSignIn,
+      showSignUp
     }
   }
-}
+})
 </script>

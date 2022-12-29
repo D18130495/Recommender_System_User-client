@@ -10,10 +10,10 @@ nProgress.configure({
 })
 
 const setTheme = (theme: string) => {
-  if (theme === 'theme-dark') {
+  if(theme === 'theme-dark') {
     document.body.classList.remove('theme-light')
     document.body.classList.add('theme-dark')
-  } else {
+  }else {
     document.body.classList.remove('theme-dark')
     document.body.classList.add('theme-light')
   }
@@ -54,14 +54,10 @@ export const useAppStore = defineStore('appStore', {
     }
   },
   actions: {
-    changeLocale(locale: string) {
-      cookies.set('locale', locale, { expires: 7 })
-      // i18n.global.locale = locale
+    initializeTheme(theme: string) {
+      setTheme(theme)
     },
-    initializeTheme(mode: string) {
-      setTheme(mode)
-    },
-    toggleTheme(darkTheme?: boolean) {
+    switchTheme(darkTheme?: boolean) {
       this.themeConfig.theme = darkTheme === true || this.themeConfig.theme === 'theme-light' ? 'theme-dark' : 'theme-light'
       cookies.set('theme', this.themeConfig.theme, { expires: 7 })
       setTheme(this.themeConfig.theme)

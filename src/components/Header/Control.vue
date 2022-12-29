@@ -1,14 +1,22 @@
 <template>
-  <div class="header-controls absolute top-10 right-0 flex flex-row" @keydown.k="handleOpenModel" tabindex="0">
+  <div class="header-controls absolute top-10 right-0 flex flex-row">
+    <span class="ob-drop-shadow" data-dia="search" @click="handleSearchModel">
+      <el-icon size="32px"><Search/></el-icon>
+    </span>
+    <teleport to="body">
+      <SearchModel/>
+    </teleport>
+
     <template v-if="userInfo === ''">
       <span class="mr-3" @click="redirectLogin">Login</span>
     </template>
+
     <template v-else-if="userInfo !== ''">
       <OptionList hover>
         <span class="mr-2">
           <div class="flex-shrink-0">
             <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-9">
-              <img class="avatar-img" :src="userInfo.avatar" alt="" />
+<!--              <img class="avatar-img" :src="userInfo.avatar" alt="" />-->
               <div>{{ userInfo }}</div>
             </div>
           </div>
@@ -34,18 +42,25 @@ import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
 import OptionList from "./OptionList/OptionList.vue"
 import OptionListBlock from "./OptionList/OptionListBlock.vue"
 import OptionListItem from "./OptionList/OptionListItem.vue"
+import SearchModel from "./Model/SearchModel.vue"
 
 import { useUserStore } from "@/stores/user"
+import { useSearchStore } from "@/stores/search"
 
 
 export default defineComponent({
   name: 'Controls',
   components: {
-    ThemeSwitch, OptionList, OptionListBlock, OptionListItem
+    ThemeSwitch, OptionList, OptionListBlock, OptionListItem, SearchModel
   },
   setup() {
     const userStore = useUserStore()
+    const searchStore = useSearchStore()
     const router = useRouter()
+
+    const handleSearchModel: any = (status: boolean) => {
+      searchStore.setOpenModel(status)
+    }
 
     const redirectLogin = () => {
       router.push({ path: '/authentication' })
@@ -61,6 +76,7 @@ export default defineComponent({
 
     return {
       userInfo: toRef(userStore.$state, 'userInfo'),
+      handleSearchModel,
       redirectLogin,
       handleLogout,
       openUserProfile

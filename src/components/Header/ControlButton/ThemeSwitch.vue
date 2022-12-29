@@ -20,7 +20,7 @@ export default defineComponent({
     const defaultStatus = appStore.themeConfig.theme === 'theme-dark'
 
     const handleChange = (status: boolean) => {
-      appStore.toggleTheme(status)
+      appStore.switchTheme(status)
     }
 
     return {
