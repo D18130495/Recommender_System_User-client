@@ -43,7 +43,7 @@
                 </label>
                 <p>Or</p>
                 <p class="socials">
-                  <button><i class="ri-google-line"></i></button>
+                  <button @click="login"><i class="ri-google-line"></i></button>
                 </p>
               </div>
             </form>
@@ -101,6 +101,12 @@
 
 <script lang="ts">
 import {computed, defineComponent, onMounted, ref} from 'vue'
+
+import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
+
+import axios from "axios"
+import userApi from '@/api/user'
+
 import 'remixicon/fonts/remixicon.css'
 
 
@@ -109,6 +115,9 @@ export default defineComponent({
   setup() {
     const siteStyle = ref({ 'padding': '200px 0' })
     const authForm:any = ref(null)
+    const userInfo = {
+      'email': ''
+    }
     let siteClass = 'site'
 
     onMounted(() => {
@@ -127,6 +136,8 @@ export default defineComponent({
       siteStyle.value = {
         'padding': pageHeight + 'px 0'
       }
+
+      // googlePrompt()
     }
 
     const showSignUp = () => {
@@ -137,12 +148,52 @@ export default defineComponent({
       document.querySelector('.site')!.className = 'site signin-show';
     }
 
+    const googlePrompt = () => {
+      googleOneTap()
+          .then((response) => {
+            console.log("Handle the response", response)
+          })
+          .catch((error) => {
+            console.log("Handle the error", error)
+          })
+    }
+
+    const login = () => {
+      googleTokenLogin()
+        .then((response) => {
+          getGoogleUserDetail(response.access_token)
+        })
+    }
+
+    const getGoogleUserDetail = (accessToken: string) => {
+      axios({
+        url: "https://www.googleapis.com/oauth2/v1/userinfo",
+        method: "get",
+        params: {
+          "alt": "json",
+          "access_token": accessToken
+        }
+      }).then(response => {
+        userInfo.email = response.data.email
+
+        sendUserDetail()
+      })
+    }
+
+    const sendUserDetail = () => {
+      userApi.login(userInfo)
+          .then((response) => {
+            console.log(response.data)
+          })
+    }
+
     return {
       siteClass,
       siteStyle: computed(() => siteStyle.value),
       authForm,
       showSignIn,
-      showSignUp
+      showSignUp,
+      login
     }
   }
 })
