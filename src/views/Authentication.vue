@@ -100,9 +100,12 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, ref} from 'vue'
+import {computed, defineComponent, onMounted, reactive, ref} from 'vue'
 
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
+import { useRouter } from 'vue-router'
+
+import { useUserStore } from '@/stores/user'
 
 import axios from "axios"
 import userApi from '@/api/user'
@@ -113,11 +116,15 @@ import 'remixicon/fonts/remixicon.css'
 export default defineComponent({
   name: 'Authentication',
   setup() {
+    const userStore = useUserStore()
+    const router = useRouter()
     const siteStyle = ref({ 'padding': '200px 0' })
     const authForm:any = ref(null)
-    const userInfo = {
-      'email': ''
-    }
+    const userInfo = reactive({
+      username: '' as any,
+      email: '' as any,
+      avatar: '' as any
+    })
     let siteClass = 'site'
 
     onMounted(() => {
@@ -174,7 +181,9 @@ export default defineComponent({
           "access_token": accessToken
         }
       }).then(response => {
+        userInfo.username = response.data.name
         userInfo.email = response.data.email
+        userInfo.avatar = response.data.picture
 
         sendUserDetail()
       })
@@ -183,7 +192,9 @@ export default defineComponent({
     const sendUserDetail = () => {
       userApi.login(userInfo)
           .then((response) => {
-            console.log(response.data)
+            userStore.userInfo = response.data.data
+
+            router.push({ path: '/' })
           })
     }
 

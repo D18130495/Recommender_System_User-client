@@ -8,16 +8,15 @@
     </teleport>
 
     <template v-if="userInfo === ''">
-      <span class="mr-3" @click="redirectLogin">Login</span>
+      <span class="ml-3 mr-3" @click="redirectLogin">Login</span>
     </template>
 
-    <template v-else-if="userInfo !== ''">
+    <template style="padding-left: 10px" v-else-if="userInfo !== ''">
       <OptionList hover>
-        <span class="mr-2">
+        <span class="ml-3 mr-3">
           <div class="flex-shrink-0">
             <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-9">
-<!--              <img class="avatar-img" :src="userInfo.avatar" alt="" />-->
-              <div>{{ userInfo }}</div>
+              <img class="avatar-img" :src="userInfo.avatar" alt="" />
             </div>
           </div>
         </span>
@@ -35,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import  { computed, defineComponent, toRef, toRefs, reactive, getCurrentInstance, nextTick } from 'vue'
+import  { computed, defineComponent, toRef } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
@@ -67,7 +66,8 @@ export default defineComponent({
     }
 
     const handleLogout = () => {
-      console.log('logout')
+      userStore.userInfo = ''
+      userStore.token = ''
     }
 
     const openUserProfile = () => {
@@ -192,13 +192,10 @@ export default defineComponent({
 }
 
 .avatar-img {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 800ms;
-  transform: rotate(-360deg);
 }
 
 .avatar-img:hover {
-  transform: rotate(360deg);
+  transform: rotate(30deg);
 }
 </style>
