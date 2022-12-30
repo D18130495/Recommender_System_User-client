@@ -67,7 +67,7 @@ export default defineComponent({
 
     // initial page height
     const initialPage = () => {
-      let wrapperHeight = screen.height
+      let wrapperHeight = innerHeight
       const footerHeight = document.getElementById('footer')?.getBoundingClientRect().height
 
       if(typeof footerHeight === 'number') {

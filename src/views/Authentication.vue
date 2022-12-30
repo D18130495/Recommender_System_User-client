@@ -2,7 +2,7 @@
   <div>
     <div id="page" :class="[siteClass]" :style="siteStyle">
       <div class="auth-container">
-        <div class="authform">
+        <div class="authform"  ref="authForm">
           <div class="play">
             <div class="wrapper">
               <div class="card one"></div>
@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
+import {computed, defineComponent, onMounted, ref} from 'vue'
 import 'remixicon/fonts/remixicon.css'
 
 
@@ -108,18 +108,21 @@ export default defineComponent({
   name: 'Authentication',
   setup() {
     const siteStyle = ref({ 'padding': '200px 0' })
+    const authForm:any = ref(null)
     let siteClass = 'site'
 
-    onBeforeMount(() => {
-      initialApp()
+    onMounted(() => {
+      const authFormHeight = authForm.value.offsetHeight
+
+      initialApp(authFormHeight)
     })
 
-    const initialApp = () => {
+    const initialApp = (authFormHeight: any) => {
       let pageHeight = innerHeight
-      const authForm = document.getElementById('authform')
-      const authFormHeight = authForm?.clientHeight
 
-      pageHeight = (pageHeight - authFormHeight!) / 2
+      if(typeof authFormHeight === 'number') {
+        pageHeight = (pageHeight - authFormHeight) / 2
+      }
 
       siteStyle.value = {
         'padding': pageHeight + 'px 0'
@@ -137,6 +140,7 @@ export default defineComponent({
     return {
       siteClass,
       siteStyle: computed(() => siteStyle.value),
+      authForm,
       showSignIn,
       showSignUp
     }
