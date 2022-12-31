@@ -1,7 +1,6 @@
 :root {
   --max-width: 1600px;
   --gap: 2rem;
-  --main-gradient: linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%);
   --theme-transition: all 250ms ease;
 }
 
@@ -13,7 +12,7 @@
   --background-trans: rgba(0, 0, 0, 0.15);
   --text-bright: #000000;
   --text-normal: #333333;
-  --text-accent: #e93796;
+  --text-accent: #e085e0;
   --text-sub-accent: #547ce7;
   --text-faint: #b2b2b2;
   --text-dim: #858585;
@@ -88,7 +87,7 @@
   --skeleton-hl: #363636;
   --text-bright: #fff;
   --text-normal: #bebebe;
-  --text-accent: #0fb6d6;
+  --text-accent: #24c6dc;
   --text-sub-accent: #f4569d;
   --text-dim: #6d6d6d;
   --text-faint: #7aa2f7;

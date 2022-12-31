@@ -105,23 +105,30 @@ export default defineComponent({
         }
       }),
       headerBaseBackground: computed(() => {
-        return {
-          background: appStore.themeConfig.header_gradient_css,
-          opacity: commonStore.headerImage !== '' ? 0.90 : 1
+        if(appStore.themeConfig.theme === 'theme-dark') {
+          return {
+            background: appStore.themeConfig.header_gradient_dark,
+            opacity: commonStore.headerImage !== '' ? 0.90 : 1
+          }
+        }else {
+          return {
+            background: appStore.themeConfig.header_gradient_light,
+            opacity: commonStore.headerImage !== '' ? 0.90 : 1
+          }
         }
       }),
       themeSetting: computed(() => {
-        if (appStore.themeConfig.theme === 'theme-dark') {
+        if(appStore.themeConfig.theme === 'theme-dark') {
           return `
-            --text-accent: ${appStore.themeConfig.gradient.color_1};
-            --text-sub-accent: ${appStore.themeConfig.gradient.color_3};
+            --text-accent: ${appStore.themeConfig.text.cyan};
+            --text-sub-accent: ${appStore.themeConfig.text.color_3};
           `
-        }
-
-        return `
-          --text-accent: ${appStore.themeConfig.gradient.color_3};
-          --text-sub-accent: ${appStore.themeConfig.gradient.color_2};
+        }else {
+          return `
+          --text-accent: ${appStore.themeConfig.text.purple};
+          --text-sub-accent: ${appStore.themeConfig.text.color_2};
         `
+        }
       }),
       wrapperStyle: computed(() => wrapperStyle.value),
       appWrapperClass,

@@ -28,8 +28,14 @@ export default defineComponent({
 
     return {
       gradientBackground: computed(() => {
-        return {
-          background: appStore.themeConfig.header_gradient_css
+        if(appStore.themeConfig.theme === 'theme-dark') {
+          return {
+            background: appStore.themeConfig.header_gradient_dark,
+          }
+        }else {
+          return {
+            background: appStore.themeConfig.header_gradient_light,
+          }
         }
       }),
       titleStr

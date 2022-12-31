@@ -26,20 +26,14 @@ export const useAppStore = defineStore('appStore', {
         theme: cookies.get('theme') ? String(cookies.get('theme')) : 'theme-dark',
         profile_shape: 'circle-avatar',
         feature: true,
-        gradient: {
-          color_1: '#24c6dc',
+        text: {
           color_2: '#5433ff',
-          color_3: '#ff0099'
+          color_3: '#ff0099',
+          cyan: '#24c6dc',
+          purple: '#e085e0',
         },
-        header_gradient_css_2: 'linear-gradient(130deg, #d10606, #b306d1, #0617d1)',
-        header_gradient_css: 'linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%)',
-        background_gradient_style: {
-          background: 'linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%)',
-          '-webkit-background-clip': 'text',
-          '-webkit-text-fill-color': 'transparent',
-          '-webkit-box-decoration-break': 'clone',
-          'box-decoration-break': 'clone'
-        }
+        header_gradient_dark: 'linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%)',
+        header_gradient_light: 'linear-gradient(130deg, rgb(255, 102, 204), rgb(102, 255, 204) 41.07%, rgb(102, 204, 255) 76.05%)'
       },
       appLoading: false,
       websiteConfig: '' as any,
@@ -49,8 +43,7 @@ export const useAppStore = defineStore('appStore', {
       categoryCount: 0,
       tagCount: 0,
       NPTimeout: -1,
-      loadingTimeout: -1,
-      aurora_bot_enable: true
+      loadingTimeout: -1
     }
   },
   actions: {

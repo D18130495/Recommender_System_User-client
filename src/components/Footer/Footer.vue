@@ -29,7 +29,15 @@ export default defineComponent({
 
     return {
       gradientBackground: computed(() => {
-        return { background: appStore.themeConfig.header_gradient_css }
+        if(appStore.themeConfig.theme === 'theme-dark') {
+          return {
+            background: appStore.themeConfig.header_gradient_dark,
+          }
+        }else {
+          return {
+            background: appStore.themeConfig.header_gradient_light,
+          }
+        }
       }),
       currentYear: computed(() => new Date().getUTCFullYear()),
       websiteConfig: computed(() => appStore.websiteConfig)
