@@ -75,6 +75,7 @@ input::placeholder {
 }
 
 .authform {
+  min-height: 580px;
   position: relative;
   background-color: var(--white-color);
   padding: 50px 30px;
@@ -152,8 +153,7 @@ nav ul li:last-child a:hover {
 form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .form > p {
@@ -182,13 +182,6 @@ form p:not(.socials) i {
   color: var(--grey-color);
 }
 
-form p i.ri-eye-off-line {
-  left: auto;
-  right: 0;
-  color: var(--dark-color);
-  cursor: pointer;
-}
-
 form .actions p {
   color: var(--grey-color);
   font-size: 14px;
@@ -199,7 +192,7 @@ form .actions {
   align-items: center;
   flex-direction: column;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 

@@ -16,34 +16,50 @@
           <div class="signin">
             <nav>
               <ul>
-                <li><a href="#0"><i class="ri-arrow-left-line"></i></a></li>
-                <li>Don't have an account?<a href="#0" class="t-signup" @click="showSignUp">Sign Up</a></li>
+                <li><a href="#" @click="goBack"><el-icon><Back/></el-icon></a></li>
+                <li>Don't have an account?<a href="#" class="t-signup" @click="showSignUp">Sign Up</a></li>
               </ul>
             </nav>
 
             <div class="heading">
               <h2>Sign In</h2>
-              <p>We secure your data privacy encrypted.</p>
             </div>
 
             <form action="">
-              <p>
-                <i class="ri-mail-line"></i>
-                <input type="email" placeholder="Your email address">
-              </p>
-              <p>
-                <i class="ri-lock-line"></i>
-                <i class="ri-eye-off-line"></i>
-                <input type="password" placeholder="Enter password">
-              </p>
+              <el-form label-position="top" size="large" ref="ruleFormRef" :model="loginForm" :rules="loginRules">
+                <el-form-item label="Email" prop="email">
+                  <el-input v-model="loginForm.email" type="email" autocomplete="off" placeholder="Please enter your Email Address">
+                    <template #prefix>
+                      <el-icon><Message/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+
+                <el-form-item label="Password" prop="password">
+                  <el-input v-model="loginForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
+                    <template #prefix>
+                      <el-icon><Lock/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-form>
+<!--              <p>-->
+<!--                <i class="ri-mail-line"></i>-->
+<!--                <input type="email" placeholder="Your email address">-->
+<!--              </p>-->
+<!--              <p>-->
+<!--                <i class="ri-lock-line"></i>-->
+<!--                <i class="ri-eye-off-line"></i>-->
+<!--                <input type="password" placeholder="Enter password">-->
+<!--              </p>-->
               <div class="actions">
                 <label>
-                  <input type="submit" value="Sign In">
-                  <i class="ri-arrow-right-line"></i>
+                  <input type="button" value="Sign In" @click="systemLogin(ruleFormRef)"/>
+                  <el-icon><Right/></el-icon>
                 </label>
                 <p>Or</p>
                 <p class="socials">
-                  <button @click="login"><i class="ri-google-line"></i></button>
+                  <button @click="googleLogin"><i class="ri-google-line"></i></button>
                 </p>
               </div>
             </form>
@@ -52,43 +68,58 @@
           <div class="signup">
             <nav>
               <ul>
-                <li><a href="#0"><i class="ri-arrow-left-line"></i></a></li>
-                <li>Already member?<a href="#0" class="t-signin"  @click="showSignIn">Sign In</a></li>
+                <li><a href="#" @click="goBack"><i class="ri-arrow-left-line"></i></a></li>
+                <li>Already member?<a href="#" class="t-signin" @click="showSignIn">Sign In</a></li>
               </ul>
             </nav>
 
             <div class="heading">
               <h2>Sign Up</h2>
-              <p>We secure your data privacy encrypted.</p>
             </div>
 
             <form action="">
-              <p>
-                <i class="ri-user-3-line"></i>
-                <input type="text" placeholder="Full Name">
-              </p>
-              <p>
-                <i class="ri-mail-line"></i>
-                <input type="email" placeholder="Your email address">
-              </p>
-              <p>
-                <i class="ri-lock-line"></i>
-                <i class="ri-eye-off-line"></i>
-                <input type="password" placeholder="Enter password">
-              </p>
-              <p>
-                <i class="ri-lock-line"></i>
-                <i class="ri-eye-off-line"></i>
-                <input type="password" placeholder="Re-Enter password">
-              </p>
+              <el-form size="large">
+                <el-form-item>
+                  <el-input type="text" placeholder="Please enter your Full Name">
+                    <template #prefix>
+                      <el-icon><User/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input type="email" placeholder="Please enter your Email Address">
+                    <template #prefix>
+                      <el-icon><Message/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input type="password" placeholder="Please enter your Password">
+                    <template #prefix>
+                      <el-icon><Lock/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input type="password" placeholder="Please enter your Password again">
+                    <template #prefix>
+                      <el-icon><Lock/></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
+              </el-form>
+
               <div class="actions">
                 <label>
                   <input type="submit" value="Sign Up">
-                  <i class="ri-arrow-right-line"></i>
+                  <el-icon><Right/></el-icon>
                 </label>
                 <p>Or</p>
                 <p class="socials">
-                  <button><i class="ri-google-line"></i></button>
+                  <button @click="googleLogin"><i class="ri-google-line"></i></button>
                 </p>
               </div>
             </form>
@@ -104,8 +135,11 @@ import {computed, defineComponent, onMounted, reactive, ref} from 'vue'
 
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
 import { useRouter } from 'vue-router'
+import type { FormInstance } from 'element-plus'
 
 import { useUserStore } from '@/stores/user'
+
+import { ElMessage } from 'element-plus'
 
 import axios from "axios"
 import userApi from '@/api/user'
@@ -127,6 +161,24 @@ export default defineComponent({
     })
     let siteClass = 'site'
 
+    const ruleFormRef = ref<FormInstance>()
+    const loginForm = reactive({
+      email: '',
+      password: ''
+    })
+
+    const loginRules = reactive({
+      email: [
+        { required: true, message: 'Please input the email address', trigger: 'blur' },
+        { pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: 'Please input valid email address', trigger: 'blur'}
+      ],
+      password: [
+        { required: true, message: 'Please input the password', trigger: 'blur' },
+        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
+        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'}
+      ]
+    })
+
     onMounted(() => {
       const authFormHeight = authForm.value.offsetHeight
 
@@ -147,6 +199,10 @@ export default defineComponent({
       // googlePrompt()
     }
 
+    const goBack = () => {
+      router.push({ path: '/' })
+    }
+
     const showSignUp = () => {
       document.querySelector('.site')!.className = 'site signup-show';
     }
@@ -165,11 +221,24 @@ export default defineComponent({
           })
     }
 
-    const login = () => {
+    const systemLogin = (formEl: FormInstance | undefined) => {
+      if (!formEl) return
+
+      formEl.validate((valid) => {
+        if (valid) {
+          console.log('submit!')
+        } else {
+          console.log('error submit!')
+          return false
+        }
+      })
+    }
+
+    const googleLogin = () => {
       googleTokenLogin()
-        .then((response) => {
-          getGoogleUserDetail(response.access_token)
-        })
+          .then((response) => {
+            getGoogleUserDetail(response.access_token)
+          })
     }
 
     const getGoogleUserDetail = (accessToken: string) => {
@@ -196,6 +265,9 @@ export default defineComponent({
 
             router.push({ path: '/' })
           })
+          .catch((error) => {
+            ElMessage.error('error')
+          })
     }
 
     return {
@@ -204,7 +276,12 @@ export default defineComponent({
       authForm,
       showSignIn,
       showSignUp,
-      login
+      systemLogin,
+      googleLogin,
+      goBack,
+      loginForm,
+      loginRules,
+      ruleFormRef
     }
   }
 })
