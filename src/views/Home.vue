@@ -1,11 +1,9 @@
 <template>
-  <div class="block">
-    <Title v-if="themeConfig.feature"></Title>
-  </div>
+    <div class="block">
+      <Title v-if="themeConfig.feature"></Title>
 
-  <span v-if="themeConfig.feature">
-      <Section id="article-list" :title="'titles.articles'" icon="article"/>
-  </span>
+      <Section v-if="themeConfig.feature" id="article-list" :title="'titles.articles'"/>
+    </div>
 </template>
 
 <script lang="ts">

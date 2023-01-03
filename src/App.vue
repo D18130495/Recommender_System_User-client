@@ -23,7 +23,11 @@
   </div>
 
   <div v-else-if="$route.meta.authentication">
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="fade-slide-y" mode="out-in">
+        <component :is="Component"/>
+      </transition>
+    </router-view>
   </div>
 </template>
 

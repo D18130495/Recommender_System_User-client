@@ -1,9 +1,11 @@
 <template>
-  <p :id="id" class="relative opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
-    <el-icon class="inline-block mr-2"><Film/></el-icon>
-    Movies
-    <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
-  </p>
+  <div>
+    <p :id="id" class="relative opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
+      <el-icon class="inline-block mr-2"><Film/></el-icon>
+      Movies
+      <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
+    </p>
+  </div>
 </template>
 
 <script lang="ts">

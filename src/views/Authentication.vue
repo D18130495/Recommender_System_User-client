@@ -26,9 +26,9 @@
             </div>
 
             <form action="">
-              <el-form label-position="top" size="large" ref="ruleFormRef" :model="loginForm" :rules="loginRules">
+              <el-form label-position="top" size="large" ref="signInRef" :model="signInForm" :rules="signInRules">
                 <el-form-item label="Email" prop="email">
-                  <el-input v-model="loginForm.email" type="email" autocomplete="off" placeholder="Please enter your Email Address">
+                  <el-input v-model="signInForm.email" type="email" autocomplete="off" placeholder="Please enter your Email Address">
                     <template #prefix>
                       <el-icon><Message/></el-icon>
                     </template>
@@ -36,25 +36,17 @@
                 </el-form-item>
 
                 <el-form-item label="Password" prop="password">
-                  <el-input v-model="loginForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
+                  <el-input v-model="signInForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
                   </el-input>
                 </el-form-item>
               </el-form>
-<!--              <p>-->
-<!--                <i class="ri-mail-line"></i>-->
-<!--                <input type="email" placeholder="Your email address">-->
-<!--              </p>-->
-<!--              <p>-->
-<!--                <i class="ri-lock-line"></i>-->
-<!--                <i class="ri-eye-off-line"></i>-->
-<!--                <input type="password" placeholder="Enter password">-->
-<!--              </p>-->
+
               <div class="actions">
                 <label>
-                  <input type="button" value="Sign In" @click="systemLogin(ruleFormRef)"/>
+                  <input type="button" value="Sign In" @click="systemSignIn(signInRef)"/>
                   <el-icon><Right/></el-icon>
                 </label>
                 <p>Or</p>
@@ -78,33 +70,33 @@
             </div>
 
             <form action="">
-              <el-form size="large">
-                <el-form-item>
-                  <el-input type="text" placeholder="Please enter your Full Name">
+              <el-form size="large" ref="signUpRef" :model="signUpForm" :rules="signUpRules">
+                <el-form-item prop="username">
+                  <el-input v-model="signUpForm.username" type="text" autocomplete="off" placeholder="Please enter your Full Name">
                     <template #prefix>
                       <el-icon><User/></el-icon>
                     </template>
                   </el-input>
                 </el-form-item>
 
-                <el-form-item>
-                  <el-input type="email" placeholder="Please enter your Email Address">
+                <el-form-item prop="email">
+                  <el-input v-model="signUpForm.email" type="email" autocomplete="off" placeholder="Please enter your Email Address">
                     <template #prefix>
                       <el-icon><Message/></el-icon>
                     </template>
                   </el-input>
                 </el-form-item>
 
-                <el-form-item>
-                  <el-input type="password" placeholder="Please enter your Password">
+                <el-form-item prop="password">
+                  <el-input v-model="signUpForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
                   </el-input>
                 </el-form-item>
 
-                <el-form-item>
-                  <el-input type="password" placeholder="Please enter your Password again">
+                <el-form-item prop="passwordCheck">
+                  <el-input v-model="signUpForm.passwordCheck" type="password" autocomplete="off" placeholder="Please enter your Password again">
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
@@ -114,13 +106,9 @@
 
               <div class="actions">
                 <label>
-                  <input type="submit" value="Sign Up">
+                  <input type="button" value="Sign Up" @click="systemSignUp(signUpRef)">
                   <el-icon><Right/></el-icon>
                 </label>
-                <p>Or</p>
-                <p class="socials">
-                  <button @click="googleLogin"><i class="ri-google-line"></i></button>
-                </p>
               </div>
             </form>
           </div>
@@ -161,13 +149,13 @@ export default defineComponent({
     })
     let siteClass = 'site'
 
-    const ruleFormRef = ref<FormInstance>()
-    const loginForm = reactive({
+    const signInRef = ref<FormInstance>()
+    const signInForm = reactive({
       email: '',
       password: ''
     })
 
-    const loginRules = reactive({
+    const signInRules = reactive({
       email: [
         { required: true, message: 'Please input the email address', trigger: 'blur' },
         { pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: 'Please input valid email address', trigger: 'blur'}
@@ -176,6 +164,45 @@ export default defineComponent({
         { required: true, message: 'Please input the password', trigger: 'blur' },
         { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
         { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'}
+      ]
+    })
+
+    const signUpRef = ref<FormInstance>()
+    const signUpForm = reactive({
+      username: '',
+      email: '',
+      password: '',
+      passwordCheck: ''
+    })
+
+    const passwordCheck = (rule: any, value: any, callback: any) => {
+      if(signUpForm.password === '') {
+        callback(new Error('Please input the password before entering this field'))
+      }else if(value !== signUpForm.password) {
+        callback(new Error("Password does not match"))
+      }else {
+        callback()
+      }
+    }
+
+    const signUpRules = reactive({
+      username: [
+        { required: true, message: 'Please input the full name', trigger: 'blur' }
+      ],
+      email: [
+        { required: true, message: 'Please input the email address', trigger: 'blur' },
+        { pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: 'Please input valid email address', trigger: 'blur'}
+      ],
+      password: [
+        { required: true, message: 'Please input the password', trigger: 'blur' },
+        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
+        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'}
+      ],
+      passwordCheck: [
+        { required: true, message: 'Please input the password again', trigger: 'blur' },
+        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
+        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'},
+        { validator: passwordCheck, trigger: 'blur' }
       ]
     })
 
@@ -221,13 +248,26 @@ export default defineComponent({
           })
     }
 
-    const systemLogin = (formEl: FormInstance | undefined) => {
+    const systemSignIn = (formEl: FormInstance | undefined) => {
       if (!formEl) return
 
       formEl.validate((valid) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
+        if(valid) {
+          console.log(signInForm)
+        }else {
+          console.log('error submit!')
+          return false
+        }
+      })
+    }
+
+    const systemSignUp = (formEl: FormInstance | undefined) => {
+      if (!formEl) return
+
+      formEl.validate((valid) => {
+        if(valid) {
+          console.log(signUpForm)
+        }else {
           console.log('error submit!')
           return false
         }
@@ -276,12 +316,16 @@ export default defineComponent({
       authForm,
       showSignIn,
       showSignUp,
-      systemLogin,
+      systemSignIn,
+      systemSignUp,
       googleLogin,
       goBack,
-      loginForm,
-      loginRules,
-      ruleFormRef
+      signInForm,
+      signUpForm,
+      signInRules,
+      signUpRules,
+      signInRef,
+      signUpRef
     }
   }
 })
