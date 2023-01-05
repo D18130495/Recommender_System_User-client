@@ -7,7 +7,6 @@ export const useUserStore = defineStore('userStore', {
       token: '' as any,
     }
   },
-  actions: {},
   persist: {
     storage: window.sessionStorage
   }

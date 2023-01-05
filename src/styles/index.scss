@@ -18,6 +18,10 @@
 
 @import './transitions.scss';
 
+button:focus {
+  outline: 0;
+}
+
 .stroke-ob-bright {
   stroke: var(--text-bright) !important;
 }

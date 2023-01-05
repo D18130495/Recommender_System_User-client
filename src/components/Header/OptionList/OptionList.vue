@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="ob-dropdown relative z-50"
-    @mouseover="hoverHandler"
-    @mouseleave="leaveHandler">
+  <div class="ob-dropdown relative z-50" @mouseover="hoverHandler" @mouseleave="leaveHandler">
     <slot/>
   </div>
 </template>
@@ -33,9 +30,7 @@ export default defineComponent({
     }
 
     const leaveHandler = () => {
-      if(mouseHover.value) {
-        isActive.active = false
-      }
+      if(mouseHover.value) isActive.active = false
     }
 
     return {

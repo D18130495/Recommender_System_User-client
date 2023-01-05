@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import  { computed, defineComponent, toRef } from 'vue'
+import  { defineComponent, toRef } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
@@ -45,6 +45,8 @@ import SearchModel from "./Model/SearchModel.vue"
 
 import { useUserStore } from "@/stores/user"
 import { useSearchStore } from "@/stores/search"
+
+import { ElNotification } from 'element-plus'
 
 
 export default defineComponent({
@@ -68,6 +70,14 @@ export default defineComponent({
     const handleLogout = () => {
       userStore.userInfo = ''
       userStore.token = ''
+      sessionStorage.removeItem('token')
+
+      ElNotification({
+        title: 'Success',
+        message: 'Successfully logout',
+        type: 'success',
+        duration: 1500
+      })
     }
 
     const openUserProfile = () => {

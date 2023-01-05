@@ -1,11 +1,11 @@
 <template>
-  <div class="article-container">
-    <div class="feature-article">
-      <div class="feature-thumbnail">
-<!--        <img v-if="article.articleCover" class="ob-hz-thumbnail" v-lazy="article.articleCover" />-->
-        <img class="ob-hz-thumbnail" src="@/assets/default-cover.jpg" />
+  <div class="title-container">
+    <div class="title">
+      <div class="title-image">
+<!--        <img v-if="article.articleCover" class="ob-title-image" v-lazy="article.articleCover" />-->
+        <img class="ob-title-image" src="@/assets/images/5.jpg"/>
       </div>
-      <div class="feature-content">
+      <div class="title-content">
         <b>
           <div @click="handleClick">123</div>
         </b>

@@ -26,7 +26,7 @@
             </div>
 
             <form action="">
-              <el-form label-position="top" size="large" ref="signInRef" :model="signInForm" :rules="signInRules">
+              <el-form label-position="top" size="large" ref="signInRef" :model="signInForm" :rules="signInRules" status-icon>
                 <el-form-item label="Email" prop="email">
                   <el-input v-model="signInForm.email" type="email" autocomplete="off" placeholder="Please enter your Email Address">
                     <template #prefix>
@@ -35,7 +35,7 @@
                   </el-input>
                 </el-form-item>
 
-                <el-form-item label="Password" prop="password">
+                <el-form-item label="Password" prop="password" >
                   <el-input v-model="signInForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
@@ -51,7 +51,7 @@
                 </label>
                 <p>Or</p>
                 <p class="socials">
-                  <button @click="googleLogin"><i class="ri-google-line"></i></button>
+                  <button type="button" @click="googleLogin"><i class="ri-google-line"></i></button>
                 </p>
               </div>
             </form>
@@ -70,7 +70,7 @@
             </div>
 
             <form action="">
-              <el-form size="large" ref="signUpRef" :model="signUpForm" :rules="signUpRules">
+              <el-form size="large" ref="signUpRef" :model="signUpForm" :rules="signUpRules" status-icon>
                 <el-form-item prop="username">
                   <el-input v-model="signUpForm.username" type="text" autocomplete="off" placeholder="Please enter your Full Name">
                     <template #prefix>
@@ -299,9 +299,11 @@ export default defineComponent({
     }
 
     const sendUserDetail = () => {
-      userApi.login(userInfo)
+      userApi.googleLogin(userInfo)
           .then((response) => {
             userStore.userInfo = response.data.data
+            userStore.token = response.data.data.token
+            sessionStorage.setItem('token', response.data.data.token)
 
             router.push({ path: '/' })
           })

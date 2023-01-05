@@ -2,10 +2,10 @@ import request from '@/utils/request'
 
 // @ts-ignore
 export default {
-    login(userInfo: any) {
+    googleLogin(userInfo: any) {
         return request({
-            url: `/authentication/login`,
-            method: 'get',
+            url: `/authentication/googleLogin`,
+            method: 'post',
             params: userInfo
         })
     }
