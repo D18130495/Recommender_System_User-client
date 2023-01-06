@@ -106,7 +106,7 @@
 
               <div class="actions">
                 <label>
-                  <input type="button" value="Sign Up" @click="systemSignUp(signUpRef)">
+                  <input type="button" value="Sign Up" @click="systemRegister(signUpRef)">
                   <el-icon><Right/></el-icon>
                 </label>
               </div>
@@ -261,14 +261,20 @@ export default defineComponent({
       })
     }
 
-    const systemSignUp = (formEl: FormInstance | undefined) => {
+    const systemRegister = (formEl: FormInstance | undefined) => {
       if (!formEl) return
 
       formEl.validate((valid) => {
         if(valid) {
-          console.log(signUpForm)
+          userApi.systemRegister({'username': signUpForm.username, 'email':signUpForm.email, 'password': signUpForm.password})
+              .then((response) => {
+                console.log(response.data)
+              })
+              .catch((error) => {
+                console.log(error)
+                ElMessage.error('Network Error')
+              })
         }else {
-          console.log('error submit!')
           return false
         }
       })
@@ -319,7 +325,7 @@ export default defineComponent({
       showSignIn,
       showSignUp,
       systemSignIn,
-      systemSignUp,
+      systemRegister,
       googleLogin,
       goBack,
       signInForm,
