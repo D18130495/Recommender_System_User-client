@@ -11,11 +11,11 @@
       <span class="ml-3 mr-3" @click="redirectLogin">Login</span>
     </template>
 
-    <template style="padding-left: 10px" v-else-if="userInfo !== ''">
+    <template v-else-if="userInfo !== ''">
       <OptionList hover>
         <span class="ml-3 mr-3">
           <div class="flex-shrink-0">
-            <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-9">
+            <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-8">
               <img class="avatar-img" :src="userInfo.avatar" alt="" />
             </div>
           </div>
@@ -72,6 +72,8 @@ export default defineComponent({
       userStore.token = ''
       sessionStorage.removeItem('token')
 
+      router.push({ path: '/' })
+
       ElNotification({
         title: 'Success',
         message: 'Successfully logout',
@@ -81,7 +83,7 @@ export default defineComponent({
     }
 
     const openUserProfile = () => {
-      console.log('profile')
+      router.push({ path: '/profile' })
     }
 
     return {

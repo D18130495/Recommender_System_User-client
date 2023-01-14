@@ -1,7 +1,6 @@
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
-// import store from '../store'
-// import token from '../store/token'
+import { useUserStore } from '@/stores/user'
 
 // create an axios instance
 const service = axios.create({
@@ -11,18 +10,20 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(
-    // config => {
-    //     // do something before request is sent
-    //     if (store.state.token){
-    //         config.headers['token'] = store.state.token
-    //     }
-    //
-    //     return config
-    // },
-    // error => {
-    //     // do something with request error
-    //     return Promise.reject(error)
-    // }
+    config => {
+        // do something before request is sent
+        const userStore = useUserStore()
+
+        if(userStore.token) {
+            config.headers['Authorization'] = 'Bearer ' + userStore.token
+        }
+
+        return config
+    },
+    error => {
+        // do something with request error
+        return Promise.reject(error)
+    }
 )
 
 // response interceptor

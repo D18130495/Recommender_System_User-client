@@ -314,7 +314,7 @@ export default defineComponent({
             router.push({ path: '/' })
           })
           .catch((error) => {
-            ElMessage.error('error')
+            ElMessage.error('Server error')
           })
     }
 

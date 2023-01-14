@@ -15,5 +15,12 @@ export default {
             method: 'post',
             params: userInfo
         })
+    },
+    getUserDetail(email: any) {
+        return request({
+            url: `/user/detail`,
+            method: 'get',
+            params: email
+        })
     }
 }
