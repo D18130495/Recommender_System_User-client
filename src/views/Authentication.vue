@@ -260,6 +260,8 @@ export default defineComponent({
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
 
+                ElMessage.success(response.data.message)
+
                 router.push({ path: '/' })
               })
         }else {
@@ -322,6 +324,8 @@ export default defineComponent({
             userStore.userInfo = response.data.data
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
+
+            ElMessage.success(response.data.message)
 
             router.push({ path: '/' })
           })

@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
+    "@webzlodimir/vue-avatar": "0.0.8",
     "axios": "^0.21.0",
-    "request": "^2.88.2",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.9",
     "js-cookie": "^3.0.1",
@@ -27,6 +27,7 @@
     "postcss-loader": "^7.0.1",
     "prismjs": "^1.28.0",
     "remixicon": "^2.5.0",
+    "request": "^2.88.2",
     "tocbot": "^4.18.2",
     "v3-img-preview": "^1.1.16",
     "vue": "^3.2.45",

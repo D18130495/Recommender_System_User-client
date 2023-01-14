@@ -16,7 +16,8 @@
         <span class="ml-3 mr-3">
           <div class="flex-shrink-0">
             <div class="rounded-full ring-gray-100 overflow-hidden shaodw-lg w-8">
-              <img class="avatar-img" :src="userInfo.avatar" alt="" />
+              <img v-if="userInfo.avatar" class="avatar-img" :src="userInfo.avatar" alt="avatar" />
+              <vue-avatar v-else class="avatar-img" :username=userInfo.username :size="32" />
             </div>
           </div>
         </span>
@@ -48,11 +49,14 @@ import { useSearchStore } from "@/stores/search"
 
 import { ElNotification } from 'element-plus'
 
+import VueAvatar from "@webzlodimir/vue-avatar"
+import "@webzlodimir/vue-avatar/dist/style.css"
+
 
 export default defineComponent({
   name: 'Controls',
   components: {
-    ThemeSwitch, OptionList, OptionListBlock, OptionListItem, SearchModel
+    ThemeSwitch, OptionList, OptionListBlock, OptionListItem, SearchModel, VueAvatar
   },
   setup() {
     const userStore = useUserStore()
