@@ -14,6 +14,9 @@ module.exports = defineConfig({
       alias: {
         '@': resolve('src')
       }
+    },
+    devServer: {
+      historyApiFallback: true
     }
   },
   chainWebpack: (config) => {

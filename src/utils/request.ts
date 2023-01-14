@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import { MessageBox, Message } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 
 // create an axios instance
@@ -11,7 +11,6 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
     config => {
-        // do something before request is sent
         const userStore = useUserStore()
 
         if(userStore.token) {
@@ -21,13 +20,34 @@ service.interceptors.request.use(
         return config
     },
     error => {
-        // do something with request error
         return Promise.reject(error)
     }
 )
 
 // response interceptor
 service.interceptors.response.use(
+    response => {
+        const res = response.data
+
+        if(res.code !== 200) {
+            if(res.code === 201) {
+                ElMessage.error(res.message)
+            }else if(res.code === 403) {
+                ElMessage.error("Permission Denied")
+            }else {
+                ElMessage.error('Something wrong')
+            }
+
+            return Promise.reject(new Error(res.message || 'Error'))
+        }else {
+            return response
+        }
+    },
+    error => {
+        ElMessage.error('Network Error can not reach server')
+
+        return Promise.reject(error)
+    }
     // response => {
     //     let token = response.headers['token']
     //
@@ -62,14 +82,6 @@ service.interceptors.response.use(
     //     } else {
     //         return res
     //     }
-    // },
-    // error => {
-    //     Message({
-    //         message: error.message,
-    //         type: 'error',
-    //         duration: 5 * 1000
-    //     })
-    //     return Promise.reject(error)
     // }
 )
 

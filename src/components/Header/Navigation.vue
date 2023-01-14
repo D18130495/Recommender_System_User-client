@@ -7,7 +7,7 @@
         :key="route.path">
         <div
           class="nav-link text-sm block px-1.5 py-0.5 rounded-md relative cursor-pointer"
-          @click="pushPage(route.path)"
+          @click="redirectPage(route.path)"
           v-if="route.children && route.children.length === 0"
           :data-menu="route.name">
           <span class="relative z-50">{{ route.name }}</span>
@@ -32,8 +32,14 @@ export default defineComponent({
   setup() {
     const router = useRouter()
 
-    const pushPage = (path: string): void => {
-      if (!path) return
+    const redirectPage = (path: string): void => {
+      if(!path) {
+        return
+      }else {
+        router.push({
+          path: path
+        })
+      }
     }
 
     const reactiveData = reactive({
@@ -50,7 +56,7 @@ export default defineComponent({
     return {
       ...toRefs(reactiveData),
       routes: menu.routes,
-      pushPage,
+      redirectPage,
       openPhotoAlbum
     }
   }

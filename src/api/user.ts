@@ -2,9 +2,16 @@ import request from '@/utils/request'
 
 // @ts-ignore
 export default {
-    systemRegister(userInfo: any) {
+    userSystemRegister(userInfo: any) {
         return request({
-            url: `/authentication/systemRegister`,
+            url: `/authentication/userSystemRegister`,
+            method: 'post',
+            params: userInfo
+        })
+    },
+    userSystemLogin(userInfo: any) {
+        return request({
+            url: `/authentication/userSystemLogin`,
             method: 'post',
             params: userInfo
         })

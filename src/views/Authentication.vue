@@ -106,7 +106,7 @@
 
               <div class="actions">
                 <label>
-                  <input type="button" value="Sign Up" @click="systemRegister(signUpRef)">
+                  <input type="button" value="Sign Up" @click="userSystemRegister(signUpRef)">
                   <el-icon><Right/></el-icon>
                 </label>
               </div>
@@ -124,10 +124,9 @@ import {computed, defineComponent, onMounted, reactive, ref} from 'vue'
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
+import {ElMessage} from "element-plus/es";
 
 import { useUserStore } from '@/stores/user'
-
-import { ElMessage } from 'element-plus'
 
 import axios from "axios"
 import userApi from '@/api/user'
@@ -148,6 +147,7 @@ export default defineComponent({
       avatar: '' as any
     })
     let siteClass = 'site'
+    let timer = null
 
     const signInRef = ref<FormInstance>()
     const signInForm = reactive({
@@ -187,7 +187,8 @@ export default defineComponent({
 
     const signUpRules = reactive({
       username: [
-        { required: true, message: 'Please input the full name', trigger: 'blur' }
+        { required: true, message: 'Please input the full name', trigger: 'blur' },
+        { min: 4, message: 'Username should at least have 4 characters', trigger: 'blur'}
       ],
       email: [
         { required: true, message: 'Please input the email address', trigger: 'blur' },
@@ -249,11 +250,18 @@ export default defineComponent({
     }
 
     const systemSignIn = (formEl: FormInstance | undefined) => {
-      if (!formEl) return
+      if(!formEl) return
 
       formEl.validate((valid) => {
         if(valid) {
-          console.log(signInForm)
+          userApi.userSystemLogin({'email':signInForm.email, 'password':signInForm.password})
+              .then((response) => {
+                userStore.userInfo = response.data.data
+                userStore.token = response.data.data.token
+                sessionStorage.setItem('token', response.data.data.token)
+
+                router.push({ path: '/' })
+              })
         }else {
           console.log('error submit!')
           return false
@@ -261,18 +269,22 @@ export default defineComponent({
       })
     }
 
-    const systemRegister = (formEl: FormInstance | undefined) => {
-      if (!formEl) return
+    const userSystemRegister = (formEl: FormInstance | undefined) => {
+      if(!formEl) return
 
       formEl.validate((valid) => {
         if(valid) {
-          userApi.systemRegister({'username': signUpForm.username, 'email':signUpForm.email, 'password': signUpForm.password})
+          userApi.userSystemRegister({'username': signUpForm.username, 'email':signUpForm.email, 'password': signUpForm.password})
               .then((response) => {
-                console.log(response.data)
-              })
-              .catch((error) => {
-                console.log(error)
-                ElMessage.error('Network Error')
+                userStore.userInfo = response.data.data
+                userStore.token = response.data.data.token
+                sessionStorage.setItem('token', response.data.data.token)
+
+                ElMessage.success(response.data.message)
+
+                setTimeout(function () {
+                  router.push({ path: '/' })
+                }, 3000)
               })
         }else {
           return false
@@ -313,9 +325,6 @@ export default defineComponent({
 
             router.push({ path: '/' })
           })
-          .catch((error) => {
-            ElMessage.error('Server error')
-          })
     }
 
     return {
@@ -325,7 +334,7 @@ export default defineComponent({
       showSignIn,
       showSignUp,
       systemSignIn,
-      systemRegister,
+      userSystemRegister,
       googleLogin,
       goBack,
       signInForm,
