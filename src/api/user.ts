@@ -23,11 +23,31 @@ export default {
             params: userInfo
         })
     },
-    getUserDetail(email: any) {
+    tokenLoginRefresh(token: any) {
         return request({
-            url: `/user/detail`,
+            url: `/authentication/tokenLoginRefresh`,
             method: 'get',
-            params: email
+            params: {
+                token: token
+            }
+        })
+    },
+    getUserDetailByToken(token: any) {
+        return request({
+            url: `/user/getUserDetailByToken`,
+            method: 'get',
+            params: {
+                token: token
+            }
+        })
+    },
+    getUserDetailByEmail(email: any) {
+        return request({
+            url: `/user/getUserDetailByEmail`,
+            method: 'get',
+            params: {
+                email: email
+            }
         })
     }
 }

@@ -10,7 +10,7 @@
         <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
-          <router-view v-slot="{ Component }">
+          <router-view v-if="isRouterAlive" v-slot="{ Component }">
             <transition name="fade-slide-y" mode="out-in">
               <component :is="Component"/>
             </transition>
@@ -32,13 +32,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, ref } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref } from 'vue'
 
 import { useAppStore } from '@/stores/app'
+import { useUserStore } from "@/stores/user"
 import { useHeaderImageStore } from '@/stores/headerImage'
+
+import cookies from "js-cookie"
 
 import Header from "@/components/Header/Header.vue"
 import Footer from "@/components/Footer/Footer.vue"
+
+import userApi from "@/api/user"
+import {ElMessage} from "element-plus/es";
 
 
 export default defineComponent({
@@ -48,10 +54,16 @@ export default defineComponent({
   },
   setup() {
     const appStore = useAppStore()
+    const userStore = useUserStore()
     const commonStore = useHeaderImageStore()
+
+    const isRouterAlive = ref(true)
 
     const appWrapperClass = 'app-wrapper'
     const wrapperStyle = ref({ 'min-height': '100vh' })
+
+    let seconds = 3600
+    let expires = new Date(new Date().getTime() + seconds * 1000)
 
     const loadingBarClass = ref({
       'nprogress-custom-parent': false
@@ -62,9 +74,39 @@ export default defineComponent({
       initialApp()
     })
 
+    onMounted(() => {
+      document.addEventListener('visibilitychange', checkCookie)
+    })
+
+    const checkCookie = (e:any) => {
+      if(!e.target.hidden) {
+        if(cookies.get('token') === undefined) {
+          userStore.userInfo = ''
+          userStore.token = ''
+          sessionStorage.removeItem('token')
+        }else {
+          userApi.getUserDetailByToken(String(cookies.get('token')))
+              .then((response) => {
+                userStore.userInfo = response.data.data
+              })
+        }
+
+        reload()
+      }
+    }
+
+    const reload = () => {
+      isRouterAlive.value = false
+
+      nextTick(() => {
+        isRouterAlive.value = true
+      })
+    }
+
     // initial app
     const initialApp = () => {
       initialPage()
+      initialUser()
       initialTheme()
       fetchWebsiteConfig()
     }
@@ -86,6 +128,23 @@ export default defineComponent({
     // initial page theme
     const initialTheme = () => {
       appStore.initializeTheme(appStore.themeConfig.theme)
+    }
+
+    // initial page theme
+    const initialUser = () => {
+      if(cookies.get('token') !== undefined) {
+        userApi.tokenLoginRefresh(String(cookies.get('token')))
+            .then((response) => {
+              userStore.userInfo = response.data.data
+              userStore.token = response.data.data.token
+              sessionStorage.setItem('token', response.data.data.token)
+              cookies.set('token', response.data.data.token, { expires: expires })
+            })
+      }else {
+        userStore.userInfo = ''
+        userStore.token = ''
+        sessionStorage.removeItem('token')
+      }
     }
 
     const fetchWebsiteConfig = () => {
@@ -135,6 +194,7 @@ export default defineComponent({
         }
       }),
       wrapperStyle: computed(() => wrapperStyle.value),
+      isRouterAlive,
       appWrapperClass,
       loadingBarClass
     }
@@ -282,5 +342,9 @@ export default defineComponent({
   z-index: 2;
   opacity: 0.91;
   transition: ease-in-out opacity 300ms;
+}
+
+.el-button {
+  width: unset;
 }
 </style>

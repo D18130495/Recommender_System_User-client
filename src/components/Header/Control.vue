@@ -44,8 +44,11 @@ import OptionListBlock from "./OptionList/OptionListBlock.vue"
 import OptionListItem from "./OptionList/OptionListItem.vue"
 import SearchModel from "./Model/SearchModel.vue"
 
+import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
 import { useSearchStore } from "@/stores/search"
+
+import cookies from "js-cookie"
 
 import { ElNotification } from 'element-plus'
 
@@ -59,6 +62,7 @@ export default defineComponent({
     ThemeSwitch, OptionList, OptionListBlock, OptionListItem, SearchModel, VueAvatar
   },
   setup() {
+    const appStore = useAppStore()
     const userStore = useUserStore()
     const searchStore = useSearchStore()
     const router = useRouter()
@@ -75,6 +79,7 @@ export default defineComponent({
       userStore.userInfo = ''
       userStore.token = ''
       sessionStorage.removeItem('token')
+      cookies.remove('token')
 
       router.push({ path: '/' })
 
@@ -207,11 +212,16 @@ export default defineComponent({
   }
 }
 
-.avatar-img {
-  transition-duration: 800ms;
-}
+//.avatar-img {
+//  transition-duration: 800ms;
+//}
 
 .avatar-img:hover {
-  transform: rotate(30deg);
+  animation: fadenum 1.6s;
+  //transform: rotate(30deg);
+}
+
+@keyframes fadenum{
+  50%{transform: rotate(-30deg)}
 }
 </style>

@@ -127,6 +127,7 @@ import type { FormInstance } from 'element-plus'
 import {ElMessage} from "element-plus/es";
 
 import { useUserStore } from '@/stores/user'
+import cookies from 'js-cookie'
 
 import axios from "axios"
 import userApi from '@/api/user'
@@ -147,7 +148,9 @@ export default defineComponent({
       avatar: '' as any
     })
     let siteClass = 'site'
-    let timer = null
+
+    let seconds = 3600
+    let expires = new Date(new Date().getTime() + seconds * 1000)
 
     const signInRef = ref<FormInstance>()
     const signInForm = reactive({
@@ -259,6 +262,7 @@ export default defineComponent({
                 userStore.userInfo = response.data.data
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
+                cookies.set('token', response.data.data.token, { expires: expires })
 
                 ElMessage.success(response.data.message)
 
@@ -281,6 +285,7 @@ export default defineComponent({
                 userStore.userInfo = response.data.data
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
+                cookies.set('token', response.data.data.token, { expires: expires })
 
                 ElMessage.success(response.data.message)
 
@@ -324,6 +329,7 @@ export default defineComponent({
             userStore.userInfo = response.data.data
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
+            cookies.set('token', response.data.data.token, { expires: expires })
 
             ElMessage.success(response.data.message)
 

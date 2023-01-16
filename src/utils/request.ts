@@ -1,6 +1,11 @@
 import axios from 'axios'
+
 import { ElMessage } from 'element-plus'
+
 import { useUserStore } from '@/stores/user'
+
+import cookies from "js-cookie"
+
 
 // create an axios instance
 const service = axios.create({
@@ -27,13 +32,21 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
     response => {
+        const userStore = useUserStore()
         const res = response.data
 
         if(res.code !== 200) {
             if(res.code === 201) {
                 ElMessage.error(res.message)
+            }else if(res.code === 202) {
+                ElMessage.error("Token expired")
+
+                userStore.userInfo = ''
+                userStore.token = ''
+                sessionStorage.removeItem('token')
+                cookies.remove('token')
             }else if(res.code === 403) {
-                ElMessage.error("Permission Denied")
+                ElMessage.error("Permission denied")
             }else {
                 ElMessage.error('Something wrong')
             }
@@ -49,14 +62,6 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
     // response => {
-    //     let token = response.headers['token']
-    //
-    //     if(token) {
-    //         store.commit('setToken', token)
-    //     }
-    //
-    //     const res = response.data
-    //
     //     // if the custom code is not 200, it is judged as an error.
     //     if (res.code !== 200) {
     //         Message({

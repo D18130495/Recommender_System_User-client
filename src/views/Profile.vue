@@ -18,13 +18,9 @@ export default defineComponent({
   },
   setup() {
     onMounted(() => {
-      userApi.getUserDetail({'email':"990415zys@gmail.com"})
+      userApi.getUserDetailByEmail({'email':"990415zys@gmail.com"})
           .then((response) => {
             console.log(response.data)
-          })
-          .catch((error) => {
-            console.log(error)
-            ElMessage.error('Network Error')
           })
     })
 
