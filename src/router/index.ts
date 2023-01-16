@@ -41,20 +41,17 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-
+  // front cookie expired, server token not expired
   if(cookies.get('token') !== undefined) {
-    // if(to.path  === '/login' || to.path  === '/signup') {
-    //   next('/map')
-    // }else {
-    //   next()
-    // }
     next()
   }else {
     if(to.path === '/' || to.path  === '/authentication') {
       next()
     }else {
+      next(router.currentRoute.value.fullPath)
+
       ElMessageBox.confirm(
-          'You have been logged out, you can cancel to stay on this page, or log in again',
+          'You have been logged out, cancel to go home page, or log in again',
           'Confirm logout',
           {
             confirmButtonText: 'Login',
@@ -68,7 +65,11 @@ router.beforeEach((to, from, next) => {
 
         router.push({ path: '/authentication' })
       }).catch(() => {
-        location.reload()
+        userStore.userInfo = ''
+        userStore.token = ''
+        sessionStorage.removeItem('token')
+
+        router.push({ path: '/' })
       })
     }
   }

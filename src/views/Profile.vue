@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted} from "vue"
+import {defineComponent, onBeforeMount, onMounted} from "vue"
 
 import { ElMessage } from "element-plus"
 
@@ -17,7 +17,7 @@ export default defineComponent({
   components: {
   },
   setup() {
-    onMounted(() => {
+    onBeforeMount(() => {
       userApi.getUserDetailByEmail({'email':"990415zys@gmail.com"})
           .then((response) => {
             console.log(response.data)

@@ -45,6 +45,7 @@ import Footer from "@/components/Footer/Footer.vue"
 
 import userApi from "@/api/user"
 import {ElMessage} from "element-plus/es";
+import router from "@/router";
 
 
 export default defineComponent({
@@ -88,6 +89,8 @@ export default defineComponent({
           userApi.getUserDetailByToken(String(cookies.get('token')))
               .then((response) => {
                 userStore.userInfo = response.data.data
+                userStore.token = String(cookies.get('token'))
+                sessionStorage.setItem('token', String(cookies.get('token')))
               })
         }
 

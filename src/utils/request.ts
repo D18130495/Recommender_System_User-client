@@ -1,10 +1,12 @@
 import axios from 'axios'
 
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { useUserStore } from '@/stores/user'
 
 import cookies from "js-cookie"
+
+import router from "@/router";
 
 
 // create an axios instance
@@ -39,12 +41,33 @@ service.interceptors.response.use(
             if(res.code === 201) {
                 ElMessage.error(res.message)
             }else if(res.code === 202) {
-                ElMessage.error("Token expired")
-
+                // server token expired, front cookie not expired
                 userStore.userInfo = ''
                 userStore.token = ''
                 sessionStorage.removeItem('token')
                 cookies.remove('token')
+
+                ElMessageBox.confirm(
+                    'You have been logged out, cancel to go home page, or log in again',
+                    'Confirm logout',
+                    {
+                        confirmButtonText: 'Login',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning'
+                    }
+                ).then(() => {
+                    userStore.userInfo = ''
+                    userStore.token = ''
+                    sessionStorage.removeItem('token')
+
+                    router.push({ path: '/authentication' })
+                }).catch(() => {
+                    userStore.userInfo = ''
+                    userStore.token = ''
+                    sessionStorage.removeItem('token')
+
+                    router.push({ path: '/' })
+                })
             }else if(res.code === 403) {
                 ElMessage.error("Permission denied")
             }else {
@@ -57,37 +80,34 @@ service.interceptors.response.use(
         }
     },
     error => {
-        ElMessage.error('Network Error can not reach server')
+        // ElMessage.error('Network Error can not reach server')
+        // no token to request server
+        const userStore = useUserStore()
+
+        ElMessageBox.confirm(
+            'You have been logged out, cancel to go home page, or log in again',
+            'Confirm logout',
+            {
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }
+        ).then(() => {
+            userStore.userInfo = ''
+            userStore.token = ''
+            sessionStorage.removeItem('token')
+
+            router.push({ path: '/authentication' })
+        }).catch(() => {
+            userStore.userInfo = ''
+            userStore.token = ''
+            sessionStorage.removeItem('token')
+
+            router.push({ path: '/' })
+        })
 
         return Promise.reject(error)
     }
-    // response => {
-    //     // if the custom code is not 200, it is judged as an error.
-    //     if (res.code !== 200) {
-    //         Message({
-    //             message: res.message || 'Error',
-    //             type: 'error',
-    //             duration: 5 * 1000
-    //         })
-    //
-    //         // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-    //         if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-    //             // to re-login
-    //             MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-    //                 confirmButtonText: 'Re-Login',
-    //                 cancelButtonText: 'Cancel',
-    //                 type: 'warning'
-    //             }).then(() => {
-    //                 store.dispatch('user/resetToken').then(() => {
-    //                     location.reload()
-    //                 })
-    //             })
-    //         }
-    //         return Promise.reject(new Error(res.message || 'Error'))
-    //     } else {
-    //         return res
-    //     }
-    // }
 )
 
 export default service
