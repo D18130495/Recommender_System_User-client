@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref, provide } from 'vue'
 
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from "@/stores/user"
@@ -44,8 +44,6 @@ import Header from "@/components/Header/Header.vue"
 import Footer from "@/components/Footer/Footer.vue"
 
 import userApi from "@/api/user"
-import {ElMessage} from "element-plus/es";
-import router from "@/router";
 
 
 export default defineComponent({
@@ -75,29 +73,6 @@ export default defineComponent({
       initialApp()
     })
 
-    onMounted(() => {
-      document.addEventListener('visibilitychange', checkCookie)
-    })
-
-    const checkCookie = (e:any) => {
-      if(!e.target.hidden) {
-        if(cookies.get('token') === undefined) {
-          userStore.userInfo = ''
-          userStore.token = ''
-          sessionStorage.removeItem('token')
-        }else {
-          userApi.getUserDetailByToken(String(cookies.get('token')))
-              .then((response) => {
-                userStore.userInfo = response.data.data
-                userStore.token = String(cookies.get('token'))
-                sessionStorage.setItem('token', String(cookies.get('token')))
-              })
-        }
-
-        reload()
-      }
-    }
-
     const reload = () => {
       isRouterAlive.value = false
 
@@ -105,6 +80,8 @@ export default defineComponent({
         isRouterAlive.value = true
       })
     }
+
+    provide("reload", reload)
 
     // initial app
     const initialApp = () => {

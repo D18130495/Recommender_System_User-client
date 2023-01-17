@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import  { defineComponent, toRef } from 'vue'
+import { defineComponent, toRef, inject, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
@@ -50,10 +50,12 @@ import { useSearchStore } from "@/stores/search"
 
 import cookies from "js-cookie"
 
-import { ElNotification } from 'element-plus'
+import {ElMessageBox, ElNotification} from 'element-plus'
 
 import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
+import userApi from "@/api/user";
+import router from "@/router";
 
 
 export default defineComponent({
@@ -66,6 +68,55 @@ export default defineComponent({
     const userStore = useUserStore()
     const searchStore = useSearchStore()
     const router = useRouter()
+
+    const refresh = inject("reload")
+
+    onMounted(() => {
+      document.addEventListener('visibilitychange', checkCookie)
+    })
+
+    const checkCookie = (e:any) => {
+      if(!e.target.hidden) {
+        if(cookies.get('token') === undefined) {
+          router.push({ path: '/' })
+
+          if(router.currentRoute.value.path === '/profile') {
+            ElMessageBox.confirm(
+                'You haven\'t logged in, or login time expired, please login',
+                'Confirm login',
+                {
+                  confirmButtonText: 'Login',
+                  cancelButtonText: 'Cancel',
+                  type: 'warning'
+                }
+            ).then(() => {
+              userStore.userInfo = ''
+              userStore.token = ''
+              sessionStorage.removeItem('token')
+
+              router.push({ path: '/authentication' })
+            }).catch(() => {
+              userStore.userInfo = ''
+              userStore.token = ''
+              sessionStorage.removeItem('token')
+            })
+          }
+
+          userStore.userInfo = ''
+          userStore.token = ''
+          sessionStorage.removeItem('token')
+        }else {
+          userApi.getUserDetailByToken(String(cookies.get('token')))
+              .then((response) => {
+                userStore.userInfo = response.data.data
+                userStore.token = String(cookies.get('token'))
+                sessionStorage.setItem('token', String(cookies.get('token')))
+              })
+        }
+
+        refresh
+      }
+    }
 
     const handleSearchModel: any = (status: boolean) => {
       searchStore.setOpenModel(status)
@@ -97,6 +148,7 @@ export default defineComponent({
 
     return {
       userInfo: toRef(userStore.$state, 'userInfo'),
+      refresh,
       handleSearchModel,
       redirectLogin,
       handleLogout,

@@ -51,8 +51,8 @@ router.beforeEach((to, from, next) => {
       next(router.currentRoute.value.fullPath)
 
       ElMessageBox.confirm(
-          'You have been logged out, cancel to go home page, or log in again',
-          'Confirm logout',
+          'You haven\'t logged in, or login time expired, please login',
+          'Confirm login',
           {
             confirmButtonText: 'Login',
             cancelButtonText: 'Cancel',

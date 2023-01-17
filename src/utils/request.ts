@@ -48,8 +48,31 @@ service.interceptors.response.use(
                 cookies.remove('token')
 
                 ElMessageBox.confirm(
-                    'You have been logged out, cancel to go home page, or log in again',
+                    'You login time expired, cancel to go home page, or log in again',
                     'Confirm logout',
+                    {
+                        confirmButtonText: 'Login',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning'
+                    }
+                ).then(() => {
+                    userStore.userInfo = ''
+                    userStore.token = ''
+                    sessionStorage.removeItem('token')
+
+                    router.push({ path: '/authentication' })
+                }).catch(() => {
+                    userStore.userInfo = ''
+                    userStore.token = ''
+                    sessionStorage.removeItem('token')
+
+                    router.push({ path: '/' })
+                })
+            }else if(res.code === 401) {
+                // request server without token
+                ElMessageBox.confirm(
+                    'Please login to visit this page',
+                    'Not Authenticated',
                     {
                         confirmButtonText: 'Login',
                         cancelButtonText: 'Cancel',
@@ -80,31 +103,7 @@ service.interceptors.response.use(
         }
     },
     error => {
-        // ElMessage.error('Network Error can not reach server')
-        // no token to request server
-        const userStore = useUserStore()
-
-        ElMessageBox.confirm(
-            'You have been logged out, cancel to go home page, or log in again',
-            'Confirm logout',
-            {
-                confirmButtonText: 'Login',
-                cancelButtonText: 'Cancel',
-                type: 'warning'
-            }
-        ).then(() => {
-            userStore.userInfo = ''
-            userStore.token = ''
-            sessionStorage.removeItem('token')
-
-            router.push({ path: '/authentication' })
-        }).catch(() => {
-            userStore.userInfo = ''
-            userStore.token = ''
-            sessionStorage.removeItem('token')
-
-            router.push({ path: '/' })
-        })
+        ElMessage.error('Network Error can not reach server')
 
         return Promise.reject(error)
     }
