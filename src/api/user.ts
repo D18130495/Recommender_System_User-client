@@ -49,5 +49,12 @@ export default {
                 email: email
             }
         })
+    },
+    updateUserDetail(userInfo: any) {
+        return request({
+            url: `/user/updateUserDetail`,
+            method: 'put',
+            data: userInfo
+        })
     }
 }

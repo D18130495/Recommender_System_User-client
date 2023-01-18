@@ -50,12 +50,13 @@ import { useSearchStore } from "@/stores/search"
 
 import cookies from "js-cookie"
 
-import {ElMessageBox, ElNotification} from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
 
 import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
-import userApi from "@/api/user";
-import router from "@/router";
+
+import userApi from "@/api/user"
+import router from "@/router"
 
 
 export default defineComponent({

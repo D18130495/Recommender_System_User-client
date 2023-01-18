@@ -17,6 +17,34 @@
           <div class="profile-box">
             <div class="profile-field">
               <p class="relative opacity-90 flex items-center pb-1 text-xl text-ob-bright">
+                <el-icon class="mr-2"><Avatar /></el-icon>
+                Avatar
+              </p>
+
+              <div class="flex flex-row">
+                <div>
+                  <el-avatar v-if="userDetail.avatar" :size="110" :src="userDetail.avatar" class="ml-40" />
+                  <vue-avatar v-else :username=userDetail.username :size="110" class="ml-40" />
+                </div>
+
+                <button
+                    @click="showCropper = true"
+                    id="avatar-button"
+                    class="mt-20 w-44 text-white p-2 rounded-lg shadow-lg flex">
+                    <i class="ri-upload-cloud-line ml-4"></i>
+                    <span class="text-center pl-1">Change avatar</span>
+                </button>
+
+                <avatar-cropper
+                    v-model="showCropper"
+                    @uploaded="handleSuccess"
+                    :request-options="options"
+                    upload-url="/api/users/avatar" />
+              </div>
+            </div>
+
+            <div class="profile-field pt-2">
+              <p class="relative opacity-90 flex items-center pb-1 text-xl text-ob-bright">
                 <el-icon class="mr-2"><User /></el-icon>
                 Name
               </p>
@@ -24,7 +52,7 @@
               <div class="flex flex-col flex-wrap-reverse w-98 max-w-full-calc">
                 <textarea
                     v-model="userDetail.username"
-                    class="w-full shadow-md rounded-md p-4 focus:outline-none input"
+                    class="w-full shadow-md rounded-md p-4 focus:outline-none input text-ob-bright"
                     placeholder="Add your name..."
                     cols="30"
                     rows="1" />
@@ -40,11 +68,32 @@
               <div class="flex flex-col flex-wrap-reverse w-98 max-w-full-calc">
                 <textarea
                     v-model="userDetail.email"
-                    class="w-full shadow-md rounded-md p-4 focus:outline-none input"
+                    class="w-full shadow-md rounded-md p-4 focus:outline-none input text-ob-bright"
                     placeholder="Add email address..."
                     cols="30"
-                    rows="1" />
+                    rows="1"
+                    disabled />
               </div>
+
+              <p class="mt-1 ml-2 text-sm text-ob-bright">
+                Email address can not be edited.
+              </p>
+            </div>
+
+            <div class="profile-field pt-8">
+              <p class="relative opacity-90 flex items-center pb-1 text-xl text-ob-bright">
+                <el-icon class="mr-2"><Document /></el-icon>
+                Policy
+              </p>
+
+              <el-checkbox class="shadow-md rounded-md p-4 focus:outline-none input text-ob-bright"
+                           v-model="userDetail.policy" size="large" border >
+                <span class="text-ob-bright">Agreed</span>
+              </el-checkbox>
+
+              <p class="mt-1 ml-2 text-sm text-ob-bright">
+                Enabling this system will use your detail to conduct recommend for you.
+              </p>
             </div>
 
             <div class="justify-between mt-10">
@@ -63,35 +112,74 @@
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, defineComponent, onBeforeMount } from "vue"
+import { ref, reactive, toRefs, defineComponent, onBeforeMount } from "vue"
+
+import { ElNotification } from "element-plus"
+
+import { useUserStore } from "@/stores/user"
 
 import userApi from "@/api/user"
+
+import VueAvatar from "@webzlodimir/vue-avatar"
+import "@webzlodimir/vue-avatar/dist/style.css"
+
+import AvatarCropper from "vue-avatar-cropper"
+
+import 'remixicon/fonts/remixicon.css'
 
 
 export default defineComponent({
   name: 'Profile',
   components: {
+    VueAvatar, AvatarCropper
   },
   setup() {
+    const userStore = useUserStore()
+    let showCropper = ref(false)
+
     const reactiveData = reactive({
       userDetail: {
-        username: 'Yushun Zeng',
-        email: '990415zys@gmail.com'
+        username: '',
+        email: '',
+        avatar: '',
+        policy: false
       }
     })
 
     onBeforeMount(() => {
-      userApi.getUserDetailByEmail({'email':"990415zys@gmail.com"})
+      userApi.getUserDetailByEmail(userStore.userInfo.email)
           .then((response) => {
+            reactiveData.userDetail.username = response.data.data.username
+            reactiveData.userDetail.email = response.data.data.email
+            reactiveData.userDetail.avatar = response.data.data.avatar
+            reactiveData.userDetail.policy = response.data.data.policy === "T"
           })
     })
 
-    const saveDetail = () => {
+    const handleSuccess = () => {
+    }
 
+    const saveDetail = () => {
+      userApi.updateUserDetail(reactiveData.userDetail)
+          .then((response) => {
+            ElNotification({
+              title: 'Success',
+              message: 'Successfully updated user detail',
+              type: 'success',
+              duration: 1500
+            })
+
+            reactiveData.userDetail.username = response.data.data.username
+            reactiveData.userDetail.email = response.data.data.email
+            reactiveData.userDetail.avatar = response.data.data.avatar
+            reactiveData.userDetail.policy = response.data.data.policy === "T"
+          })
     }
 
     return {
       ...toRefs(reactiveData),
+      showCropper,
+      handleSuccess,
       saveDetail
     }
   }
@@ -122,6 +210,11 @@ export default defineComponent({
 .input {
   background: var(--background-primary);
   resize: none;
+}
+
+#avatar-button {
+  outline: none;
+  background: var(--button-blue);
 }
 
 #submit-button {
