@@ -7,7 +7,16 @@ function resolve(dir) {
 
 module.exports = defineConfig({
   devServer: {
-    port: 9000
+    port: 9000,
+    proxy: {
+      'api': {
+        target: 'http://localhost:9001',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
   },
   configureWebpack: {
     resolve: {

@@ -31,15 +31,15 @@
                     @click="showCropper = true"
                     id="avatar-button"
                     class="mt-20 w-44 text-white p-2 rounded-lg shadow-lg flex">
-                    <i class="ri-upload-cloud-line ml-4"></i>
-                    <span class="text-center pl-1">Change avatar</span>
+                    <i class="ri-upload-cloud-line pt-0.5 ml-4"></i>
+                    <span class="pt-0.5 pl-1">Change avatar</span>
                 </button>
 
                 <avatar-cropper
                     v-model="showCropper"
                     @uploaded="handleSuccess"
                     :request-options="options"
-                    upload-url="/api/users/avatar" />
+                    upload-url="/api/user/updateUserAvatar" />
               </div>
             </div>
 
@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, toRefs, defineComponent, onBeforeMount } from "vue"
+import { ref, reactive,computed, toRefs, defineComponent, onBeforeMount } from "vue"
 
 import { ElNotification } from "element-plus"
 
@@ -180,7 +180,15 @@ export default defineComponent({
       ...toRefs(reactiveData),
       showCropper,
       handleSuccess,
-      saveDetail
+      saveDetail,
+      options: computed(() => {
+        return {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + userStore.token
+          }
+        }
+      })
     }
   }
 })
