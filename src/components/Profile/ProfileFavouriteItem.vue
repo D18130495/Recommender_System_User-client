@@ -5,7 +5,7 @@
       <span class="bottom-0 h-1 w-14 rounded-full absolute" :style="gradientBackground" />
     </p>
 
-    // TODO
+    <!-- TODO -->
   </div>
 </template>
 

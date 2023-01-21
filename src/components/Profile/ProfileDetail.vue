@@ -156,7 +156,7 @@ export default defineComponent({
             })
 
             reactiveData.userDetail.avatar = data.data.avatar
-            userStore.userInfo = data.data
+            userStore.userInfo.avatar = data.data.avatar
           })
     }
 
@@ -174,6 +174,9 @@ export default defineComponent({
             reactiveData.userDetail.email = response.data.data.email
             reactiveData.userDetail.avatar = response.data.data.avatar
             reactiveData.userDetail.policy = response.data.data.policy === "T"
+
+            userStore.userInfo.username = response.data.data.username
+            userStore.userInfo.policy = response.data.data.policy
           })
     }
 
