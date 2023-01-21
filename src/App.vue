@@ -6,7 +6,7 @@
         class="app-container max-w-10/12 lg:max-w-screen-2xl px-3 lg:px-8"
         tabindex="-1"
         :style="themeSetting">
-        <Header/>
+        <Header v-if="isRouterAlive"/>
         <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
@@ -75,7 +75,7 @@ export default defineComponent({
 
     const reload = () => {
       isRouterAlive.value = false
-
+      console.log("123")
       nextTick(() => {
         isRouterAlive.value = true
       })

@@ -112,7 +112,7 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive,computed, toRefs, defineComponent, onBeforeMount } from "vue"
+import { ref, reactive, computed, toRefs, defineComponent, onBeforeMount } from "vue"
 
 import { ElNotification } from "element-plus"
 
@@ -135,6 +135,7 @@ export default defineComponent({
   },
   setup() {
     const userStore = useUserStore()
+
     let showCropper = ref(false)
 
     const reactiveData = reactive({
@@ -156,7 +157,19 @@ export default defineComponent({
           })
     })
 
-    const handleSuccess = () => {
+    const handleSuccess = (data: any) => {
+      data.response.json()
+          .then((data: any) => {
+            ElNotification({
+              title: 'Success',
+              message: 'Successfully updated user detail',
+              type: 'success',
+              duration: 1500
+            })
+
+            reactiveData.userDetail.avatar = data.data.avatar
+            userStore.userInfo = data.data
+          })
     }
 
     const saveDetail = () => {
