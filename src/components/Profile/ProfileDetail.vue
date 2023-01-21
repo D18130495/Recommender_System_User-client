@@ -1,7 +1,12 @@
 <template>
   <div class="profile-box">
     <div class="profile-field">
-      <p class="relative opacity-90 flex items-center pb-1 text-xl text-ob-bright">
+      <p class="relative flex items-center pb-2 mb-4 text-ob-bright">
+        <span class="w-full text-2xl font-bold">Public profile</span>
+        <span class="bottom-0 h-1 w-14 rounded-full absolute" :style="gradientBackground" />
+      </p>
+
+      <p class="relative opacity-90 flex items-center pb-1 mt-2 text-xl text-ob-bright">
         <el-icon class="mr-2"><Avatar /></el-icon>
         Avatar
       </p>
@@ -97,6 +102,7 @@ import { ref, reactive, computed, toRefs, defineComponent, onBeforeMount } from 
 
 import { ElNotification } from "element-plus"
 
+import {useAppStore} from "@/stores/app"
 import { useUserStore } from "@/stores/user"
 
 import userApi from "@/api/user"
@@ -115,6 +121,7 @@ export default defineComponent({
     VueAvatar, AvatarCropper
   },
   setup() {
+    const appStore = useAppStore()
     const userStore = useUserStore()
 
     let showCropper = ref(false)
@@ -180,6 +187,17 @@ export default defineComponent({
           method: 'POST',
           headers: {
             Authorization: 'Bearer ' + userStore.token
+          }
+        }
+      }),
+      gradientBackground: computed(() => {
+        if(appStore.themeConfig.theme === 'theme-dark') {
+          return {
+            background: appStore.themeConfig.header_gradient_dark
+          }
+        }else {
+          return {
+            background: appStore.themeConfig.header_gradient_light
           }
         }
       })
