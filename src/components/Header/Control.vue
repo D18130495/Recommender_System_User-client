@@ -56,7 +56,6 @@ import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
 
 import userApi from "@/api/user"
-import router from "@/router"
 
 
 export default defineComponent({

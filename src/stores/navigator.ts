@@ -11,7 +11,7 @@ export const useNavigatorStore = defineStore('navigatorStore', {
       let scrollPosition = 0
       const appEl = document.getElementById('app')
       const appWrapperEl = document.getElementById('App-Wrapper')
-      const appMobileEl = document.getElementById('App-Mobile-Profile')
+      const appMobileEl = document.getElementById('App-Mobile-Sidebar')
       if (appEl && appWrapperEl && appMobileEl && bodyEl) {
         if (this.openMenu === false) {
           scrollPosition = window.pageYOffset

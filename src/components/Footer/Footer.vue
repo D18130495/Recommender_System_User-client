@@ -7,7 +7,7 @@
             <li class="text-ob-bright">
               Copyright © {{ currentYear }}
               <b class="font-extrabold">{{ websiteConfig.author }}</b>
-              <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank">github</a>
+              <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank"> github</a>
             </li>
           </ul>
         </div>
