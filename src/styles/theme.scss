@@ -77,7 +77,7 @@
 }
 
 .theme-dark {
-  --background-primary: #1a1a1a;
+  --background-primary: #2e2e2e;
   --background-secondary: #212121;
   --background-trans: rgba(255, 255, 255, 0.15);
   --skeleton-bg: #2e2e2e;
@@ -216,6 +216,7 @@
     gap: var(--gap);
     grid-template-columns: minmax(0, 1fr) 320px;
   }
+
   .inverted-main-grid {
     display: grid;
     gap: var(--gap);

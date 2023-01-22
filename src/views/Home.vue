@@ -1,8 +1,8 @@
 <template>
     <div class="block">
-      <Title v-if="themeConfig.feature"></Title>
-
-      <Section v-if="themeConfig.feature" id="article-list" :title="'titles.articles'"/>
+      <Title />
+      <MovieSection />
+      <BookSection />
     </div>
 </template>
 
@@ -12,13 +12,15 @@ import { computed, defineComponent } from "vue"
 import { useAppStore } from '@/stores/app'
 
 import Title from "@/components/Title/Title.vue"
-import Section from "@/components/Section/Section.vue"
+import MovieSection from "@/components/Section/Movie/MovieSection.vue"
+import BookSection from "@/components/Section/Book/BookSection.vue"
 
 
 export default defineComponent({
   name: 'Home',
   components: {
-    Title, Section
+    BookSection,
+    Title, MovieSection
   },
   setup() {
     const appStore = useAppStore()
