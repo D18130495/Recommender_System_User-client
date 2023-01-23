@@ -27,8 +27,8 @@ export const useAppStore = defineStore('appStore', {
         profile_shape: 'circle-avatar',
         feature: true,
         text: {
-          color_2: '#5433ff',
-          color_3: '#ff0099',
+          navy_blue: '#5433ff',
+          pink: '#ff0099',
           cyan: '#24c6dc',
           purple: '#e085e0',
         },

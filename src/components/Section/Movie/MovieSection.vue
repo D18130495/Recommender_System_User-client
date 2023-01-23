@@ -8,7 +8,7 @@
 
     <div class="item-grid">
       <div class="flex flex-col relative">
-        <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-8">
+        <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
           <li v-for="movie in reactiveData.movies" :key="movie.id">
             <MovieItemCard class="home-item" :data="movie" />
           </li>
@@ -25,6 +25,8 @@ import { useAppStore } from "@/stores/app"
 
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
+import movieApi from "@/api/movie"
+
 
 export default defineComponent({
   name: 'MovieSection',
@@ -34,21 +36,18 @@ export default defineComponent({
   setup() {
     const appStore = useAppStore()
     const reactiveData = reactive({
-      movies: [
-        { id: 123 },
-        { id: 234 },
-        { id: 345 },
-        { id: 456 },
-        { id: 567 },
-      ] as any
+      movies: [] as any
     })
 
     onBeforeMount(() => {
-
+      getRandomMovieList()
     })
 
-    const getMovieList = () => {
-
+    const getRandomMovieList = () => {
+      movieApi.getRandomMovieList()
+          .then((response) => {
+            reactiveData.movies = response.data.data
+          })
     }
 
     return {
@@ -72,16 +71,12 @@ export default defineComponent({
 <style lang="scss">
 .home-item {
   .item-content {
-    p {
+    h1 {
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 5;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
-    }
-
-    .article-footer {
-      margin-top: 13px;
     }
   }
 }

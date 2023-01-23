@@ -114,12 +114,12 @@ export default defineComponent({
     const initialUser = () => {
       if(cookies.get('token') !== undefined) {
         userApi.tokenLoginRefresh(String(cookies.get('token')))
-            .then((response) => {
-              userStore.userInfo = response.data.data
-              userStore.token = response.data.data.token
-              sessionStorage.setItem('token', response.data.data.token)
-              cookies.set('token', response.data.data.token, { expires: expires })
-            })
+          .then((response) => {
+            userStore.userInfo = response.data.data
+            userStore.token = response.data.data.token
+            sessionStorage.setItem('token', response.data.data.token)
+            cookies.set('token', response.data.data.token, { expires: expires })
+          })
       }else {
         userStore.userInfo = ''
         userStore.token = ''
@@ -164,12 +164,12 @@ export default defineComponent({
         if(appStore.themeConfig.theme === 'theme-dark') {
           return `
             --text-accent: ${appStore.themeConfig.text.cyan};
-            --text-sub-accent: ${appStore.themeConfig.text.color_3};
+            --text-sub-accent: ${appStore.themeConfig.text.pink};
           `
         }else {
           return `
           --text-accent: ${appStore.themeConfig.text.purple};
-          --text-sub-accent: ${appStore.themeConfig.text.color_2};
+          --text-sub-accent: ${appStore.themeConfig.text.cyan};
         `
         }
       }),
