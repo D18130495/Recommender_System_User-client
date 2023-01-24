@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref, provide } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeMount, ref, provide } from 'vue'
 
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from "@/stores/user"
@@ -183,6 +183,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+*:focus {
+  outline: none;
+}
+
 .app-wrapper {
   @apply bg-ob-deep-900 min-w-full h-full pb-12;
   transition-property: transform, border-radius;

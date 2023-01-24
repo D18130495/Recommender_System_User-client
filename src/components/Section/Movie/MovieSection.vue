@@ -1,10 +1,16 @@
 <template>
   <div>
-    <p class="relative opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
-      <el-icon class="inline-block mr-2"><Film/></el-icon>
-      Movies
-      <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
-    </p>
+    <div class="grid grid-cols-2">
+      <p class="relative grid-cols-1 opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
+        <el-icon class="inline-block mr-2"><Film/></el-icon>
+        Movies
+        <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
+      </p>
+
+      <button class="grid-cols-1 text-right" @click="refreshMovie">
+        <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+      </button>
+    </div>
 
     <div class="item-grid">
       <div class="flex flex-col relative">
@@ -36,7 +42,14 @@ export default defineComponent({
   setup() {
     const appStore = useAppStore()
     const reactiveData = reactive({
-      movies: [] as any
+      movies: [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 }
+      ] as any
     })
 
     onBeforeMount(() => {
@@ -50,7 +63,13 @@ export default defineComponent({
           })
     }
 
+    const refreshMovie = () => {
+      getRandomMovieList()
+    }
+
     return {
+      reactiveData,
+      refreshMovie,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {
@@ -61,8 +80,7 @@ export default defineComponent({
             background: appStore.themeConfig.header_gradient_light,
           }
         }
-      }),
-      reactiveData
+      })
     }
   }
 })

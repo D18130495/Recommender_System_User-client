@@ -2,7 +2,8 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 
 import { ElMessageBox } from 'element-plus'
 
-import {useUserStore} from "@/stores/user";
+import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
 
 import cookies from "js-cookie"
 
@@ -30,6 +31,14 @@ const routes = [
     meta: {
       profile: true
     }
+  },
+  {
+    path: '/movie/:movieId',
+    name: 'Movie',
+    component: () => import('../views/Movie.vue'),
+    meta: {
+      movie: true
+    }
   }
 ]
 
@@ -40,14 +49,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const appStore = useAppStore()
   const userStore = useUserStore()
+
   // front cookie expired, server token not expired
   if(cookies.get('token') !== undefined) {
+    appStore.startLoading()
     next()
   }else {
-    if(to.path === '/' || to.path  === '/authentication') {
-      next()
-    }else {
+    if(to.path === '/123') {
       next(router.currentRoute.value.fullPath)
 
       ElMessageBox.confirm(
@@ -71,8 +81,17 @@ router.beforeEach((to, from, next) => {
 
         router.push({ path: '/' })
       })
+    }else {
+      appStore.startLoading()
+      next()
     }
   }
+})
+
+router.afterEach(() => {
+  const appStore = useAppStore()
+
+  appStore.endLoading()
 })
 
 export default router

@@ -19,6 +19,20 @@ const setTheme = (theme: string) => {
   }
 }
 
+const scrollTop = () => {
+  const timer = setInterval(function () {
+    const sTop = window.scrollY;
+    const offset = sTop - (sTop * 0.1 + 10);
+
+    if(offset > 0) {
+      window.scrollTo(0, offset);
+    } else {
+      window.scrollTo(0, 0);
+      clearInterval(timer);
+    }
+  }, 25);
+}
+
 export const useAppStore = defineStore('appStore', {
   state: () => {
     return {
@@ -56,19 +70,21 @@ export const useAppStore = defineStore('appStore', {
       setTheme(this.themeConfig.theme)
     },
     startLoading() {
-      if (this.appLoading === true) return
-      if (this.NPTimeout !== -1) clearTimeout(this.NPTimeout)
-      if (this.loadingTimeout !== -1) clearTimeout(this.loadingTimeout)
+      if(this.appLoading === true) return
+      if(this.NPTimeout !== -1) clearTimeout(this.NPTimeout)
+      if(this.loadingTimeout !== -1) clearTimeout(this.loadingTimeout)
       nProgress.start()
       this.appLoading = true
     },
     endLoading() {
       this.NPTimeout = <any>setTimeout(() => {
         nProgress.done()
+        scrollTop()
       }, 100)
 
       this.loadingTimeout = <any>setTimeout(() => {
         this.appLoading = false
+        scrollTop()
       }, 300)
     }
   }

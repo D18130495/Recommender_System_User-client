@@ -1,3 +1,13 @@
+.item-container {
+  @apply relative h-full rounded-2xl list-none;
+
+  &:hover {
+    .item {
+      transform: scale(1.02);
+    }
+  }
+}
+
 .item-grid,
 .inverted-main-grid {
   display: flex;

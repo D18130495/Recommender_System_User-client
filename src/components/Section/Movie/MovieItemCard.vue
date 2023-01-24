@@ -2,7 +2,7 @@
   <div class="item-container">
     <div class="item">
       <div class="item-image-container">
-        <img v-if="movie.movieImage" v-lazy="movie.movieImage" />
+        <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
         <img v-else src="@/assets/images/5.jpg" />
       </div>
 
@@ -34,7 +34,9 @@
 
             <!-- movie title -->
             <h1 class="item-title" v-if="movie.title" @click="toMovie">
-              <span>{{ movie.title }}</span>
+              <a>
+                <span>{{ movie.title }}</span>
+              </a>
             </h1>
             <el-skeleton-item v-else class="mt-2" variant="h1" style="height: 2rem; background: var(--background-primary);" />
 
@@ -88,11 +90,10 @@ export default defineComponent({
   props: ['data'],
   setup(props) {
     const appStore = useAppStore()
-    const userStore = useUserStore()
     const router = useRouter()
 
     const toMovie = () => {
-      console.log("to movie")
+      router.push({ path: '/movie/' + props.data.movieId })
     }
 
     return {
@@ -115,9 +116,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-//.item-title:hover {
-//  cursor: default;
-//}
+.item-title:hover {
+  cursor: default;
+}
+
 /deep/ .el-rate__text{
   @apply text-ob-bright;
 }
