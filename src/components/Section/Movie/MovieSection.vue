@@ -71,7 +71,7 @@ export default defineComponent({
 <style lang="scss">
 .home-item {
   .item-content {
-    h1 {
+    span {
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;

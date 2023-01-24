@@ -67,10 +67,16 @@
     }
 
     h1 {
-      @apply text-ob-bright;
+      @apply text-ob-bright h-9;
       margin: 1.5px;
       font-size: 15px;
+
+      span {
+        vertical-align:middle!important;
+      }
     }
+
+
 
     p {
       @apply text-base mb-2;
