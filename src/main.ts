@@ -46,8 +46,8 @@ export const app = createApp(App)
   // .use(infiniteScroll)
   .use(v3ImgPreview, {})
   .use(lazyPlugin, {
-    loading: require('@/assets/images/5.jpg'),
-    error: require('@/assets/images/5.jpg')
+    loading: require('@/assets/posterNotFound.jpg'),
+    error: require('@/assets/posterNotFound.jpg')
   })
   .use(vue3GoogleLogin, {
     clientId: '432310000568-j3mdir2aonnjluvs8f72o9spe6k3mvlm.apps.googleusercontent.com'

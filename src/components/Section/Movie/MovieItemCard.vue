@@ -3,7 +3,7 @@
     <div class="item">
       <div class="item-image-container">
         <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
-        <img v-else src="@/assets/images/5.jpg" />
+        <img v-else src="@/assets/posterNotFound.jpg" />
       </div>
 
       <div class="item-content">
