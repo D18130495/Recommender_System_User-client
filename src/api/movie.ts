@@ -7,5 +7,11 @@ export default {
             url: `/movie/getRandomMovieList`,
             method: 'get'
         })
+    },
+    getMovieByMovieId(movieId: any) {
+        return request({
+            url: `/movie/getMovieByMovieId/${movieId}`,
+            method: 'get'
+        })
     }
 }

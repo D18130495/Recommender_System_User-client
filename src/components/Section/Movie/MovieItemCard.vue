@@ -7,7 +7,7 @@
       </div>
 
       <div class="item-content">
-        <el-skeleton animated>
+        <el-skeleton>
           <template #template>
             <span>
               <!-- category -->
@@ -116,6 +116,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.item-content {
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}
+
 .item-title:hover {
   cursor: default;
 }

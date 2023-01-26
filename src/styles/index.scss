@@ -9,14 +9,15 @@
 /* Components css */
 @import 'tailwindcss/components';
 
-@import './auth.scss';
+@import './components/auth';
 @import './components/profile.scss';
-@import './model.scss';
-@import './nprogress.scss';
+@import './components/model';
+@import './components/nprogress';
 @import './components/article.scss';
 @import './components/sidebar-box.scss';
-@import './components/item.scss';
+@import './components/movie.scss';
 
+@import './item';
 @import './transitions.scss';
 
 button:focus {

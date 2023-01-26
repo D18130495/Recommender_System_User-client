@@ -78,9 +78,9 @@ export default defineComponent({
     const checkCookie = (e:any) => {
       if(!e.target.hidden) {
         if(cookies.get('token') === undefined) {
-          router.push({ path: '/' })
-
           if(router.currentRoute.value.path === '/profile') {
+            router.push({ path: '/' })
+
             ElMessageBox.confirm(
                 'You haven\'t logged in, or login time expired, please login',
                 'Confirm login',

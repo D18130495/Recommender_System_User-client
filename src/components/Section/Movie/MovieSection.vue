@@ -16,7 +16,7 @@
     <div class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-          <li v-for="movie in reactiveData.generalMovies" :key="movie.id">
+          <li v-for="movie in generalMovies" :key="movie.movieId">
             <MovieItemCard class="home-item" :data="movie" />
           </li>
         </ul>
@@ -40,8 +40,8 @@
     <div class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-          <li v-for="movie in reactiveData.recommendMovies" :key="movie.id">
-            <MovieItemCard class="home-item" :data="movie" />
+          <li v-for="movie in recommendMovies" :key="movie.movieId">
+            <MovieItemCard :data="movie" />
           </li>
         </ul>
       </div>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, defineComponent, onBeforeMount } from 'vue'
+import { reactive, computed, defineComponent, onBeforeMount, toRefs } from 'vue'
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
@@ -95,7 +95,7 @@ export default defineComponent({
 
     return {
       userStore,
-      reactiveData,
+      ...toRefs(reactiveData),
       refreshGeneralMovie,
       refreshRecommendMovie,
       gradientBackground: computed(() => {
@@ -115,15 +115,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.home-item {
-  .item-content {
-    span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-  }
-}
 </style>
