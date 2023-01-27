@@ -52,25 +52,32 @@
         <div class="movie-box" v-if="!loading">
           <div class="movie-field">
             <div>
-              <div class="grid grid-cols-12 gap-8">
+              <div class="grid grid-cols-12 gap-4">
                 <!-- movieImage -->
                 <div class="movie-image-container">
                   <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
                   <img v-else src="@/assets/posterNotFound.jpg" />
                 </div>
 
+                <!-- movieVideo -->
+                <video v-if="movie.movieVideo === 'Video is currently not available'" class="movie-image-container" controls style="max-width: unset; width: 265%">
+                  <source src="" />
+                </video >
+                <video v-else class="movie-image-container" controls style="max-width: unset; width: 235%">
+                  <source :src="movie.movieVideo" />
+                </video>
               </div>
 
               <!-- IMDB and TMDB link-->
               <ul class="movie-link">
                 <div class="movie-link-border">
                   <li>
-                    <a>IMDB</a>
+                    <a :href="movie.imdbUrl" target="_blank">IMDB</a>
                   </li>
                 </div>
                 <div class="movie-link-border">
                   <li>
-                    <a>TMDB</a>
+                    <a :href="movie.tmdbUrl" target="_blank">TMDB</a>
                   </li>
                 </div>
               </ul>
@@ -258,7 +265,6 @@ export default defineComponent({
 
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Movie') {
-        reactiveData.movie = ''
         reactiveData.generalMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
         getMovieByMovieId(router.currentRoute.value.params.movieId)
         getRandomMovieList()
@@ -267,8 +273,6 @@ export default defineComponent({
     });
 
     onBeforeMount(() => {
-      reactiveData.movie = ''
-      reactiveData.generalMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
       getMovieByMovieId(router.currentRoute.value.params.movieId)
       getRandomMovieList()
       initialMovieRate()
