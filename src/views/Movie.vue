@@ -142,25 +142,31 @@
                     />
                 </div>
 
-                <div class="grid col-span-1">
+                <div class="grid col-span-1" v-if="userStore.userInfo === ''">
                   <span>
+                    Login to rate this movie
+                  </span>
+                  <el-rate
+                      size="large"
+                      disabled
+                      disabled-void-color="#99A9BF"
+                  />
+                </div>
+                <div class="grid col-span-1" v-else>
+                  <span v-if="movieRate.rating === 0">
+                    You haven't rating for this movie
+                  </span>
+                  <span v-else>
                     Your Rating
                   </span>
                   <el-rate
-                      v-if="movie.rate"
-                      v-model="movie.rate"
+                      v-model="movieRate.rating"
                       size="large"
-                      disabled
+                      allow-half
                       show-score
                       text-color="#ff9900"
                       score-template="{value}"
-                  />
-                  <el-rate
-                      v-else
-                      disabled
-                      show-score
-                      text-color="#ff9900"
-                      score-template="{value}"
+                      @click="updateMovieRate"
                   />
                 </div>
               </div>
@@ -220,7 +226,10 @@
 <script lang="ts">
 import { ref, toRefs, defineComponent, onBeforeMount, reactive, computed, watch } from "vue"
 
-import { useAppStore } from '@/stores/app'
+import { ElNotification } from "element-plus"
+
+import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
 
 import { useRouter } from "vue-router"
 
@@ -234,24 +243,49 @@ export default defineComponent({
   components: { MovieItemCard },
   setup() {
     const appStore = useAppStore()
+    const userStore = useUserStore()
     const router = useRouter()
     const loading = ref(true)
     const reactiveData = reactive({
       movie: '' as any,
+      movieRate: {
+        movieId: '',
+        email: '',
+        rating: 0
+      },
       generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
     })
 
-    watch(router.currentRoute, () => {
+    watch(() => router.currentRoute.value.fullPath, () => {
+      if(router.currentRoute.value.name === 'Movie') {
+        reactiveData.movie = ''
+        reactiveData.generalMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
+        getMovieByMovieId(router.currentRoute.value.params.movieId)
+        getRandomMovieList()
+        initialMovieRate()
+      }
+    });
+
+    onBeforeMount(() => {
       reactiveData.movie = ''
       reactiveData.generalMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
       getMovieByMovieId(router.currentRoute.value.params.movieId)
       getRandomMovieList()
-    });
-
-    onBeforeMount(() => {
-      getMovieByMovieId(router.currentRoute.value.params.movieId)
-      getRandomMovieList()
+      initialMovieRate()
     })
+
+    const initialMovieRate = () => {
+      reactiveData.movieRate.movieId = String(router.currentRoute.value.params.movieId)
+
+      if(userStore.userInfo !== '') {
+        reactiveData.movieRate.email = userStore.userInfo.email
+
+        movieApi.getMovieRating(reactiveData.movieRate.movieId, userStore.userInfo.email)
+            .then((response) => {
+              reactiveData.movieRate.rating = response.data.data.rating
+            })
+      }
+    }
 
     const getMovieByMovieId = (movieId: any) => {
       movieApi.getMovieByMovieId(movieId)
@@ -268,6 +302,22 @@ export default defineComponent({
           })
     }
 
+    const updateMovieRate = () => {
+      movieApi.addOrUpdateMovieRating(reactiveData.movieRate)
+          .then((response) => {
+            reactiveData.movieRate.movieId = response.data.data.movieId
+            reactiveData.movieRate.email = response.data.data.email
+            reactiveData.movieRate.rating = response.data.data.rating
+
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
+          })
+    }
+
     const refreshGeneralMovie = () => {
       getRandomMovieList()
     }
@@ -275,6 +325,8 @@ export default defineComponent({
     return {
       loading,
       ...toRefs(reactiveData),
+      userStore,
+      updateMovieRate,
       refreshGeneralMovie,
 
       gradientBackground: computed(() => {

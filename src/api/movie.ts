@@ -13,5 +13,22 @@ export default {
             url: `/movie/getMovieByMovieId/${movieId}`,
             method: 'get'
         })
+    },
+    getMovieRating(movieId: any, email: any) {
+        return request({
+            url: `/movie/rating/getMovieRating`,
+            method: 'get',
+            params: {
+                movieId: movieId,
+                email: email
+            }
+        })
+    },
+    addOrUpdateMovieRating(movieRate: any) {
+        return request({
+            url: `/movie/rating/addOrUpdateMovieRating`,
+            method: 'post',
+            data: movieRate
+        })
     }
 }
