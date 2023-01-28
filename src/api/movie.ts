@@ -30,5 +30,22 @@ export default {
             method: 'post',
             data: movieRate
         })
+    },
+    likeOrUnlikeMovie(movieFavourite: any) {
+        return request({
+            url: `/movie/favourite/likeOrUnlikeMovie`,
+            method: 'post',
+            data: movieFavourite
+        })
+    },
+    getMovieFavourite(movieId: any, email: any) {
+        return request({
+            url: `/movie/favourite/getMovieFavourite`,
+            method: 'get',
+            params: {
+                movieId: movieId,
+                email: email
+            }
+        })
     }
 }

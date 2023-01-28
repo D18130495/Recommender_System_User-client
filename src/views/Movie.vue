@@ -176,6 +176,22 @@
                       @click="updateMovieRate"
                   />
                 </div>
+
+                <div class="grid col-span-1" v-if="userStore.userInfo !== ''">
+                  <span class="m-auto">
+                    Marked as your favourite movie
+                  </span>
+                  <el-rate
+                      v-model="movieFavourite.favourite"
+                      class="m-auto"
+                      size="large"
+                      :max=starNumber
+                      disabled
+                      text-color="#ff9900"
+                  />
+                  <el-button v-if="movieFavourite.favourite === 0" class="mx-auto w-2/5" @click="updateMovieLike">Like</el-button>
+                  <el-button v-else class="mx-auto w-2/5" @click="updateMovieLike">Unlike</el-button>
+                </div>
               </div>
             </div>
           </div>
@@ -253,6 +269,7 @@ export default defineComponent({
     const userStore = useUserStore()
     const router = useRouter()
     const loading = ref(true)
+    const starNumber = ref(1)
     const reactiveData = reactive({
       movie: '' as any,
       movieRate: {
@@ -260,15 +277,20 @@ export default defineComponent({
         email: '',
         rating: 0
       },
+      movieFavourite: {
+        movieId: '',
+        email: '',
+        favourite: 0
+      },
       generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
     })
 
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Movie') {
-        reactiveData.generalMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
         getMovieByMovieId(router.currentRoute.value.params.movieId)
         getRandomMovieList()
         initialMovieRate()
+        initialMovieFavourite()
       }
     });
 
@@ -276,6 +298,7 @@ export default defineComponent({
       getMovieByMovieId(router.currentRoute.value.params.movieId)
       getRandomMovieList()
       initialMovieRate()
+      initialMovieFavourite()
     })
 
     const initialMovieRate = () => {
@@ -287,6 +310,19 @@ export default defineComponent({
         movieApi.getMovieRating(reactiveData.movieRate.movieId, userStore.userInfo.email)
             .then((response) => {
               reactiveData.movieRate.rating = response.data.data.rating
+            })
+      }
+    }
+
+    const initialMovieFavourite = () => {
+      reactiveData.movieFavourite.movieId = String(router.currentRoute.value.params.movieId)
+
+      if(userStore.userInfo !== '') {
+        reactiveData.movieFavourite.email = userStore.userInfo.email
+
+        movieApi.getMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
+            .then((response) => {
+              reactiveData.movieFavourite.favourite = Number(response.data.data.favourite)
             })
       }
     }
@@ -322,15 +358,46 @@ export default defineComponent({
           })
     }
 
+    const updateMovieLike = () => {
+      console.log(reactiveData.movieFavourite.favourite)
+      if(reactiveData.movieFavourite.favourite === 0) {
+        movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
+            .then((response) => {
+              reactiveData.movieFavourite.favourite = 1
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+      }else {
+        movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
+            .then((response) => {
+              reactiveData.movieFavourite.favourite = 0
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+      }
+    }
+
     const refreshGeneralMovie = () => {
       getRandomMovieList()
     }
 
     return {
       loading,
+      starNumber,
       ...toRefs(reactiveData),
       userStore,
       updateMovieRate,
+      updateMovieLike,
       refreshGeneralMovie,
 
       gradientBackground: computed(() => {
@@ -356,5 +423,13 @@ a:hover {
 
 /deep/ .el-rate__text{
   @apply text-ob-bright;
+}
+
+/deep/ .el-button {
+  @apply bg-ob-deep-800;
+
+  span {
+    @apply text-ob-bright;
+  }
 }
 </style>
