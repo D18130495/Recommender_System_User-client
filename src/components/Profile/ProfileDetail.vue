@@ -58,7 +58,7 @@
       <div class="flex flex-col flex-wrap-reverse w-98 max-w-full-calc">
                 <textarea
                     v-model="userDetail.email"
-                    class="w-full shadow-md rounded-md p-4 focus:outline-none input text-ob-bright"
+                    class="disabled-textarea w-full shadow-md rounded-md p-4 focus:outline-none input text-ob-bright"
                     placeholder="Add email address..."
                     cols="30"
                     rows="1"
@@ -213,6 +213,10 @@ export default defineComponent({
 .input {
   background: var(--background-primary);
   resize: none;
+}
+
+.disabled-textarea:hover {
+  cursor: not-allowed;
 }
 
 #avatar-button {

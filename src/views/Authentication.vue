@@ -17,7 +17,7 @@
             <nav>
               <ul>
                 <li><a href="#" @click="goBack"><el-icon><Back/></el-icon></a></li>
-                <li>Don't have an account?<a href="#" class="t-signup" @click="showSignUp">Sign Up</a></li>
+                <li>Don't have an account?<a class="t-signup" @click="showSignUp">Sign Up</a></li>
               </ul>
             </nav>
 
@@ -61,7 +61,7 @@
             <nav>
               <ul>
                 <li><a href="#" @click="goBack"><i class="ri-arrow-left-line"></i></a></li>
-                <li>Already member?<a href="#" class="t-signin" @click="showSignIn">Sign In</a></li>
+                <li>Already member?<a class="t-signin" @click="showSignIn">Sign In</a></li>
               </ul>
             </nav>
 
@@ -231,7 +231,7 @@ export default defineComponent({
     }
 
     const goBack = () => {
-      router.push({ path: '/' })
+      router.back()
     }
 
     const showSignUp = () => {
@@ -270,7 +270,7 @@ export default defineComponent({
                   userStore.drawer = true
                 }
 
-                router.push({ path: '/' })
+                router.back()
               })
         }else {
           return false
@@ -297,7 +297,7 @@ export default defineComponent({
                 }
 
                 setTimeout(function () {
-                  router.push({ path: '/' })
+                  router.back()
                 }, 3000)
               })
         }else {
@@ -344,7 +344,7 @@ export default defineComponent({
               userStore.drawer = true
             }
 
-            router.push({ path: '/' })
+            router.back()
           })
     }
 
@@ -368,3 +368,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+a:hover {
+  cursor: pointer;
+}
+</style>
