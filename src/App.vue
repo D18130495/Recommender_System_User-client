@@ -20,6 +20,24 @@
       <div id="loading-bar-wrapper" :class="loadingBarClass"></div>
     </div>
     <Footer id="footer" :class="[theme]" :style="themeSetting"/>
+
+    // GDPR
+    <el-drawer v-model="userStore.drawer" direction="btt" :with-header="false" size="">
+      <template #default>
+        <h4 class="text-xl mb-3">We value your privacy</h4>
+
+        <div class="inline-flex w-full">
+          <p class="text-left">
+            We use cookies to enhance your browsing experience, and GDPR to protect your data for recommendation purpose.
+          </p>
+
+          <div class="ml-auto">
+            <el-button @click="cancelClick">cancel</el-button>
+            <el-button type="primary" @click="confirmClick">confirm</el-button>
+          </div>
+        </div>
+      </template>
+    </el-drawer>
   </div>
 
   <div v-else-if="$route.meta.authentication">
@@ -32,11 +50,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, ref, provide } from 'vue'
+import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, watch} from 'vue'
 
-import { useAppStore } from '@/stores/app'
+import { ElNotification } from "element-plus/es"
+
+import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
-import { useHeaderImageStore } from '@/stores/headerImage'
+import { useHeaderImageStore } from "@/stores/headerImage"
 
 import cookies from "js-cookie"
 
@@ -75,7 +95,7 @@ export default defineComponent({
 
     const reload = () => {
       isRouterAlive.value = false
-      console.log("123")
+
       nextTick(() => {
         isRouterAlive.value = true
       })
@@ -88,6 +108,7 @@ export default defineComponent({
       initialPage()
       initialUser()
       initialTheme()
+      initialGDPR()
       fetchWebsiteConfig()
     }
 
@@ -125,6 +146,45 @@ export default defineComponent({
         userStore.token = ''
         sessionStorage.removeItem('token')
       }
+    }
+
+    // initial GDPR
+    const initialGDPR = () => {
+      if(cookies.get('token') !== undefined) {
+        if(userStore.userInfo.policy === "U") {
+          userStore.drawer = true
+        }
+      }
+    }
+
+    const cancelClick = () => {
+      userApi.updateUserDetail({"email": userStore.userInfo.email, "policy": false})
+          .then((response) => {
+            userStore.userInfo.policy = "F"
+            userStore.drawer = false
+
+            ElNotification({
+              title: 'Reject',
+              message: 'You can change this setting later in the profile',
+              type: 'warning',
+              duration: 1500
+            })
+          })
+    }
+
+    const confirmClick = () => {
+      userApi.updateUserDetail({"email": userStore.userInfo.email, "policy": true})
+          .then((response) => {
+            userStore.userInfo.policy = "T"
+            userStore.drawer = false
+
+            ElNotification({
+              title: 'Accepted',
+              message: 'Accepted',
+              type: 'success',
+              duration: 1500
+            })
+          })
     }
 
     const fetchWebsiteConfig = () => {
@@ -176,13 +236,16 @@ export default defineComponent({
       wrapperStyle: computed(() => wrapperStyle.value),
       isRouterAlive,
       appWrapperClass,
-      loadingBarClass
+      loadingBarClass,
+      userStore,
+      cancelClick,
+      confirmClick
     }
   }
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 *:focus {
   outline: none;
 }
@@ -330,5 +393,15 @@ export default defineComponent({
 
 .el-button {
   width: unset;
+}
+
+/deep/ .el-drawer {
+  @apply bg-ob-deep-800;
+
+  height: unset;
+
+  h4, div {
+    @apply text-ob-bright;
+  }
 }
 </style>

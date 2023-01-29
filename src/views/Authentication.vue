@@ -266,10 +266,13 @@ export default defineComponent({
 
                 ElMessage.success(response.data.message)
 
+                if(userStore.userInfo.policy === "U") {
+                  userStore.drawer = true
+                }
+
                 router.push({ path: '/' })
               })
         }else {
-          console.log('error submit!')
           return false
         }
       })
@@ -288,6 +291,10 @@ export default defineComponent({
                 cookies.set('token', response.data.data.token, { expires: expires })
 
                 ElMessage.success(response.data.message)
+
+                if(userStore.userInfo.policy === "U") {
+                  userStore.drawer = true
+                }
 
                 setTimeout(function () {
                   router.push({ path: '/' })
@@ -332,6 +339,10 @@ export default defineComponent({
             cookies.set('token', response.data.data.token, { expires: expires })
 
             ElMessage.success(response.data.message)
+
+            if(userStore.userInfo.policy === "U") {
+              userStore.drawer = true
+            }
 
             router.push({ path: '/' })
           })
