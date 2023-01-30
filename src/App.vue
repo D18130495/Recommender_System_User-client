@@ -21,7 +21,7 @@
     </div>
     <Footer id="footer" :class="[theme]" :style="themeSetting"/>
 
-    // GDPR
+    <!-- GDPR -->
     <el-drawer v-model="userStore.drawer" direction="btt" :with-header="false" size="">
       <template #default>
         <h4 class="text-xl mb-3">We value your privacy</h4>

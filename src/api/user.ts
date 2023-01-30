@@ -56,5 +56,14 @@ export default {
             method: 'put',
             data: userInfo
         })
+    },
+    getUserLikeList(email: any) {
+        return request({
+            url: `/user/getUserLikeList`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
     }
 }

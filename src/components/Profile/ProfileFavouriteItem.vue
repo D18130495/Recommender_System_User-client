@@ -5,22 +5,171 @@
       <span class="bottom-0 h-1 w-14 rounded-full absolute" :style="gradientBackground" />
     </p>
 
-    <!-- TODO -->
+    <!-- movie -->
+    <el-tabs>
+      <el-tab-pane>
+        <template #label>
+        <span>
+          <p class="relative opacity-90 flex items-center text-ob-bright">
+          <i class="ri-film-line mr-2"></i>
+            Movie
+          </p>
+        </span>
+        </template>
+
+        <!-- movie like list -->
+        <div class="movie-like-list mt-2">
+          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">
+            <span class="w-full text-xl font-bold">Liked list</span>
+            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
+          </p>
+
+          <el-table :data="movieLikeList" style="width: 100%" max-height="281">
+            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
+            <el-table-column prop="title" label="Title" width="500" />
+            <el-table-column prop="genres" label="Genres" width="400" />
+            <el-table-column label="Director" width="200" align="center">
+              <template #default="scope">
+                <a :href="scope.row.director.directorLink" target="_blank">
+                  {{ scope.row.director.directorName }}
+                </a>
+              </template>
+            </el-table-column>
+            <el-table-column label="Actors" width="200" align="center">
+              <template #default="scope">
+                <el-popover effect="light" trigger="hover" placement="top" width="auto">
+                  <template #default>
+                    <div class="text-center" v-for="actor in scope.row.actor">
+                      <a :href="actor.actorLink" target="_blank">{{ actor.actorName }}</a>
+                    </div>
+                  </template>
+                  <template #reference>
+                    <el-tag v-for="actor in scope.row.actor">
+                      {{ actor.actorName }}
+                    </el-tag>
+                  </template>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column prop="rating" label="Your rating" width="150" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.rating" type="success">
+                  {{ scope.row.rating }}
+                </el-tag>
+                <el-tag v-else type="info">
+                  Your haven't rating
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="Operations" width="120">
+              <template #default="scope">
+                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
+                  <el-popconfirm
+                      width="220"
+                      confirm-button-text="OK"
+                      cancel-button-text="No, Thanks"
+                      :icon="InfoFilled"
+                      icon-color="#626AEF"
+                      title="Are you sure to delete this?"
+                      @confirm="handleDelete(scope.$index, scope.row)"
+                  >
+                    <template #reference>
+                      <el-button link type="primary" size="small">Delete</el-button>
+                      </template>
+                    </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <!-- movie rating list -->
+        <div class="movie-rating-list mt-6">
+          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">
+            <span class="w-full text-xl font-bold">Rating list</span>
+            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
+          </p>
+        </div>
+      </el-tab-pane>
+
+      <!-- book -->
+      <el-tab-pane>
+        <template #label>
+        <span>
+          <p class="relative opacity-90 flex items-center text-ob-bright">
+          <i class="ri-book-line mr-2"></i>
+            Book
+          </p>
+        </span>
+        </template>
+        Book
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent} from 'vue'
+import {ref, toRefs, computed, defineComponent, reactive, onBeforeMount} from 'vue'
 
 import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
+
+import { useRouter } from "vue-router"
+
+import userApi from "@/api/user"
+import movieApi from "@/api/movie"
+
+import { InfoFilled } from "@element-plus/icons-vue"
+import "remixicon/fonts/remixicon.css"
 
 
 export default defineComponent({
   name: 'ProfileFavouriteItem',
   setup() {
     const appStore = useAppStore()
+    const userStore = useUserStore()
+    const router = useRouter()
+    const activeIndex = ref('0')
+    const reactiveData = reactive({
+      movieLikeList: []
+    })
+
+    interface Movie {
+      movieId: number
+      updateDate: string
+      title: string
+      genres: string
+      director: object
+      rating: number
+    }
+
+    onBeforeMount(() => {
+      initialUserLikeList()
+    })
+
+    const initialUserLikeList = () => {
+      userApi.getUserLikeList(userStore.userInfo.email)
+          .then((response) => {
+            reactiveData.movieLikeList = response.data.data
+          })
+    }
+
+    const handleDetail = (index: number, row: Movie) => {
+      router.push({ path: '/movie/' + row.movieId })
+    }
+
+    const handleDelete = (index: number, row: Movie) => {
+      movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 1})
+          .then((response) => {
+            initialUserLikeList()
+          })
+    }
 
     return {
+      activeIndex,
+      ...toRefs(reactiveData),
+      handleDetail,
+      handleDelete,
+      InfoFilled,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {
@@ -36,3 +185,36 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+/deep/ .el-tabs {
+  @apply bg-ob-deep-800 text-ob-bright;
+
+  .el-tabs__header {
+    @apply w-3/5;
+  }
+
+  .el-tabs__item {
+    @apply text-ob-bright;
+    font-size: 120%;
+  }
+}
+
+/deep/ .el-table {
+  --el-table-tr-bg-color: var(--background-secondary);
+  --el-table-header-bg-color: var(--background-secondary);
+  --el-table-text-color: var(--text-bright);
+  --el-table-header-text-color: var(--text-bright);
+  --el-table-row-hover-bg-color: var(--table-hover);
+  --el-table-fixed-left-column: var(--table-column-line-left);
+  --el-table-fixed-right-column: var(--table-column-line-right);
+
+  .el-table-fixed-column--left {
+    @apply bg-ob-deep-800;
+  }
+
+  .el-table-fixed-column--right {
+    @apply bg-ob-deep-800;
+  }
+}
+</style>

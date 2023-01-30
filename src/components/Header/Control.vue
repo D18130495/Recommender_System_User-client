@@ -163,10 +163,6 @@ export default defineComponent({
   width: 300px !important;
 }
 
-.el-button {
-  width: 300px;
-}
-
 .el-dialog__headerbtn {
   outline: none !important;
 }
