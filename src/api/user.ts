@@ -57,9 +57,18 @@ export default {
             data: userInfo
         })
     },
-    getUserLikeList(email: any) {
+    getMovieLikeList(email: any) {
         return request({
-            url: `/user/getUserLikeList`,
+            url: `/user/getMovieLikeList`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    },
+    getMovieRatingList(email: any) {
+        return request({
+            url: `/user/getMovieRatingList`,
             method: 'get',
             params: {
                 email: email

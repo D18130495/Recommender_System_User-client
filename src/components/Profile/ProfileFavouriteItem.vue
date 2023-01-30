@@ -26,8 +26,8 @@
 
           <el-table :data="movieLikeList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
-            <el-table-column prop="title" label="Title" width="500" />
-            <el-table-column prop="genres" label="Genres" width="400" />
+            <el-table-column prop="title" label="Title" width="400" />
+            <el-table-column prop="genres" label="Genres" width="350" />
             <el-table-column label="Director" width="200" align="center">
               <template #default="scope">
                 <a :href="scope.row.director.directorLink" target="_blank">
@@ -51,7 +51,7 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column prop="rating" label="Your rating" width="150" align="center">
+            <el-table-column prop="rating" label="Your rating" width="200" align="center">
               <template #default="scope">
                 <el-tag v-if="scope.row.rating" type="success">
                   {{ scope.row.rating }}
@@ -61,7 +61,7 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" label="Operations" width="120">
+            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">
               <template #default="scope">
                 <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
                   <el-popconfirm
@@ -88,6 +88,49 @@
             <span class="w-full text-xl font-bold">Rating list</span>
             <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
           </p>
+
+          <el-table :data="movieRatingList" style="width: 100%" max-height="281">
+            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
+            <el-table-column prop="title" label="Title" width="355" />
+            <el-table-column prop="rating" label="Your rating" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.rating" type="success">
+                  {{ scope.row.rating }}
+                </el-tag>
+                <el-tag v-else type="info">
+                  Your haven't rating
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="Director" width="200" align="center">
+              <template #default="scope">
+                <a :href="scope.row.director.directorLink" target="_blank">
+                  {{ scope.row.director.directorName }}
+                </a>
+              </template>
+            </el-table-column>
+            <el-table-column label="Actors" width="200" align="center">
+              <template #default="scope">
+                <el-popover effect="light" trigger="hover" placement="top" width="auto">
+                  <template #default>
+                    <div class="text-center" v-for="actor in scope.row.actor">
+                      <a :href="actor.actorLink" target="_blank">{{ actor.actorName }}</a>
+                    </div>
+                  </template>
+                  <template #reference>
+                    <el-tag v-for="actor in scope.row.actor">
+                      {{ actor.actorName }}
+                    </el-tag>
+                  </template>
+                </el-popover>
+              </template>
+            </el-table-column>
+            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">
+              <template #default="scope">
+                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </el-tab-pane>
 
@@ -120,6 +163,7 @@ import movieApi from "@/api/movie"
 
 import { InfoFilled } from "@element-plus/icons-vue"
 import "remixicon/fonts/remixicon.css"
+import {ElNotification} from "element-plus";
 
 
 export default defineComponent({
@@ -130,10 +174,11 @@ export default defineComponent({
     const router = useRouter()
     const activeIndex = ref('0')
     const reactiveData = reactive({
-      movieLikeList: []
+      movieLikeList: [],
+      movieRatingList: []
     })
 
-    interface Movie {
+    interface MovieLike {
       movieId: number
       updateDate: string
       title: string
@@ -142,25 +187,48 @@ export default defineComponent({
       rating: number
     }
 
+    interface MovieRating {
+      movieId: number
+      updateDate: string
+      title: string
+      director: object
+      rating: number
+    }
+
     onBeforeMount(() => {
-      initialUserLikeList()
+      initialMovieLikeList()
+      initialMovieRatingList()
     })
 
-    const initialUserLikeList = () => {
-      userApi.getUserLikeList(userStore.userInfo.email)
+    const initialMovieLikeList = () => {
+      userApi.getMovieLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieLikeList = response.data.data
           })
     }
 
-    const handleDetail = (index: number, row: Movie) => {
+    const initialMovieRatingList = () => {
+      userApi.getMovieRatingList(userStore.userInfo.email)
+          .then((response) => {
+            reactiveData.movieRatingList = response.data.data
+          })
+    }
+
+    const handleDetail = (index: number, row: MovieLike) => {
       router.push({ path: '/movie/' + row.movieId })
     }
 
-    const handleDelete = (index: number, row: Movie) => {
+    const handleDelete = (index: number, row: MovieLike) => {
       movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 1})
           .then((response) => {
-            initialUserLikeList()
+            initialMovieLikeList()
+
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
           })
     }
 
@@ -216,5 +284,13 @@ export default defineComponent({
   .el-table-fixed-column--right {
     @apply bg-ob-deep-800;
   }
+}
+
+/deep/ .cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 </style>
