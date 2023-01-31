@@ -125,7 +125,7 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">
+            <el-table-column fixed="right" label="Operations" width="120" align="center">
               <template #default="scope">
                 <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
               </template>
@@ -268,14 +268,24 @@ export default defineComponent({
   }
 }
 
+/deep/ .el-table__empty-block {
+  @apply bg-ob-deep-800;
+  .el-table__empty-text {
+    @apply text-ob-bright;
+  }
+ }
+
 /deep/ .el-table {
+  --el-table-bg-color: var(--background-secondary);
   --el-table-tr-bg-color: var(--background-secondary);
   --el-table-header-bg-color: var(--background-secondary);
+  --el-table-fixed-box-shadow: var(--background-secondary);
   --el-table-text-color: var(--text-bright);
   --el-table-header-text-color: var(--text-bright);
   --el-table-row-hover-bg-color: var(--table-hover);
   --el-table-fixed-left-column: var(--table-column-line-left);
   --el-table-fixed-right-column: var(--table-column-line-right);
+  right: -1px;
 
   .el-table-fixed-column--left {
     @apply bg-ob-deep-800;

@@ -14,7 +14,7 @@
     "@webzlodimir/vue-avatar": "0.0.8",
     "axios": "^0.21.0",
     "core-js": "^3.8.3",
-    "element-plus": "^2.2.9",
+    "element-plus": "^2.2.10",
     "js-cookie": "^3.0.1",
     "markdown-it": "^13.0.1",
     "markdown-it-emoji": "^2.0.2",

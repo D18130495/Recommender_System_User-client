@@ -1,6 +1,5 @@
 <template>
   <div>
-  <div>
     <div class="grid grid-cols-2">
       <p class="relative grid-cols-1 opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
         <el-icon class="inline-block mr-2"><Film/></el-icon>
@@ -32,12 +31,12 @@
         <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
       </p>
 
-      <button class="grid-cols-1 text-right" @click="refreshRecommendMovie">
+      <button v-if="userStore.likeOrRateNumber >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
         <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
       </button>
     </div>
 
-    <div class="item-grid">
+    <div v-if="recommendMovies && userStore.likeOrRateNumber >= 5" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
           <li v-for="movie in recommendMovies" :key="movie.movieId">
@@ -46,7 +45,23 @@
         </ul>
       </div>
     </div>
-  </div>
+    <div v-else class="item-grid mb-4">
+      <div class="flex flex-col relative mx-auto">
+        <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
+
+        <div class="mt-4">
+          <p class="font-bold text-center text-ob-bright">Sign in to access your Watchlist</p>
+          <p class="text-center text-ob-bright">Save or rating items to keep track of what you want.</p>
+        </div>
+
+        <button
+            @click="toSignIn"
+            id="submit-button"
+            class="mx-auto mt-8 w-32 text-white p-2 rounded-lg shadow-lg transition transform hover:scale-105 flex">
+          <span class="text-center flex-grow commit">Sign in</span>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -55,6 +70,8 @@ import { reactive, computed, defineComponent, onBeforeMount, toRefs } from 'vue'
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
+
+import { useRouter } from "vue-router"
 
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
@@ -66,12 +83,13 @@ export default defineComponent({
   components: {
     MovieItemCard
   },
-  setup() {
+  setup: function () {
     const appStore = useAppStore()
     const userStore = useUserStore()
+    const router = useRouter()
     const reactiveData = reactive({
-      generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
-      recommendMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
+      generalMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any,
+      recommendMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any
     })
 
     onBeforeMount(() => {
@@ -93,17 +111,22 @@ export default defineComponent({
 
     }
 
+    const toSignIn = () => {
+      router.push({ path: '/authentication' })
+    }
+
     return {
       userStore,
       ...toRefs(reactiveData),
+      toSignIn,
       refreshGeneralMovie,
       refreshRecommendMovie,
       gradientBackground: computed(() => {
-        if(appStore.themeConfig.theme === 'theme-dark') {
+        if (appStore.themeConfig.theme === 'theme-dark') {
           return {
             background: appStore.themeConfig.header_gradient_dark,
           }
-        }else {
+        } else {
           return {
             background: appStore.themeConfig.header_gradient_light,
           }
@@ -114,5 +137,9 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+#submit-button {
+  outline: none;
+  background: var(--button-blue);
+}
 </style>

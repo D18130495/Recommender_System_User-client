@@ -80,13 +80,12 @@
 import { defineComponent, toRefs, computed } from 'vue'
 
 import { useAppStore } from "@/stores/app"
-import { useUserStore } from "@/stores/user"
 
 import { useRouter } from "vue-router"
 
 
 export default defineComponent({
-  name: 'ItemCard',
+  name: 'MovieItemCard',
   props: ['data'],
   setup(props) {
     const appStore = useAppStore()
