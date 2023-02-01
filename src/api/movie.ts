@@ -14,9 +14,9 @@ export default {
             method: 'get'
         })
     },
-    getMovieRating(movieId: any, email: any) {
+    getUserMovieRating(movieId: any, email: any) {
         return request({
-            url: `/movie/rating/getMovieRating`,
+            url: `/movie/rating/getUserMovieRating`,
             method: 'get',
             params: {
                 movieId: movieId,
@@ -24,9 +24,9 @@ export default {
             }
         })
     },
-    addOrUpdateMovieRating(movieRate: any) {
+    addOrUpdateUserMovieRating(movieRate: any) {
         return request({
-            url: `/movie/rating/addOrUpdateMovieRating`,
+            url: `/movie/rating/addOrUpdateUserMovieRating`,
             method: 'post',
             data: movieRate
         })

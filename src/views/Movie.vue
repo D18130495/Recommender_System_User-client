@@ -60,10 +60,10 @@
                 </div>
 
                 <!-- movieVideo -->
-                <video v-if="movie.movieVideo === 'Video is currently not available'" class="movie-image-container" controls style="max-width: unset; width: 265%">
+                <video v-if="movie.movieVideo === 'Video is currently not available'" class="movie-video-container" controls style="max-width: unset; width: 265%">
                   <source src="" />
                 </video >
-                <video v-else class="movie-image-container" controls style="max-width: unset; width: 235%">
+                <video v-else class="movie-video-container" controls style="max-width: unset; width: 235%">
                   <source :src="movie.movieVideo" />
                 </video>
               </div>
@@ -101,7 +101,7 @@
                   </a>
                 </span>
                 <span v-else>
-                  <em>Director: NA</em>
+                  <em>Director: Movie director is currently not available.</em>
                 </span>
               </div>
 
@@ -161,7 +161,7 @@
                 </div>
                 <div class="grid col-span-1" v-else>
                   <span v-if="movieRate.rating === 0">
-                    You haven't rating for this movie
+                    You haven't rating
                   </span>
                   <span v-else>
                     Your Rating
@@ -258,7 +258,7 @@ import { useRouter } from "vue-router"
 
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
-import movieApi from '@/api/movie'
+import movieApi from "@/api/movie"
 
 
 export default defineComponent({
@@ -307,7 +307,7 @@ export default defineComponent({
       if(userStore.userInfo !== '') {
         reactiveData.movieRate.email = userStore.userInfo.email
 
-        movieApi.getMovieRating(reactiveData.movieRate.movieId, userStore.userInfo.email)
+        movieApi.getUserMovieRating(reactiveData.movieRate.movieId, userStore.userInfo.email)
             .then((response) => {
               reactiveData.movieRate.rating = response.data.data.rating
             })
@@ -343,7 +343,7 @@ export default defineComponent({
     }
 
     const updateMovieRate = () => {
-      movieApi.addOrUpdateMovieRating(reactiveData.movieRate)
+      movieApi.addOrUpdateUserMovieRating(reactiveData.movieRate)
           .then((response) => {
             reactiveData.movieRate.movieId = response.data.data.movieId
             reactiveData.movieRate.email = response.data.data.email
@@ -399,7 +399,6 @@ export default defineComponent({
       updateMovieRate,
       updateMovieLike,
       refreshGeneralMovie,
-
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

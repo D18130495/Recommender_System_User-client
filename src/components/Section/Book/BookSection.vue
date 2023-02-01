@@ -97,7 +97,7 @@ export default defineComponent({
     })
 
     const getRandomBookList = () => {
-      bookApi.getRandomMovieList()
+      bookApi.getRandomBookList()
           .then((response) => {
             reactiveData.generalBooks = response.data.data
           })

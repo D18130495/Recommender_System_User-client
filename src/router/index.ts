@@ -39,6 +39,14 @@ const routes = [
     meta: {
       movie: true
     }
+  },
+  {
+    path: '/book/:isbn',
+    name: 'Book',
+    component: () => import('../views/Book.vue'),
+    meta: {
+      book: true
+    }
   }
 ]
 
@@ -54,10 +62,16 @@ router.beforeEach((to, from, next) => {
 
   // front cookie expired, server token not expired
   if(cookies.get('token') !== undefined) {
-    appStore.startLoading()
-    next()
+    if(to.path === '/authentication') { // already logged in
+      next('/')
+    }else if(from.path === '/authentication') { // login do not load bar
+      next()
+    }else {
+      appStore.startLoading()
+      next()
+    }
   }else {
-    if(to.path === '/123') {
+    if(to.path === '/profile') {
       next(router.currentRoute.value.fullPath)
 
       ElMessageBox.confirm(
@@ -82,8 +96,14 @@ router.beforeEach((to, from, next) => {
         router.push({ path: '/' })
       })
     }else {
-      appStore.startLoading()
-      next()
+      if(to.path === '/authentication') { // to authentication do not load bar
+        next()
+      }else if(from.path === '/authentication') { // from authentication do not load bar
+        next()
+      }else {
+        appStore.startLoading()
+        next()
+      }
     }
   }
 })
@@ -91,7 +111,9 @@ router.beforeEach((to, from, next) => {
 router.afterEach(() => {
   const appStore = useAppStore()
 
-  appStore.endLoading()
+  if(router.currentRoute.value.fullPath !== '/authentication') { // path not authentication end load bar
+    appStore.endLoading()
+  }
 })
 
 export default router

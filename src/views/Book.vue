@@ -1,0 +1,422 @@
+<template>
+  <div>
+    <div class="flex flex-col">
+      <div class="book-grid">
+        <div class="book-header">
+          <el-skeleton animated>
+            <template #template>
+              <span class="book-labels">
+                <!-- category -->
+                <b>
+                  <span>Book</span>
+                </b>
+              </span>
+
+              <!-- title -->
+              <el-skeleton-item v-if="loading"
+                                class="book-title text-white uppercase"
+                                variant="text" style="height:50px; border-radius: 15px" />
+              <h1 v-else-if="!loading && book.title" class="book-title text-white uppercase">
+                {{ book.title }}
+              </h1>
+              <h1 v-else class="book-title text-white uppercase">
+                Book title is not available
+              </h1>
+            </template>
+          </el-skeleton>
+        </div>
+      </div>
+    </div>
+
+    <!-- main content -->
+    <div class="book-grid">
+      <div>
+        <div class="book-box" v-if="!loading">
+          <div class="book-field">
+            <div>
+              <div class="grid grid-cols-12 gap-4">
+                <!-- bookImage -->
+                <div class="book-image-container">
+                  <img v-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
+                  <img v-else src="@/assets/posterNotFound.jpg" />
+                </div>
+
+                <div class="book-information-container">
+                  <!-- book title -->
+                  <h1 v-if="book.title && book.title !== ''" class="book-title text-ob-bright uppercase">
+                    {{ book.title }}
+                  </h1>
+                  <h1 v-else class="book-title text-ob-bright uppercase">
+                    Book title is not available
+                  </h1>
+
+                  <div class="grid grid-cols-2 gap-8">
+                    <div class="book-detail-container">
+                      <!-- book ISBN -->
+                      <div class="book-isbn">
+                        <p v-if="book">
+                          ISBN:
+                          <span>{{ book.isbn }}</span>
+                        </p>
+                      </div>
+
+                      <div class="w-3/5 border-b-2 mt-2 wire"></div>
+
+                      <!-- book author -->
+                      <div class="book-author">
+                        <p v-if="book.author && book.author !== ''">
+                          Author:
+                          <span>{{ book.author }}</span>
+                        </p>
+                        <span v-else>
+                          <em>Author: Book author is currently not available.</em>
+                        </span>
+                      </div>
+
+                      <div class="w-3/5 border-b-2 mt-2 wire"></div>
+
+                      <!-- book publisher -->
+                      <div class="book-publisher">
+                        <p v-if="book.publisher && book.publisher !== ''">
+                          Publisher:
+                          <span>{{ book.publisher }}</span>
+                        </p>
+                        <span v-else>
+                          <em>Publisher: Book publisher is currently not available.</em>
+                        </span>
+                      </div>
+
+                      <div class="w-3/5 border-b-2 mt-2 wire"></div>
+
+                      <!-- external link -->
+                      <ul class="book-link">
+                        <div class="book-link-border">
+                          <li>
+                            <a href="" target="_blank">BookFinder</a>
+                          </li>
+                        </div>
+                      </ul>
+
+                      <!-- book rate -->
+                      <div class="book-rate grid grid-cols-2">
+                        <div class="grid col-span-1">
+                          <span>
+                            Current Rating
+                          </span>
+
+                          <el-rate
+                              v-if="book.rate"
+                              v-model="book.rate"
+                              size="large"
+                              disabled
+                              show-score
+                              text-color="#ff9900"
+                              score-template="{value}"
+                          />
+                          <el-rate
+                              v-else
+                              disabled
+                              show-score
+                              text-color="#ff9900"
+                              score-template="{value}"
+                          />
+                        </div>
+
+                        <div class="grid col-span-1" v-if="userStore.userInfo === ''">
+                          <span>
+                            Login to rate this book
+                          </span>
+                          <el-rate
+                              size="large"
+                              disabled
+                              disabled-void-color="#99A9BF"
+                          />
+                        </div>
+                        <div class="grid col-span-1" v-else>
+                          <span v-if="bookRate.rating === 0">
+                            You haven't rating
+                          </span>
+                          <span v-else>
+                            Your Rating
+                          </span>
+                          <el-rate
+                              v-model="bookRate.rating"
+                              size="large"
+                              allow-half
+                              show-score
+                              text-color="#ff9900"
+                              score-template="{value}"
+                              @click="updateBookRate"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="book-description-container">
+                      <!-- book description -->
+                      <h3>About the book:</h3>
+                      <p v-if="book.description">
+                        {{ book.description }}
+                      </p>
+                      <p v-else>
+                        Book description is currently not available.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+<!--                <div class="grid col-span-1" v-if="userStore.userInfo !== ''">-->
+<!--                  <span class="m-auto">-->
+<!--                    Marked as your favourite movie-->
+<!--                  </span>-->
+<!--                  <el-rate-->
+<!--                      v-model="movieFavourite.favourite"-->
+<!--                      class="m-auto"-->
+<!--                      size="large"-->
+<!--                      :max=starNumber-->
+<!--                      disabled-->
+<!--                      text-color="#ff9900"-->
+<!--                  />-->
+<!--                  <el-button v-if="movieFavourite.favourite === 0" class="mx-auto w-2/5" @click="updateMovieLike">Like</el-button>-->
+<!--                  <el-button v-else class="mx-auto w-2/5" @click="updateMovieLike">Unlike</el-button>-->
+<!--                </div>-->
+            </div>
+          </div>
+        </div>
+<!--        <div v-else class="bg-ob-deep-800 px-14 py-16 rounded-2xl shadow-xl block">-->
+<!--          <el-skeleton animated>-->
+<!--            <template #template>-->
+<!--              <div class="grid grid-cols-10 gap-8">-->
+<!--                <el-skeleton-item variant="image" class="col-span-2" style="height: 320px" />-->
+<!--                <el-skeleton-item variant="image" class="col-span-6" style="height: 320px" />-->
+<!--              </div>-->
+
+<!--              <el-skeleton-item class="mt-6" variant="text" style="height: 20px" />-->
+<!--              <el-skeleton-item class="mt-3" variant="text" style="height: 20px" />-->
+
+<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
+<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
+<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
+<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
+<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
+<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
+<!--            </template>-->
+<!--          </el-skeleton>-->
+<!--        </div>-->
+      </div>
+
+      <!-- bottom recommendation -->
+<!--      <div>-->
+<!--        <div class="grid grid-cols-2">-->
+<!--          <p class="relative grid-cols-1 opacity-90 flex items-center pb-2 mb-8 text-3xl text-ob-bright">-->
+<!--            <el-icon class="inline-block mr-2"><Film/></el-icon>-->
+<!--            More like this-->
+<!--            <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>-->
+<!--          </p>-->
+
+<!--          <button class="grid-cols-1 text-right" @click="refreshGeneralMovie">-->
+<!--            <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>-->
+<!--          </button>-->
+<!--        </div>-->
+
+<!--        <div class="item-grid">-->
+<!--          <div class="flex flex-col relative">-->
+<!--            <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">-->
+<!--              <li v-for="movie in generalMovies" :key="movie.movieId">-->
+<!--                <MovieItemCard :data="movie" />-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { ref, toRefs, defineComponent, onBeforeMount, reactive, computed, watch } from "vue"
+
+import { ElNotification } from "element-plus"
+
+import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
+
+import { useRouter } from "vue-router"
+
+import BookItemCard from "@/components/Section/Book/BookItemCard.vue"
+
+import bookApi from "@/api/book"
+
+
+export default defineComponent({
+  name: 'Book',
+  components: { BookItemCard },
+  setup() {
+    const appStore = useAppStore()
+    const userStore = useUserStore()
+    const router = useRouter()
+    const loading = ref(true)
+    const starNumber = ref(1)
+    const reactiveData = reactive({
+      book: '' as any,
+      bookRate: {
+        isbn: '',
+        email: '',
+        rating: 0
+      },
+      bookFavourite: {
+        isbn: '',
+        email: '',
+        favourite: 0
+      },
+      generalBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
+    })
+
+    watch(() => router.currentRoute.value.fullPath, () => {
+      if(router.currentRoute.value.name === 'Book') {
+        getBookByISBN(router.currentRoute.value.params.isbn)
+        // getRandomMovieList()
+        initialBookRate()
+        // initialMovieFavourite()
+      }
+    });
+
+    onBeforeMount(() => {
+      getBookByISBN(router.currentRoute.value.params.isbn)
+      // getRandomMovieList()
+      initialBookRate()
+      // initialMovieFavourite()
+    })
+
+    const getBookByISBN = (isbn: any) => {
+      bookApi.getBookByISBN(isbn)
+          .then((response) => {
+            reactiveData.book = response.data.data
+            loading.value = false
+          })
+    }
+
+    const initialBookRate = () => {
+      reactiveData.bookRate.isbn = String(router.currentRoute.value.params.isbn)
+
+      if(userStore.userInfo !== '') {
+        reactiveData.bookRate.email = userStore.userInfo.email
+
+        bookApi.getUserBookRating(reactiveData.bookRate.isbn, userStore.userInfo.email)
+            .then((response) => {
+              reactiveData.bookRate.rating = response.data.data.rating
+            })
+      }
+    }
+
+    const updateBookRate = () => {
+      bookApi.addOrUpdateUserBookRating(reactiveData.bookRate)
+            .then((response) => {
+              reactiveData.bookRate.isbn = response.data.data.isbn
+              reactiveData.bookRate.email = response.data.data.email
+              reactiveData.bookRate.rating = response.data.data.rating
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+    }
+    
+    // const initialMovieFavourite = () => {
+    //   reactiveData.movieFavourite.movieId = String(router.currentRoute.value.params.movieId)
+    //
+    //   if(userStore.userInfo !== '') {
+    //     reactiveData.movieFavourite.email = userStore.userInfo.email
+    //
+    //     movieApi.getMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
+    //         .then((response) => {
+    //           reactiveData.movieFavourite.favourite = Number(response.data.data.favourite)
+    //         })
+    //   }
+    // }
+    //
+    // const getRandomMovieList = () => {
+    //   movieApi.getRandomMovieList()
+    //       .then((response) => {
+    //         reactiveData.generalMovies = response.data.data
+    //       })
+    // }
+    //
+    // const updateMovieLike = () => {
+    //   console.log(reactiveData.movieFavourite.favourite)
+    //   if(reactiveData.movieFavourite.favourite === 0) {
+    //     movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
+    //         .then((response) => {
+    //           reactiveData.movieFavourite.favourite = 1
+    //
+    //           ElNotification({
+    //             title: 'Success',
+    //             message: response.data.message,
+    //             type: 'success',
+    //             duration: 1500
+    //           })
+    //         })
+    //   }else {
+    //     movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
+    //         .then((response) => {
+    //           reactiveData.movieFavourite.favourite = 0
+    //
+    //           ElNotification({
+    //             title: 'Success',
+    //             message: response.data.message,
+    //             type: 'success',
+    //             duration: 1500
+    //           })
+    //         })
+    //   }
+    // }
+
+    // const refreshGeneralMovie = () => {
+    //   getRandomMovieList()
+    // }
+
+    return {
+      loading,
+      starNumber,
+      ...toRefs(reactiveData),
+      userStore,
+      updateBookRate,
+      // updateMovieLike,
+      // refreshGeneralMovie,
+      gradientBackground: computed(() => {
+        if(appStore.themeConfig.theme === 'theme-dark') {
+          return {
+            background: appStore.themeConfig.header_gradient_dark,
+          }
+        }else {
+          return {
+            background: appStore.themeConfig.header_gradient_light,
+          }
+        }
+      })
+    }
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+a:hover {
+  cursor: default;
+}
+
+/deep/ .el-rate__text{
+  @apply text-ob-bright;
+}
+
+/deep/ .el-button {
+  @apply bg-ob-deep-800;
+
+  span {
+    @apply text-ob-bright;
+  }
+}
+</style>
