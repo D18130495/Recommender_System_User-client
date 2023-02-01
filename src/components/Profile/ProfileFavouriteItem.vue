@@ -63,7 +63,7 @@
             </el-table-column>
             <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">
               <template #default="scope">
-                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
+                <el-button link type="primary" size="small" @click="handleMovieDetail(scope.$index, scope.row)">Detail</el-button>
                   <el-popconfirm
                       width="220"
                       confirm-button-text="OK"
@@ -71,7 +71,7 @@
                       :icon="InfoFilled"
                       icon-color="#626AEF"
                       title="Are you sure to delete this?"
-                      @confirm="handleDelete(scope.$index, scope.row)"
+                      @confirm="handleMovieDelete(scope.$index, scope.row)"
                   >
                     <template #reference>
                       <el-button link type="primary" size="small">Delete</el-button>
@@ -127,7 +127,7 @@
             </el-table-column>
             <el-table-column fixed="right" label="Operations" width="120" align="center">
               <template #default="scope">
-                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>
+                <el-button link type="primary" size="small" @click="handleMovieDetail(scope.$index, scope.row)">Detail</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -144,14 +144,81 @@
           </p>
         </span>
         </template>
-        Book
+
+        <!-- movie like list -->
+<!--        <div class="movie-like-list mt-2">-->
+<!--          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">-->
+<!--            <span class="w-full text-xl font-bold">Liked list</span>-->
+<!--            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />-->
+<!--          </p>-->
+
+<!--          <el-table :data="movieLikeList" style="width: 100%" max-height="281">-->
+<!--            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />-->
+<!--            <el-table-column prop="title" label="Title" width="400" />-->
+<!--            <el-table-column prop="genres" label="Genres" width="350" />-->
+<!--            <el-table-column label="Director" width="200" align="center">-->
+<!--              <template #default="scope">-->
+<!--                <a :href="scope.row.director.directorLink" target="_blank">-->
+<!--                  {{ scope.row.director.directorName }}-->
+<!--                </a>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column label="Actors" width="200" align="center">-->
+<!--              <template #default="scope">-->
+<!--                <el-popover effect="light" trigger="hover" placement="top" width="auto">-->
+<!--                  <template #default>-->
+<!--                    <div class="text-center" v-for="actor in scope.row.actor">-->
+<!--                      <a :href="actor.actorLink" target="_blank">{{ actor.actorName }}</a>-->
+<!--                    </div>-->
+<!--                  </template>-->
+<!--                  <template #reference>-->
+<!--                    <el-tag v-for="actor in scope.row.actor">-->
+<!--                      {{ actor.actorName }}-->
+<!--                    </el-tag>-->
+<!--                  </template>-->
+<!--                </el-popover>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column prop="rating" label="Your rating" width="200" align="center">-->
+<!--              <template #default="scope">-->
+<!--                <el-tag v-if="scope.row.rating" type="success">-->
+<!--                  {{ scope.row.rating }}-->
+<!--                </el-tag>-->
+<!--                <el-tag v-else type="info">-->
+<!--                  Your haven't rating-->
+<!--                </el-tag>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">-->
+<!--              <template #default="scope">-->
+<!--                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>-->
+<!--                <el-popconfirm-->
+<!--                    width="220"-->
+<!--                    confirm-button-text="OK"-->
+<!--                    cancel-button-text="No, Thanks"-->
+<!--                    :icon="InfoFilled"-->
+<!--                    icon-color="#626AEF"-->
+<!--                    title="Are you sure to delete this?"-->
+<!--                    @confirm="handleDelete(scope.$index, scope.row)"-->
+<!--                >-->
+<!--                  <template #reference>-->
+<!--                    <el-button link type="primary" size="small">Delete</el-button>-->
+<!--                  </template>-->
+<!--                </el-popconfirm>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+<!--        </div>-->
+
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import {ref, toRefs, computed, defineComponent, reactive, onBeforeMount} from 'vue'
+import { ref, toRefs, computed, defineComponent, reactive, onBeforeMount } from 'vue'
+
+import { ElNotification } from "element-plus"
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
@@ -162,8 +229,8 @@ import userApi from "@/api/user"
 import movieApi from "@/api/movie"
 
 import { InfoFilled } from "@element-plus/icons-vue"
+
 import "remixicon/fonts/remixicon.css"
-import {ElNotification} from "element-plus";
 
 
 export default defineComponent({
@@ -175,50 +242,76 @@ export default defineComponent({
     const activeIndex = ref('0')
     const reactiveData = reactive({
       movieLikeList: [],
-      movieRatingList: []
+      movieRatingList: [],
+      bookLikeList: [],
+      bookRatingList: []
     })
 
     interface MovieLike {
       movieId: number
-      updateDate: string
       title: string
       genres: string
       director: object
       rating: number
+      updateDate: string
     }
 
-    interface MovieRating {
-      movieId: number
-      updateDate: string
+    interface BookLike {
+      isbn: string
       title: string
-      director: object
+      author: string
+      year: string
+      publisher: string
       rating: number
+      updateDate: string
     }
 
     onBeforeMount(() => {
       initialMovieLikeList()
       initialMovieRatingList()
+      initialBookLikeList()
+      initialBookRatingList()
     })
 
     const initialMovieLikeList = () => {
-      userApi.getMovieLikeList(userStore.userInfo.email)
+      userApi.getUserMovieLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieLikeList = response.data.data
           })
     }
 
+    const initialBookLikeList = () => {
+      userApi.getUserBookLikeList(userStore.userInfo.email)
+          .then((response) => {
+            reactiveData.bookLikeList = response.data.data
+            console.log(reactiveData.bookLikeList)
+          })
+    }
+
     const initialMovieRatingList = () => {
-      userApi.getMovieRatingList(userStore.userInfo.email)
+      userApi.getUserMovieRatingList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieRatingList = response.data.data
           })
     }
 
-    const handleDetail = (index: number, row: MovieLike) => {
+    const initialBookRatingList = () => {
+      userApi.getUserBookRatingList(userStore.userInfo.email)
+          .then((response) => {
+            reactiveData.bookRatingList = response.data.data
+            console.log(reactiveData.bookRatingList)
+          })
+    }
+
+    const handleMovieDetail = (index: number, row: MovieLike) => {
       router.push({ path: '/movie/' + row.movieId })
     }
 
-    const handleDelete = (index: number, row: MovieLike) => {
+    const handleBookDetail = (index: number, row: BookLike) => {
+      router.push({ path: '/book/' + row.isbn })
+    }
+
+    const handleMovieDelete = (index: number, row: MovieLike) => {
       movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 1})
           .then((response) => {
             initialMovieLikeList()
@@ -235,8 +328,9 @@ export default defineComponent({
     return {
       activeIndex,
       ...toRefs(reactiveData),
-      handleDetail,
-      handleDelete,
+      handleMovieDetail,
+      handleBookDetail,
+      handleMovieDelete,
       InfoFilled,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

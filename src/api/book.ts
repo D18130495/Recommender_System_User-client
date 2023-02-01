@@ -24,11 +24,28 @@ export default {
             }
         })
     },
+    getUserBookFavourite(isbn: any, email: any) {
+        return request({
+            url: `/book/favourite/getUserBookFavourite`,
+            method: 'get',
+            params: {
+                isbn: isbn,
+                email: email
+            }
+        })
+    },
     addOrUpdateUserBookRating(bookRate: any) {
         return request({
             url: `/book/rating/addOrUpdateUserBookRating`,
             method: 'post',
             data: bookRate
+        })
+    },
+    likeOrUnlikeBook(bookFavourite: any) {
+        return request({
+            url: `/book/favourite/likeOrUnlikeBook`,
+            method: 'post',
+            data: bookFavourite
         })
     }
 }

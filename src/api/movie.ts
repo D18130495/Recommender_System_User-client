@@ -24,6 +24,16 @@ export default {
             }
         })
     },
+    getUserMovieFavourite(movieId: any, email: any) {
+        return request({
+            url: `/movie/favourite/getUserMovieFavourite`,
+            method: 'get',
+            params: {
+                movieId: movieId,
+                email: email
+            }
+        })
+    },
     addOrUpdateUserMovieRating(movieRate: any) {
         return request({
             url: `/movie/rating/addOrUpdateUserMovieRating`,
@@ -36,16 +46,6 @@ export default {
             url: `/movie/favourite/likeOrUnlikeMovie`,
             method: 'post',
             data: movieFavourite
-        })
-    },
-    getMovieFavourite(movieId: any, email: any) {
-        return request({
-            url: `/movie/favourite/getMovieFavourite`,
-            method: 'get',
-            params: {
-                movieId: movieId,
-                email: email
-            }
         })
     }
 }

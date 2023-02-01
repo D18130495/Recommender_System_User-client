@@ -43,7 +43,7 @@
 
                 <div class="book-information-container">
                   <!-- book title -->
-                  <h1 v-if="book.title && book.title !== ''" class="book-title text-ob-bright uppercase">
+                  <h1 v-if="book.title && book.title !== ''" class="book-title mt-0 text-ob-bright uppercase">
                     {{ book.title }}
                   </h1>
                   <h1 v-else class="book-title text-ob-bright uppercase">
@@ -70,6 +70,19 @@
                         </p>
                         <span v-else>
                           <em>Author: Book author is currently not available.</em>
+                        </span>
+                      </div>
+
+                      <div class="w-3/5 border-b-2 mt-2 wire"></div>
+
+                      <!-- book publish year -->
+                      <div class="book-publish-year">
+                        <p v-if="book.year && book.year !== '0'">
+                          Publish year:
+                          <span>{{ book.year }}</span>
+                        </p>
+                        <span v-else>
+                          <em>Publish year: Book publish year is currently not available</em>
                         </span>
                       </div>
 
@@ -150,6 +163,21 @@
                           />
                         </div>
                       </div>
+                      <div v-if="userStore.userInfo !== ''" class="grid grid-cols-12 mt-2">
+                        <span class="m-auto text-ob-bright ml-0 grid col-span-6">
+                          Marked as your favourite book:
+                        </span>
+                        <el-rate
+                            v-model="bookFavourite.favourite"
+                            class="m-auto ml-0 grid col-span-1"
+                            size="large"
+                            :max=starNumber
+                            disabled
+                            text-color="#ff9900"
+                        />
+                        <el-button v-if="bookFavourite.favourite === 0" class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Like</el-button>
+                        <el-button v-else class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Unlike</el-button>
+                      </div>
                     </div>
 
                     <div class="book-description-container">
@@ -165,45 +193,45 @@
                   </div>
                 </div>
               </div>
-
-<!--                <div class="grid col-span-1" v-if="userStore.userInfo !== ''">-->
-<!--                  <span class="m-auto">-->
-<!--                    Marked as your favourite movie-->
-<!--                  </span>-->
-<!--                  <el-rate-->
-<!--                      v-model="movieFavourite.favourite"-->
-<!--                      class="m-auto"-->
-<!--                      size="large"-->
-<!--                      :max=starNumber-->
-<!--                      disabled-->
-<!--                      text-color="#ff9900"-->
-<!--                  />-->
-<!--                  <el-button v-if="movieFavourite.favourite === 0" class="mx-auto w-2/5" @click="updateMovieLike">Like</el-button>-->
-<!--                  <el-button v-else class="mx-auto w-2/5" @click="updateMovieLike">Unlike</el-button>-->
-<!--                </div>-->
             </div>
           </div>
         </div>
-<!--        <div v-else class="bg-ob-deep-800 px-14 py-16 rounded-2xl shadow-xl block">-->
-<!--          <el-skeleton animated>-->
-<!--            <template #template>-->
-<!--              <div class="grid grid-cols-10 gap-8">-->
-<!--                <el-skeleton-item variant="image" class="col-span-2" style="height: 320px" />-->
-<!--                <el-skeleton-item variant="image" class="col-span-6" style="height: 320px" />-->
-<!--              </div>-->
+        <div v-else class="bg-ob-deep-800 px-14 py-16 rounded-2xl shadow-xl block">
+          <el-skeleton animated>
+            <template #template>
+              <div class="grid grid-cols-10 gap-8">
+                <el-skeleton-item variant="image" class="col-span-2" style="height: 320px" />
 
-<!--              <el-skeleton-item class="mt-6" variant="text" style="height: 20px" />-->
-<!--              <el-skeleton-item class="mt-3" variant="text" style="height: 20px" />-->
+                <div class="col-span-6">
+                  <el-skeleton-item variant="text"  style="height: 20px" />
 
-<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
-<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
-<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
-<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
-<!--              <div class="w-full border-b-2 mt-2 wire"></div>-->
-<!--              <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />-->
-<!--            </template>-->
-<!--          </el-skeleton>-->
-<!--        </div>-->
+                  <div class="grid grid-cols-2">
+                    <div class="col-span-1">
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />
+                      <div class="w-2/3 border-b-2 mt-2 wire"></div>
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />
+                      <div class="w-2/3 border-b-2 mt-2 wire"></div>
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />
+                      <div class="w-2/3 border-b-2 mt-2 wire"></div>
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 33%" />
+                      <div class="w-2/3 border-b-2 mt-2 wire"></div>
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 50px; width: 67%" />
+                    </div>
+                    <div class="col-span-1">
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                      <el-skeleton-item class="mt-4" variant="text" style="height: 20px; width: 100%" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </template>
+          </el-skeleton>
+        </div>
       </div>
 
       <!-- bottom recommendation -->
@@ -278,7 +306,7 @@ export default defineComponent({
         getBookByISBN(router.currentRoute.value.params.isbn)
         // getRandomMovieList()
         initialBookRate()
-        // initialMovieFavourite()
+        initialBookFavourite()
       }
     });
 
@@ -286,7 +314,7 @@ export default defineComponent({
       getBookByISBN(router.currentRoute.value.params.isbn)
       // getRandomMovieList()
       initialBookRate()
-      // initialMovieFavourite()
+      initialBookFavourite()
     })
 
     const getBookByISBN = (isbn: any) => {
@@ -310,6 +338,19 @@ export default defineComponent({
       }
     }
 
+    const initialBookFavourite = () => {
+      reactiveData.bookFavourite.isbn = String(router.currentRoute.value.params.isbn)
+
+      if(userStore.userInfo !== '') {
+        reactiveData.bookFavourite.email = userStore.userInfo.email
+
+        bookApi.getUserBookFavourite(reactiveData.bookFavourite.isbn, userStore.userInfo.email)
+            .then((response) => {
+              reactiveData.bookFavourite.favourite = Number(response.data.data.favourite)
+            })
+      }
+    }
+
     const updateBookRate = () => {
       bookApi.addOrUpdateUserBookRating(reactiveData.bookRate)
             .then((response) => {
@@ -325,20 +366,35 @@ export default defineComponent({
               })
             })
     }
-    
-    // const initialMovieFavourite = () => {
-    //   reactiveData.movieFavourite.movieId = String(router.currentRoute.value.params.movieId)
-    //
-    //   if(userStore.userInfo !== '') {
-    //     reactiveData.movieFavourite.email = userStore.userInfo.email
-    //
-    //     movieApi.getMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
-    //         .then((response) => {
-    //           reactiveData.movieFavourite.favourite = Number(response.data.data.favourite)
-    //         })
-    //   }
-    // }
-    //
+
+    const updateBookLike = () => {
+      if(reactiveData.bookFavourite.favourite === 0) {
+        bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
+            .then((response) => {
+              reactiveData.bookFavourite.favourite = 1
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+      }else {
+        bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
+            .then((response) => {
+              reactiveData.bookFavourite.favourite = 0
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+      }
+    }
+
     // const getRandomMovieList = () => {
     //   movieApi.getRandomMovieList()
     //       .then((response) => {
@@ -346,34 +402,6 @@ export default defineComponent({
     //       })
     // }
     //
-    // const updateMovieLike = () => {
-    //   console.log(reactiveData.movieFavourite.favourite)
-    //   if(reactiveData.movieFavourite.favourite === 0) {
-    //     movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
-    //         .then((response) => {
-    //           reactiveData.movieFavourite.favourite = 1
-    //
-    //           ElNotification({
-    //             title: 'Success',
-    //             message: response.data.message,
-    //             type: 'success',
-    //             duration: 1500
-    //           })
-    //         })
-    //   }else {
-    //     movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
-    //         .then((response) => {
-    //           reactiveData.movieFavourite.favourite = 0
-    //
-    //           ElNotification({
-    //             title: 'Success',
-    //             message: response.data.message,
-    //             type: 'success',
-    //             duration: 1500
-    //           })
-    //         })
-    //   }
-    // }
 
     // const refreshGeneralMovie = () => {
     //   getRandomMovieList()
@@ -385,7 +413,7 @@ export default defineComponent({
       ...toRefs(reactiveData),
       userStore,
       updateBookRate,
-      // updateMovieLike,
+      updateBookLike,
       // refreshGeneralMovie,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

@@ -17,10 +17,10 @@
               <el-skeleton-item v-else variant="text" style="width: 50px; background: var(--background-primary);" />
 
               <!-- book year -->
-              <ul v-if="book.year && book.year !== 0">
+              <ul v-if="book.year && book.year !== '0'">
                 <em># {{ book.year }}</em>
               </ul>
-              <ul v-else-if="book.year && book.year === 0">
+              <ul v-else-if="book.year && book.year === '0'">
                 <li>
                   <em># Book Year not Available</em>
                 </li>

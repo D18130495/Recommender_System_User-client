@@ -57,18 +57,36 @@ export default {
             data: userInfo
         })
     },
-    getMovieLikeList(email: any) {
+    getUserMovieLikeList(email: any) {
         return request({
-            url: `/user/getMovieLikeList`,
+            url: `/user/getUserMovieLikeList`,
             method: 'get',
             params: {
                 email: email
             }
         })
     },
-    getMovieRatingList(email: any) {
+    getUserMovieRatingList(email: any) {
         return request({
-            url: `/user/getMovieRatingList`,
+            url: `/user/getUserMovieRatingList`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    },
+    getUserBookLikeList(email: any) {
+        return request({
+            url: `/user/getUserBookLikeList`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    },
+    getUserBookRatingList(email: any) {
+        return request({
+            url: `/user/getUserBookRatingList`,
             method: 'get',
             params: {
                 email: email

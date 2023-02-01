@@ -91,6 +91,18 @@
         }
       }
 
+      .book-publish-year {
+        @apply text-ob-bright pt-1.5;
+
+        p {
+          color: var(--text-book);
+
+          span {
+            @apply text-ob-bright;
+          }
+        }
+      }
+
       .book-publisher {
         @apply text-ob-bright pt-1.5;
 

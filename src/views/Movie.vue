@@ -320,7 +320,7 @@ export default defineComponent({
       if(userStore.userInfo !== '') {
         reactiveData.movieFavourite.email = userStore.userInfo.email
 
-        movieApi.getMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
+        movieApi.getUserMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
             .then((response) => {
               reactiveData.movieFavourite.favourite = Number(response.data.data.favourite)
             })
@@ -359,7 +359,6 @@ export default defineComponent({
     }
 
     const updateMovieLike = () => {
-      console.log(reactiveData.movieFavourite.favourite)
       if(reactiveData.movieFavourite.favourite === 0) {
         movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
             .then((response) => {
