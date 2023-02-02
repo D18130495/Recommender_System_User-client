@@ -147,7 +147,7 @@ export default defineComponent({
     }
 
     const refreshRecommendMovie = () => {
-      
+
     }
 
     const toSignIn = () => {

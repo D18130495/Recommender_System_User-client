@@ -246,6 +246,7 @@ import { useRouter } from "vue-router"
 
 import userApi from "@/api/user"
 import movieApi from "@/api/movie"
+import bookApi from "@/api/book"
 
 import { InfoFilled } from "@element-plus/icons-vue"
 
@@ -333,6 +334,9 @@ export default defineComponent({
           .then((response) => {
             initialMovieLikeList()
 
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
+
             ElNotification({
               title: 'Success',
               message: response.data.message,
@@ -343,7 +347,38 @@ export default defineComponent({
     }
 
     const handleBookDelete = (index: number, row: BookLike) => {
-      console.log("123")
+      bookApi.likeOrUnlikeBook({'isbn': row.isbn, 'email': userStore.userInfo.email, 'favourite':1})
+          .then((response) => {
+            initialBookLikeList()
+
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
+
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
+          })
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
     }
 
     return {

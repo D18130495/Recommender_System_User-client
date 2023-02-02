@@ -259,6 +259,7 @@ import { useRouter } from "vue-router"
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
 import movieApi from "@/api/movie"
+import userApi from "@/api/user";
 
 
 export default defineComponent({
@@ -349,6 +350,9 @@ export default defineComponent({
             reactiveData.movieRate.email = response.data.data.email
             reactiveData.movieRate.rating = response.data.data.rating
 
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
+
             ElNotification({
               title: 'Success',
               message: response.data.message,
@@ -364,6 +368,9 @@ export default defineComponent({
             .then((response) => {
               reactiveData.movieFavourite.favourite = 1
 
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
+
               ElNotification({
                 title: 'Success',
                 message: response.data.message,
@@ -375,6 +382,9 @@ export default defineComponent({
         movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
             .then((response) => {
               reactiveData.movieFavourite.favourite = 0
+
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
 
               ElNotification({
                 title: 'Success',
@@ -388,6 +398,24 @@ export default defineComponent({
 
     const refreshGeneralMovie = () => {
       getRandomMovieList()
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
     }
 
     return {

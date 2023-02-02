@@ -275,6 +275,7 @@ import { useRouter } from "vue-router"
 import BookItemCard from "@/components/Section/Book/BookItemCard.vue"
 
 import bookApi from "@/api/book"
+import userApi from "@/api/user";
 
 
 export default defineComponent({
@@ -358,6 +359,9 @@ export default defineComponent({
               reactiveData.bookRate.email = response.data.data.email
               reactiveData.bookRate.rating = response.data.data.rating
 
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
+
               ElNotification({
                 title: 'Success',
                 message: response.data.message,
@@ -373,6 +377,9 @@ export default defineComponent({
             .then((response) => {
               reactiveData.bookFavourite.favourite = 1
 
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
+
               ElNotification({
                 title: 'Success',
                 message: response.data.message,
@@ -385,6 +392,9 @@ export default defineComponent({
             .then((response) => {
               reactiveData.bookFavourite.favourite = 0
 
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
+
               ElNotification({
                 title: 'Success',
                 message: response.data.message,
@@ -393,6 +403,24 @@ export default defineComponent({
               })
             })
       }
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
     }
 
     // const getRandomMovieList = () => {
