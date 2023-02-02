@@ -146,70 +146,89 @@
         </template>
 
         <!-- movie like list -->
-<!--        <div class="movie-like-list mt-2">-->
-<!--          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">-->
-<!--            <span class="w-full text-xl font-bold">Liked list</span>-->
-<!--            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />-->
-<!--          </p>-->
+        <div class="movie-like-list mt-2">
+          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">
+            <span class="w-full text-xl font-bold">Liked list</span>
+            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
+          </p>
 
-<!--          <el-table :data="movieLikeList" style="width: 100%" max-height="281">-->
-<!--            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />-->
-<!--            <el-table-column prop="title" label="Title" width="400" />-->
-<!--            <el-table-column prop="genres" label="Genres" width="350" />-->
-<!--            <el-table-column label="Director" width="200" align="center">-->
-<!--              <template #default="scope">-->
-<!--                <a :href="scope.row.director.directorLink" target="_blank">-->
-<!--                  {{ scope.row.director.directorName }}-->
-<!--                </a>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-<!--            <el-table-column label="Actors" width="200" align="center">-->
-<!--              <template #default="scope">-->
-<!--                <el-popover effect="light" trigger="hover" placement="top" width="auto">-->
-<!--                  <template #default>-->
-<!--                    <div class="text-center" v-for="actor in scope.row.actor">-->
-<!--                      <a :href="actor.actorLink" target="_blank">{{ actor.actorName }}</a>-->
-<!--                    </div>-->
-<!--                  </template>-->
-<!--                  <template #reference>-->
-<!--                    <el-tag v-for="actor in scope.row.actor">-->
-<!--                      {{ actor.actorName }}-->
-<!--                    </el-tag>-->
-<!--                  </template>-->
-<!--                </el-popover>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-<!--            <el-table-column prop="rating" label="Your rating" width="200" align="center">-->
-<!--              <template #default="scope">-->
-<!--                <el-tag v-if="scope.row.rating" type="success">-->
-<!--                  {{ scope.row.rating }}-->
-<!--                </el-tag>-->
-<!--                <el-tag v-else type="info">-->
-<!--                  Your haven't rating-->
-<!--                </el-tag>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-<!--            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">-->
-<!--              <template #default="scope">-->
-<!--                <el-button link type="primary" size="small" @click="handleDetail(scope.$index, scope.row)">Detail</el-button>-->
-<!--                <el-popconfirm-->
-<!--                    width="220"-->
-<!--                    confirm-button-text="OK"-->
-<!--                    cancel-button-text="No, Thanks"-->
-<!--                    :icon="InfoFilled"-->
-<!--                    icon-color="#626AEF"-->
-<!--                    title="Are you sure to delete this?"-->
-<!--                    @confirm="handleDelete(scope.$index, scope.row)"-->
-<!--                >-->
-<!--                  <template #reference>-->
-<!--                    <el-button link type="primary" size="small">Delete</el-button>-->
-<!--                  </template>-->
-<!--                </el-popconfirm>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-<!--          </el-table>-->
-<!--        </div>-->
+          <el-table :data="bookLikeList" style="width: 100%" max-height="281">
+            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
+            <el-table-column prop="isbn" label="ISBN" width="200" align="center" />
+            <el-table-column prop="title" label="Title" width="350" />
+            <el-table-column prop="year" label="Year" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.year && scope.row.year !== '0'">
+                  {{ scope.row.year }}
+                </el-tag>
+                <el-tag v-else type="info">
+                  Year not available
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="author" label="Author" width="200" align="center" />
+            <el-table-column prop="publisher" label="Publisher" width="200" align="center" />
+            <el-table-column prop="rating" label="Your rating" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.rating" type="success">
+                  {{ scope.row.rating }}
+                </el-tag>
+                <el-tag v-else type="info">
+                  Your haven't rating
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column class="pl-1" fixed="right" label="Operations" width="120" align="center">
+              <template #default="scope">
+                <el-button link type="primary" size="small" @click="handleBookDetail(scope.$index, scope.row)">Detail</el-button>
+                <el-popconfirm
+                    width="220"
+                    confirm-button-text="OK"
+                    cancel-button-text="No, Thanks"
+                    :icon="InfoFilled"
+                    icon-color="#626AEF"
+                    title="Are you sure to delete this?"
+                    @confirm="handleBookDelete(scope.$index, scope.row)"
+                >
+                  <template #reference>
+                    <el-button link type="primary" size="small">Delete</el-button>
+                  </template>
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
 
+        <!-- book rating list -->
+        <div class="movie-rating-list mt-6">
+          <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">
+            <span class="w-full text-xl font-bold">Rating list</span>
+            <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
+          </p>
+
+          <el-table :data="bookRatingList" style="width: 100%" max-height="281">
+            <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
+            <el-table-column prop="isbn" label="ISBN" width="200" align="center" />
+            <el-table-column prop="title" label="Title" width="350" />
+            <el-table-column prop="rating" label="Your rating" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.rating" type="success">
+                  {{ scope.row.rating }}
+                </el-tag>
+                <el-tag v-else type="info">
+                  Your haven't rating
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="author" label="Author" width="200" align="center" />
+            <el-table-column prop="publisher" label="Publisher" width="200" align="center" />
+            <el-table-column fixed="right" label="Operations" width="120" align="center">
+              <template #default="scope">
+                <el-button link type="primary" size="small" @click="handleBookDetail(scope.$index, scope.row)">Detail</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -284,7 +303,6 @@ export default defineComponent({
       userApi.getUserBookLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.bookLikeList = response.data.data
-            console.log(reactiveData.bookLikeList)
           })
     }
 
@@ -299,7 +317,6 @@ export default defineComponent({
       userApi.getUserBookRatingList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.bookRatingList = response.data.data
-            console.log(reactiveData.bookRatingList)
           })
     }
 
@@ -325,12 +342,17 @@ export default defineComponent({
           })
     }
 
+    const handleBookDelete = (index: number, row: BookLike) => {
+      console.log("123")
+    }
+
     return {
       activeIndex,
       ...toRefs(reactiveData),
       handleMovieDetail,
       handleBookDetail,
       handleMovieDelete,
+      handleBookDelete,
       InfoFilled,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

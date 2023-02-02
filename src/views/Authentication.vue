@@ -36,7 +36,7 @@
                 </el-form-item>
 
                 <el-form-item label="Password" prop="password" >
-                  <el-input v-model="signInForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
+                  <el-input v-model="signInForm.password" type="password" autocomplete="off" placeholder="Please enter your Password" show-password>
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
@@ -88,7 +88,7 @@
                 </el-form-item>
 
                 <el-form-item prop="password">
-                  <el-input v-model="signUpForm.password" type="password" autocomplete="off" placeholder="Please enter your Password">
+                  <el-input v-model="signUpForm.password" type="password" autocomplete="off" placeholder="Please enter your Password" show-password>
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
@@ -96,7 +96,7 @@
                 </el-form-item>
 
                 <el-form-item prop="passwordCheck">
-                  <el-input v-model="signUpForm.passwordCheck" type="password" autocomplete="off" placeholder="Please enter your Password again">
+                  <el-input v-model="signUpForm.passwordCheck" type="password" autocomplete="off" placeholder="Please enter your Password again" show-password>
                     <template #prefix>
                       <el-icon><Lock/></el-icon>
                     </template>
@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, reactive, ref} from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
 import { useRouter } from 'vue-router'

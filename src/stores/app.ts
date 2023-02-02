@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import cookies from 'js-cookie'
-import nProgress from 'nprogress'
+import nProgress, {start} from 'nprogress'
 import 'nprogress/nprogress.css'
 
 nProgress.configure({
@@ -19,18 +19,20 @@ const setTheme = (theme: string) => {
   }
 }
 
-const scrollTop = () => {
-  const timer = setInterval(function () {
-    const sTop = window.scrollY;
-    const offset = sTop - (sTop * 0.1 + 10);
+const scrollTop = (scroll: boolean) => {
+  if(!scroll) {
+    const timer = setInterval(function () {
+      const sTop = window.scrollY;
+      const offset = sTop - (sTop * 0.1 + 10);
 
-    if(offset > 0) {
-      window.scrollTo(0, offset);
-    } else {
-      window.scrollTo(0, 0);
-      clearInterval(timer);
-    }
-  }, 25);
+      if(offset > 0) {
+        window.scrollTo(0, offset);
+      } else {
+        window.scrollTo(0, 0);
+        clearInterval(timer);
+      }
+    }, 25);
+  }
 }
 
 export const useAppStore = defineStore('appStore', {
@@ -50,12 +52,10 @@ export const useAppStore = defineStore('appStore', {
         header_gradient_light: 'linear-gradient(130deg, rgb(255, 102, 204), rgb(102, 255, 204) 41.07%, rgb(102, 204, 255) 76.05%)'
       },
       appLoading: false,
+      scrollTop: false,
       websiteConfig: '' as any,
-      viewCount: 0,
-      articleCount: 0,
-      talkCount: 0,
-      categoryCount: 0,
-      tagCount: 0,
+      movieCount: 0,
+      bookCount: 0,
       NPTimeout: -1,
       loadingTimeout: -1
     }
@@ -79,12 +79,12 @@ export const useAppStore = defineStore('appStore', {
     endLoading() {
       this.NPTimeout = <any>setTimeout(() => {
         nProgress.done()
-        scrollTop()
+        scrollTop(this.scrollTop)
       }, 100)
 
       this.loadingTimeout = <any>setTimeout(() => {
         this.appLoading = false
-        scrollTop()
+        scrollTop(this.scrollTop)
       }, 300)
     }
   }

@@ -16,7 +16,7 @@
                     <el-skeleton-item variant="text" style="width: 40px;" />
                   </ul>
                   <ul v-else-if="!loading && movie.genres && movie.genres.length > 0">
-                    <li v-for="genre in movie.genres" :key="movie.movieId">
+                    <li v-for="genre in movie.genres" :key="movie.genre">
                       <em class="opacity-50">#</em>
                       {{ genre }}
                     </li>
@@ -55,7 +55,7 @@
               <div class="grid grid-cols-12 gap-4">
                 <!-- movieImage -->
                 <div class="movie-image-container">
-                  <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
+                  <img v-if="movie.movieImage" v-lazy="movie.movieImage" />
                   <img v-else src="@/assets/posterNotFound.jpg" />
                 </div>
 

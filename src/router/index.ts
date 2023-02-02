@@ -60,6 +60,12 @@ router.beforeEach((to, from, next) => {
   const appStore = useAppStore()
   const userStore = useUserStore()
 
+  if((location.pathname + location.search) == from.fullPath) { // browser back, do not scroll to top
+    appStore.scrollTop = false
+  }else { // to new page, scroll to top
+    appStore.scrollTop = true
+  }
+
   // front cookie expired, server token not expired
   if(cookies.get('token') !== undefined) {
     if(to.path === '/authentication') { // already logged in
@@ -108,7 +114,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(() => {
+router.afterEach((to, from, next) => {
   const appStore = useAppStore()
 
   if(router.currentRoute.value.fullPath !== '/authentication') { // path not authentication end load bar
