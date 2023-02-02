@@ -57,6 +57,24 @@ export default {
             data: userInfo
         })
     },
+    getUserLikeAndRatingMovieCount(email: any) {
+        return request({
+            url: `/user/getUserLikeAndRatingMovieCount`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    },
+    getUserLikeAndRatingBookCount(email: any) {
+        return request({
+            url: `/user/getUserLikeAndRatingBookCount`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    },
     getUserMovieLikeList(email: any) {
         return request({
             url: `/user/getUserMovieLikeList`,

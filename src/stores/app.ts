@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import cookies from 'js-cookie'
-import nProgress, {start} from 'nprogress'
+import nProgress, { start } from 'nprogress'
 import 'nprogress/nprogress.css'
 
 nProgress.configure({

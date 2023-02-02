@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, watch} from 'vue'
+import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, onMounted} from 'vue'
 
 import { ElNotification } from "element-plus/es"
 
@@ -131,7 +131,7 @@ export default defineComponent({
       appStore.initializeTheme(appStore.themeConfig.theme)
     }
 
-    // initial page theme
+    // initial page user
     const initialUser = () => {
       if(cookies.get('token') !== undefined) {
         userApi.tokenLoginRefresh(String(cookies.get('token')))
@@ -140,6 +140,9 @@ export default defineComponent({
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
             cookies.set('token', response.data.data.token, { expires: expires })
+
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
           })
       }else {
         userStore.userInfo = ''
@@ -155,6 +158,24 @@ export default defineComponent({
           userStore.drawer = true
         }
       }
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
     }
 
     const cancelClick = () => {

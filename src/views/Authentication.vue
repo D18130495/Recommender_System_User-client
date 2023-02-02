@@ -124,8 +124,9 @@ import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
-import {ElMessage} from "element-plus/es";
+import { ElMessage } from "element-plus/es";
 
+import { useAppStore } from "@/stores/app"
 import { useUserStore } from '@/stores/user'
 import cookies from 'js-cookie'
 
@@ -138,6 +139,7 @@ import 'remixicon/fonts/remixicon.css'
 export default defineComponent({
   name: 'Authentication',
   setup() {
+    const appStore = useAppStore()
     const userStore = useUserStore()
     const router = useRouter()
     const siteStyle = ref({ 'padding': '200px 0' })
@@ -264,13 +266,16 @@ export default defineComponent({
                 sessionStorage.setItem('token', response.data.data.token)
                 cookies.set('token', response.data.data.token, { expires: expires })
 
+                getUserLikeAndRatingMovieCount()
+                getUserLikeAndRatingBookCount()
+
                 ElMessage.success(response.data.message)
 
                 if(userStore.userInfo.policy === "U") {
                   userStore.drawer = true
                 }
 
-                router.back()
+                router.push({ path: '/' })
               })
         }else {
           return false
@@ -289,6 +294,9 @@ export default defineComponent({
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
                 cookies.set('token', response.data.data.token, { expires: expires })
+
+                getUserLikeAndRatingMovieCount()
+                getUserLikeAndRatingBookCount()
 
                 ElMessage.success(response.data.message)
 
@@ -340,11 +348,32 @@ export default defineComponent({
 
             ElMessage.success(response.data.message)
 
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
+
             if(userStore.userInfo.policy === "U") {
               userStore.drawer = true
             }
 
             router.back()
+          })
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+
+            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
           })
     }
 

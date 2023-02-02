@@ -116,7 +116,7 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach((to, from, next) => {
   const appStore = useAppStore()
-
+  
   if(router.currentRoute.value.fullPath !== '/authentication') { // path not authentication end load bar
     appStore.endLoading()
   }

@@ -18,20 +18,15 @@
         </div>
 
         <div class="h-full w-full flex flex-col flex-1 justify-end items-end">
-          <ul class="grid grid-cols-3 pt-4 w-full px-2 text-lg">
+          <ul class="grid grid-cols-2 pt-4 w-full px-2 text-lg">
             <li class="col-span-1 text-center">
               <span class="text-ob-bright">Movie</span>
-              <p class="text-base text-ob-secondary">123</p>
-            </li>
-
-            <li class="col-span-1 text-center">
-              <span class="text-ob-bright">Music</span>
-              <p class="text-base text-ob-secondary">123</p>
+              <p class="text-base text-ob-secondary">{{ appStore.movieCount }}</p>
             </li>
 
             <li class="col-span-1 text-center">
               <span class="text-ob-bright">Book</span>
-              <p class="text-base text-ob-secondary">123</p>
+              <p class="text-base text-ob-secondary">{{ appStore.bookCount }}</p>
             </li>
           </ul>
         </div>
@@ -44,7 +39,7 @@
 import { computed, defineComponent, toRef } from 'vue'
 
 import { useAppStore } from "@/stores/app"
-import {useUserStore} from "@/stores/user"
+import { useUserStore } from "@/stores/user"
 
 import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
@@ -60,6 +55,7 @@ export default defineComponent({
     const userStore = useUserStore()
 
     return {
+      appStore,
       userInfo: toRef(userStore.$state, 'userInfo'),
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

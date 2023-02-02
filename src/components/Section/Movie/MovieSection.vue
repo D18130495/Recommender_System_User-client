@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div v-if="userStore.userInfo !== ''">
+  <div>
     <div class="grid grid-cols-2">
       <p class="relative grid-cols-1 opacity-90 flex items-center pt-12 pb-2 mb-8 text-3xl text-ob-bright">
         <el-icon class="inline-block mr-2"><Film/></el-icon>
@@ -31,12 +31,20 @@
         <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
       </p>
 
-      <button v-if="userStore.likeOrRateNumber >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
+      <!-- display refresh button -->
+      <button v-if="userStore.userInfo !== '' &&
+                    userStore.userInfo.policy === 'T' &&
+                    recommendMovies &&
+                    userStore.likeOrRateNumber >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
         <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
       </button>
     </div>
 
-    <div v-if="recommendMovies && userStore.likeOrRateNumber >= 5" class="item-grid">
+    <!-- display movie card -->
+    <div v-if="userStore.userInfo !== '' &&
+               userStore.userInfo.policy === 'T' &&
+               recommendMovies &&
+               userStore.likeOrRateNumber >= 5" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
           <li v-for="movie in recommendMovies" :key="movie.movieId">
@@ -45,7 +53,8 @@
         </ul>
       </div>
     </div>
-    <div v-else class="item-grid mb-4">
+    <!-- not sign in -->
+    <div v-else-if="userStore.userInfo === ''" class="item-grid mb-4">
       <div class="flex flex-col relative mx-auto">
         <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
 
@@ -60,6 +69,35 @@
             class="mx-auto mt-8 w-32 text-white p-2 rounded-lg shadow-lg transition transform hover:scale-105 flex">
           <span class="text-center flex-grow commit">Sign in</span>
         </button>
+      </div>
+    </div>
+    <!-- not accept GDPR -->
+    <div v-else-if="userStore.userInfo !== '' && userStore.userInfo.policy !== 'T'" class="item-grid mb-4">
+      <div class="flex flex-col relative mx-auto">
+        <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
+
+        <div class="mt-4">
+          <p class="font-bold text-center text-ob-bright">Please accept GDPR policy to start recommendation</p>
+          <p class="text-center text-ob-bright">Save or rating items to keep track of what you want.</p>
+        </div>
+
+        <button
+            @click="toProfile"
+            id="submit-button"
+            class="mx-auto mt-8 w-32 text-white p-2 rounded-lg shadow-lg transition transform hover:scale-105 flex">
+          <span class="text-center flex-grow commit">Profile</span>
+        </button>
+      </div>
+    </div>
+    <!-- movie like or rate less then 10 -->
+    <div v-else-if="userStore.userInfo !== '' && userStore.likeOrRateNumber < 5" class="item-grid mb-4">
+      <div class="flex flex-col relative mx-auto">
+        <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
+
+        <div class="mt-4">
+          <p class="font-bold text-center text-ob-bright">Recommendation will start once you liked or rating 5 items</p>
+          <p class="text-center text-ob-bright">Save or rating items to keep track of what you want.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -94,6 +132,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
       getRandomMovieList()
+
     })
 
     const getRandomMovieList = () => {
@@ -108,17 +147,22 @@ export default defineComponent({
     }
 
     const refreshRecommendMovie = () => {
-
+      
     }
 
     const toSignIn = () => {
       router.push({ path: '/authentication' })
     }
 
+    const toProfile = () => {
+      router.push({ path: '/profile' })
+    }
+
     return {
       userStore,
       ...toRefs(reactiveData),
       toSignIn,
+      toProfile,
       refreshGeneralMovie,
       refreshRecommendMovie,
       gradientBackground: computed(() => {
