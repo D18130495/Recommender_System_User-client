@@ -64,6 +64,7 @@ import Header from "@/components/Header/Header.vue"
 import Footer from "@/components/Footer/Footer.vue"
 
 import userApi from "@/api/user"
+import recommendationApi from "@/api/recommendation"
 
 
 export default defineComponent({
@@ -132,17 +133,19 @@ export default defineComponent({
     }
 
     // initial page user
-    const initialUser = () => {
+    const initialUser =  () => {
       if(cookies.get('token') !== undefined) {
         userApi.tokenLoginRefresh(String(cookies.get('token')))
-          .then((response) => {
+          .then(async (response) => {
             userStore.userInfo = response.data.data
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
-            cookies.set('token', response.data.data.token, { expires: expires })
+            cookies.set('token', response.data.data.token, {expires: expires})
 
-            getUserLikeAndRatingMovieCount()
-            getUserLikeAndRatingBookCount()
+            await getUserLikeAndRatingMovieCount()
+            await getUserLikeAndRatingBookCount()
+
+            await initialRecommendation()
           })
       }else {
         userStore.userInfo = ''
@@ -160,12 +163,31 @@ export default defineComponent({
       }
     }
 
+    const initialRecommendation = () => {
+      if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
+        getRecommendMovieListByItemCF()
+      }else if (userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+        getRecommendMovieListByUserCF()
+      }else { // not like more than 5 items
+        appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
+      }
+    }
+
+    const getRecommendMovieListByItemCF = () => {
+      recommendationApi.getRecommendMovieListByItemCF(userStore.userInfo.email)
+          .then((response) => {
+            appStore.recommendMovies = response.data.data
+          })
+    }
+
+    const getRecommendMovieListByUserCF = () => {
+      console.log("456")
+    }
+
     const getUserLikeAndRatingMovieCount = () => {
       userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
           .then((response) => {
             appStore.movieCount = response.data.data
-
-            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
           })
     }
 
@@ -173,8 +195,6 @@ export default defineComponent({
       userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
           .then((response) => {
             appStore.bookCount = response.data.data
-
-            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
           })
     }
 

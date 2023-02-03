@@ -34,8 +34,9 @@
       <!-- display refresh button -->
       <button v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
-                    recommendMovies &&
-                    userStore.likeOrRateNumber >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
+                    appStore.recommendMovies &&
+                    appStore.movieCount >= 5 ||
+                    appStore.bookCount >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
         <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
       </button>
     </div>
@@ -43,11 +44,12 @@
     <!-- display movie card -->
     <div v-if="userStore.userInfo !== '' &&
                userStore.userInfo.policy === 'T' &&
-               recommendMovies &&
-               userStore.likeOrRateNumber >= 5" class="item-grid">
+               appStore.recommendMovies &&
+               appStore.movieCount >= 5 ||
+               appStore.bookCount >= 5" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-          <li v-for="movie in recommendMovies" :key="movie.movieId">
+          <li v-for="movie in appStore.recommendMovies" :key="movie.movieId">
             <MovieItemCard :data="movie" />
           </li>
         </ul>
@@ -90,12 +92,12 @@
       </div>
     </div>
     <!-- movie like or rate less then 10 -->
-    <div v-else-if="userStore.userInfo !== '' && userStore.likeOrRateNumber < 5" class="item-grid mb-4">
+    <div v-else-if="userStore.userInfo !== '' && appStore.movieCount < 5 && appStore.bookCount < 5" class="item-grid mb-4">
       <div class="flex flex-col relative mx-auto">
         <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
 
         <div class="mt-4">
-          <p class="font-bold text-center text-ob-bright">Recommendation will start once you liked or rating 5 items</p>
+          <p class="font-bold text-center text-ob-bright">Recommendation will start once you liked or rating 5 items in one category</p>
           <p class="text-center text-ob-bright">Save or rating items to keep track of what you want.</p>
         </div>
       </div>
@@ -104,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, defineComponent, onBeforeMount, toRefs } from 'vue'
+import {reactive, computed, defineComponent, onBeforeMount, toRefs, onMounted} from 'vue'
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
@@ -114,6 +116,7 @@ import { useRouter } from "vue-router"
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
 import movieApi from "@/api/movie"
+import recommendationApi from "@/api/recommendation"
 
 
 export default defineComponent({
@@ -127,12 +130,11 @@ export default defineComponent({
     const router = useRouter()
     const reactiveData = reactive({
       generalMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any,
-      recommendMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any
+
     })
 
     onBeforeMount(() => {
       getRandomMovieList()
-
     })
 
     const getRandomMovieList = () => {
@@ -159,6 +161,7 @@ export default defineComponent({
     }
 
     return {
+      appStore,
       userStore,
       ...toRefs(reactiveData),
       toSignIn,
