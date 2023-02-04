@@ -34,8 +34,9 @@
       <!-- display refresh button -->
       <button v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
-                    recommendBooks &&
-                    userStore.likeOrRateNumber >= 5" class="grid-cols-1 text-right" @click="refreshRecommendBook">
+                    appStore.recommendBooks &&
+                    appStore.movieCount >= 5 ||
+                    appStore.bookCount >= 5" class="grid-cols-1 text-right" @click="refreshRecommendBook">
         <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
       </button>
     </div>
@@ -43,11 +44,12 @@
     <!-- display book card -->
     <div v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
-                    recommendBooks &&
-                    userStore.likeOrRateNumber >= 5" class="item-grid">
+                    appStore.recommendBooks &&
+                    appStore.movieCount >= 5 ||
+                    appStore.bookCount >= 5" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-          <li v-for="book in recommendBooks" :key="book.isbn">
+          <li v-for="book in appStore.recommendBooks" :key="book.isbn">
             <BookItemCard :data="book" />
           </li>
         </ul>
@@ -126,14 +128,33 @@ export default defineComponent({
     const userStore = useUserStore()
     const router = useRouter()
     const reactiveData = reactive({
-      generalBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
-      recommendBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
+      generalBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
     })
 
     onBeforeMount(() => {
       getRandomBookList()
 
+      // book recommendation
+      if(userStore.userInfo !== null && appStore.bookCount >= 10) { // like more than 10 movies, use ItemCF
+        getRecommendBookListByItemCF()
+      }else if(userStore.userInfo != null && appStore.bookCount >= 5 || appStore.movieCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+        if(appStore.bookCount >= appStore.movieCount) {
+          getRecommendBookListByUserCF('book')
+        }else{
+          getRecommendBookListByUserCF('movie')
+        }
+      }else { // not like more than 5 items
+        appStore.recommendBooks = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
+      }
     })
+
+    const getRecommendBookListByItemCF = () => {
+      console.log("getRecommendBookListByItemCF")
+    }
+
+    const getRecommendBookListByUserCF = (type:any) => {
+      console.log("getRecommendBookListByUserCF " + type)
+    }
 
     const getRandomBookList = () => {
       bookApi.getRandomBookList()
@@ -159,6 +180,7 @@ export default defineComponent({
     }
 
     return {
+      appStore,
       userStore,
       ...toRefs(reactiveData),
       toSignIn,

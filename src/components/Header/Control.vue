@@ -127,7 +127,8 @@ export default defineComponent({
     }
 
     const handleLogout = () => {
-      userStore.likeOrRateNumber = 0
+      appStore.movieCount = -1
+      appStore.bookCount = -1
       userStore.userInfo = ''
       userStore.token = ''
       sessionStorage.removeItem('token')

@@ -54,11 +54,12 @@ export const useAppStore = defineStore('appStore', {
       appLoading: false,
       scrollTop: false,
       websiteConfig: '' as any,
-      movieCount: 0,
-      bookCount: 0,
+      movieCount: -1,
+      bookCount: -1,
       NPTimeout: -1,
       loadingTimeout: -1,
-      recommendMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any
+      recommendMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any,
+      recommendBooks: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any
     }
   },
   actions: {

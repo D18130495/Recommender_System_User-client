@@ -116,7 +116,7 @@ import { useRouter } from "vue-router"
 import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
 import movieApi from "@/api/movie"
-import recommendationApi from "@/api/recommendation"
+import recommendationApi from "@/api/recommendation";
 
 
 export default defineComponent({
@@ -135,7 +135,32 @@ export default defineComponent({
 
     onBeforeMount(() => {
       getRandomMovieList()
+
+      // movie recommendation
+      if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
+        getRecommendMovieListByItemCF()
+      }else if(userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+        if(appStore.movieCount >= appStore.bookCount) {
+          getRecommendMovieListByUserCF('movie')
+        }else{
+          getRecommendMovieListByUserCF('book')
+        }
+      }else { // not like more than 5 items
+        appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
+      }
     })
+
+    const getRecommendMovieListByItemCF = () => {
+      console.log("getRecommendMovieListByItemCF")
+      recommendationApi.getRecommendMovieListByItemCF(userStore.userInfo.email)
+          .then((response) => {
+            appStore.recommendMovies = response.data.data
+          })
+    }
+
+    const getRecommendMovieListByUserCF = (type:any) => {
+      console.log("getRecommendMovieListByUserCF " + type)
+    }
 
     const getRandomMovieList = () => {
       movieApi.getRandomMovieList()

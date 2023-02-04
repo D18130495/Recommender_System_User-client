@@ -10,7 +10,12 @@
         <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
-          <router-view v-if="isRouterAlive" v-slot="{ Component }">
+          <router-view v-if="isRouterAlive && userStore.userInfo !== '' && appStore.movieCount !== -1 && appStore.bookCount !== -1" v-slot="{ Component }">
+            <transition name="fade-slide-y" mode="out-in">
+              <component :is="Component"/>
+            </transition>
+          </router-view>
+          <router-view v-else-if="isRouterAlive" v-slot="{ Component }">
             <transition name="fade-slide-y" mode="out-in">
               <component :is="Component"/>
             </transition>
@@ -50,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, onMounted} from 'vue'
+import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, onMounted, watch} from 'vue'
 
 import { ElNotification } from "element-plus/es"
 
@@ -64,7 +69,6 @@ import Header from "@/components/Header/Header.vue"
 import Footer from "@/components/Footer/Footer.vue"
 
 import userApi from "@/api/user"
-import recommendationApi from "@/api/recommendation"
 
 
 export default defineComponent({
@@ -133,19 +137,16 @@ export default defineComponent({
     }
 
     // initial page user
-    const initialUser =  () => {
+    const initialUser = () => {
       if(cookies.get('token') !== undefined) {
         userApi.tokenLoginRefresh(String(cookies.get('token')))
-          .then(async (response) => {
+          .then((response) => {
             userStore.userInfo = response.data.data
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
-            cookies.set('token', response.data.data.token, {expires: expires})
+            cookies.set('token', response.data.data.token, { expires: expires })
 
-            await getUserLikeAndRatingMovieCount()
-            await getUserLikeAndRatingBookCount()
-
-            await initialRecommendation()
+            getUserLikeAndRatingMovieCount()
           })
       }else {
         userStore.userInfo = ''
@@ -163,31 +164,12 @@ export default defineComponent({
       }
     }
 
-    const initialRecommendation = () => {
-      if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
-        getRecommendMovieListByItemCF()
-      }else if (userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
-        getRecommendMovieListByUserCF()
-      }else { // not like more than 5 items
-        appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
-      }
-    }
-
-    const getRecommendMovieListByItemCF = () => {
-      recommendationApi.getRecommendMovieListByItemCF(userStore.userInfo.email)
-          .then((response) => {
-            appStore.recommendMovies = response.data.data
-          })
-    }
-
-    const getRecommendMovieListByUserCF = () => {
-      console.log("456")
-    }
-
     const getUserLikeAndRatingMovieCount = () => {
       userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
           .then((response) => {
             appStore.movieCount = response.data.data
+
+            getUserLikeAndRatingBookCount()
           })
     }
 
@@ -195,6 +177,7 @@ export default defineComponent({
       userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
           .then((response) => {
             appStore.bookCount = response.data.data
+
           })
     }
 
@@ -278,6 +261,7 @@ export default defineComponent({
       isRouterAlive,
       appWrapperClass,
       loadingBarClass,
+      appStore,
       userStore,
       cancelClick,
       confirmClick
