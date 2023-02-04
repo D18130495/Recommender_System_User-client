@@ -275,7 +275,7 @@ export default defineComponent({
                   userStore.drawer = true
                 }
 
-                router.push({ path: '/' })
+                router.back()
               })
         }else {
           return false

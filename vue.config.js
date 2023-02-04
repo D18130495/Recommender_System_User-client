@@ -8,6 +8,12 @@ function resolve(dir) {
 module.exports = defineConfig({
   devServer: {
     port: 9000,
+    client: {
+      webSocketURL: 'ws://0.0.0.0:9000/ws',
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
     proxy: {
       'api': {
         target: 'http://localhost:9001',
@@ -27,20 +33,5 @@ module.exports = defineConfig({
     devServer: {
       historyApiFallback: true
     }
-  },
-  chainWebpack: (config) => {
-    config.resolve.alias.set('vue-i18n', 'vue-i18n/dist/vue-i18n.cjs.js')
-    config.module.rule('svg').exclude.add(resolve('src/icons')).end()
-    config.module
-      .rule('icons')
-      .test(/\.svg$/)
-      .include.add(resolve('src/icons'))
-      .end()
-      .use('svg-sprite-loader')
-      .loader('svg-sprite-loader')
-      .options({
-        symbolId: 'icon-[name]'
-      })
-      .end()
   }
 })

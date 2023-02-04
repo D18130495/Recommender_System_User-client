@@ -7,9 +7,11 @@
         <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
       </p>
 
-      <button class="grid-cols-1 text-right" @click="refreshGeneralMovie">
-        <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
-      </button>
+      <div class="grid-cols-1 flex items-center">
+        <button class="ml-auto" @click="refreshGeneralMovie">
+          <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+        </button>
+      </div>
     </div>
 
     <div class="item-grid">
@@ -32,13 +34,15 @@
       </p>
 
       <!-- display refresh button -->
-      <button v-if="userStore.userInfo !== '' &&
+      <div class="grid-cols-1 flex items-center">
+        <button v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
                     appStore.recommendMovies &&
                     appStore.movieCount >= 5 ||
-                    appStore.bookCount >= 5" class="grid-cols-1 text-right" @click="refreshRecommendMovie">
-        <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
-      </button>
+                    appStore.bookCount >= 5" class="ml-auto" @click="refreshRecommendMovie">
+          <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+        </button>
+      </div>
     </div>
 
     <!-- display movie card -->
@@ -160,6 +164,10 @@ export default defineComponent({
 
     const getRecommendMovieListByUserCF = (type:any) => {
       console.log("getRecommendMovieListByUserCF " + type)
+      recommendationApi.getRecommendMovieListByUserCF(userStore.userInfo.email, type)
+          .then((response) => {
+            appStore.recommendMovies = response.data.data
+          })
     }
 
     const getRandomMovieList = () => {
@@ -174,7 +182,17 @@ export default defineComponent({
     }
 
     const refreshRecommendMovie = () => {
-
+      if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
+        getRecommendMovieListByItemCF()
+      }else if(userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+        if(appStore.movieCount >= appStore.bookCount) {
+          getRecommendMovieListByUserCF('movie')
+        }else{
+          getRecommendMovieListByUserCF('book')
+        }
+      }else { // not like more than 5 items
+        appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
+      }
     }
 
     const toSignIn = () => {

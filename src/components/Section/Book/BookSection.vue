@@ -7,9 +7,11 @@
         <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
       </p>
 
-      <button class="grid-cols-1 text-right" @click="refreshGeneralBook">
-        <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
-      </button>
+      <div class="grid-cols-1 flex items-center">
+        <button class="ml-auto" @click="refreshGeneralBook">
+          <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+        </button>
+      </div>
     </div>
 
       <div class="item-grid">
@@ -32,13 +34,15 @@
       </p>
 
       <!-- display refresh button -->
-      <button v-if="userStore.userInfo !== '' &&
+      <div class="grid-cols-1 flex items-center">
+        <button v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
                     appStore.recommendBooks &&
                     appStore.movieCount >= 5 ||
-                    appStore.bookCount >= 5" class="grid-cols-1 text-right" @click="refreshRecommendBook">
-        <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
-      </button>
+                    appStore.bookCount >= 5" class="ml-auto" @click="refreshRecommendBook">
+          <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+        </button>
+      </div>
     </div>
 
     <!-- display book card -->
@@ -92,7 +96,7 @@
       </div>
     </div>
     <!-- movie like or rate less then 10 -->
-    <div v-else-if="userStore.userInfo !== '' && userStore.likeOrRateNumber < 5" class="item-grid mb-4">
+    <div v-else-if="userStore.userInfo !== '' && appStore.movieCount < 5 && appStore.bookCount < 5" class="item-grid mb-4">
       <div class="flex flex-col relative mx-auto">
         <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>
 
@@ -116,6 +120,7 @@ import { useRouter } from "vue-router"
 import BookItemCard from "@/components/Section/Book/BookItemCard.vue"
 
 import bookApi from "@/api/book"
+import recommendationApi from "@/api/recommendation";
 
 
 export default defineComponent({
@@ -150,10 +155,18 @@ export default defineComponent({
 
     const getRecommendBookListByItemCF = () => {
       console.log("getRecommendBookListByItemCF")
+      recommendationApi.getRecommendBookListByItemCF(userStore.userInfo.email)
+          .then((response) => {
+            appStore.recommendBooks = response.data.data
+          })
     }
 
     const getRecommendBookListByUserCF = (type:any) => {
       console.log("getRecommendBookListByUserCF " + type)
+      recommendationApi.getRecommendBookListByUserCF(userStore.userInfo.email, type)
+          .then((response) => {
+            appStore.recommendBooks = response.data.data
+          })
     }
 
     const getRandomBookList = () => {
