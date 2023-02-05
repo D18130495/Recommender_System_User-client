@@ -15,7 +15,7 @@
               <component :is="Component"/>
             </transition>
           </router-view>
-          <router-view v-else-if="isRouterAlive" v-slot="{ Component }">
+          <router-view v-else-if="isRouterAlive && userStore.userInfo === ''" v-slot="{ Component }">
             <transition name="fade-slide-y" mode="out-in">
               <component :is="Component"/>
             </transition>
@@ -147,6 +147,7 @@ export default defineComponent({
             cookies.set('token', response.data.data.token, { expires: expires })
 
             getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
           })
       }else {
         userStore.userInfo = ''
@@ -168,8 +169,6 @@ export default defineComponent({
       userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
           .then((response) => {
             appStore.movieCount = response.data.data
-
-            getUserLikeAndRatingBookCount()
           })
     }
 
@@ -177,7 +176,6 @@ export default defineComponent({
       userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
           .then((response) => {
             appStore.bookCount = response.data.data
-
           })
     }
 

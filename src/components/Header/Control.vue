@@ -127,14 +127,16 @@ export default defineComponent({
     }
 
     const handleLogout = () => {
-      appStore.movieCount = -1
-      appStore.bookCount = -1
-      userStore.userInfo = ''
-      userStore.token = ''
-      sessionStorage.removeItem('token')
-      cookies.remove('token')
-
       router.push({ path: '/' })
+
+      setTimeout(function () {
+        appStore.movieCount = -1
+        appStore.bookCount = -1
+        userStore.userInfo = ''
+        userStore.token = ''
+        sessionStorage.removeItem('token')
+        cookies.remove('token')
+      }, 10)
 
       ElNotification({
         title: 'Success',
