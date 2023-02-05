@@ -1,10 +1,10 @@
 <template>
     <div class="block">
       <Title />
-      <MovieSection v-if="appStore.movieCount !== -1" />
-      <BookSection v-if="appStore.bookCount !== -1"/>
-      <MovieSection v-if="appStore.movieCount === -1" />
-      <BookSection v-if="appStore.movieCount === -1"/>
+      <MovieSection v-if="appStore.movieCount !== -1 && appStore.bookCount !== -1" />
+      <BookSection v-if="appStore.bookCount !== -1 && appStore.movieCount !== -1"/>
+      <MovieSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1" />
+      <BookSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1"/>
     </div>
 </template>
 
@@ -25,33 +25,11 @@ import cookies from "js-cookie";
 export default defineComponent({
   name: 'Home',
   components: {
-    BookSection,
-    Title, MovieSection
+    Title, MovieSection, BookSection
   },
   setup() {
     const appStore = useAppStore()
     const userStore = useUserStore()
-
-    onMounted(() => {
-      if(cookies.get('token') !== undefined) {
-        getUserLikeAndRatingMovieCount()
-        getUserLikeAndRatingBookCount()
-      }
-    })
-
-    const getUserLikeAndRatingMovieCount = () => {
-      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
-          .then((response) => {
-            appStore.movieCount = response.data.data
-          })
-    }
-
-    const getUserLikeAndRatingBookCount = () => {
-      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
-          .then((response) => {
-            appStore.bookCount = response.data.data
-          })
-    }
 
     return {
       appStore,

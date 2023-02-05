@@ -22,7 +22,7 @@
               </ul>
               <ul v-else-if="book.year && book.year === '0'">
                 <li>
-                  <em># Book Year not Available</em>
+                  <em># NA</em>
                 </li>
               </ul>
               <ul v-else>

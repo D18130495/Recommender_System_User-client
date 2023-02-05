@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRef, inject, onMounted } from 'vue'
+import {defineComponent, toRef, inject, onMounted, watch} from 'vue'
 import { useRouter } from 'vue-router'
 
 import ThemeSwitch from "./ControlButton/ThemeSwitch.vue"
@@ -73,6 +73,13 @@ export default defineComponent({
 
     onMounted(() => {
       document.addEventListener('visibilitychange', checkCookie)
+    })
+
+    watch(userStore, () => {
+      if(userStore.userInfo !== '') {
+        getUserLikeAndRatingMovieCount()
+        getUserLikeAndRatingBookCount()
+      }
     })
 
     const checkCookie = (e:any) => {
@@ -156,15 +163,6 @@ export default defineComponent({
       userStore.token = ''
       sessionStorage.removeItem('token')
       cookies.remove('token')
-
-      // setTimeout(function () {
-      //   appStore.movieCount = -1
-      //   appStore.bookCount = -1
-      //   userStore.userInfo = ''
-      //   userStore.token = ''
-      //   sessionStorage.removeItem('token')
-      //   cookies.remove('token')
-      // }, 10)
 
       router.push({ path: '/' })
 

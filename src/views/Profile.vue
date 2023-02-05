@@ -14,13 +14,13 @@
 
       <div class="main-grid">
         <div class="relative">
-          <ProfileDetail />
-          <ProfileFavouriteItem />
+          <ProfileDetail v-if="userStore.userInfo !== ''" />
+          <ProfileFavouriteItem v-if="userStore.userInfo !== ''" />
         </div>
 
         <div class="col-span-1">
           <Sidebar>
-            <SidebarProfile />
+            <SidebarProfile v-if="userStore.userInfo !== ''" />
           </Sidebar>
         </div>
       </div>
@@ -36,6 +36,8 @@ import ProfileFavouriteItem from "@/components/Profile/ProfileFavouriteItem.vue"
 import Sidebar from "@/components/Sidebar/Sidebar.vue"
 import SidebarProfile from "@/components/Sidebar/SidebarProfile.vue"
 
+import { useUserStore } from "@/stores/user"
+
 
 export default defineComponent({
   name: 'Profile',
@@ -43,7 +45,10 @@ export default defineComponent({
     ProfileDetail, ProfileFavouriteItem, Sidebar, SidebarProfile
   },
   setup() {
+    const userStore = useUserStore()
+
     return {
+      userStore
     }
   }
 })

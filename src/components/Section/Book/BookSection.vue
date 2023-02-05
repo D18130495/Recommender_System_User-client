@@ -181,7 +181,17 @@ export default defineComponent({
     }
 
     const refreshRecommendBook = () => {
-
+      if(userStore.userInfo !== null && appStore.bookCount >= 10) { // like more than 10 movies, use ItemCF
+        getRecommendBookListByItemCF()
+      }else if(userStore.userInfo != null && appStore.bookCount >= 5 || appStore.movieCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+        if(appStore.bookCount >= appStore.movieCount) {
+          getRecommendBookListByUserCF('book')
+        }else{
+          getRecommendBookListByUserCF('movie')
+        }
+      }else { // not like more than 5 items
+        appStore.recommendBooks = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
+      }
     }
 
     const toSignIn = () => {
