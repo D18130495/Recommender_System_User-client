@@ -90,18 +90,24 @@ export default defineComponent({
                   type: 'warning'
                 }
             ).then(() => {
+              appStore.movieCount = -1
+              appStore.bookCount = -1
               userStore.userInfo = ''
               userStore.token = ''
               sessionStorage.removeItem('token')
 
               router.push({ path: '/authentication' })
             }).catch(() => {
+              appStore.movieCount = -1
+              appStore.bookCount = -1
               userStore.userInfo = ''
               userStore.token = ''
               sessionStorage.removeItem('token')
             })
           }
 
+          appStore.movieCount = -1
+          appStore.bookCount = -1
           userStore.userInfo = ''
           userStore.token = ''
           sessionStorage.removeItem('token')
@@ -111,11 +117,28 @@ export default defineComponent({
                 userStore.userInfo = response.data.data
                 userStore.token = String(cookies.get('token'))
                 sessionStorage.setItem('token', String(cookies.get('token')))
+
+                getUserLikeAndRatingMovieCount()
+                getUserLikeAndRatingBookCount()
               })
         }
 
         refresh
       }
+    }
+
+    const getUserLikeAndRatingMovieCount = () => {
+      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.movieCount = response.data.data
+          })
+    }
+
+    const getUserLikeAndRatingBookCount = () => {
+      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
+          .then((response) => {
+            appStore.bookCount = response.data.data
+          })
     }
 
     const handleSearchModel: any = (status: boolean) => {
@@ -127,16 +150,23 @@ export default defineComponent({
     }
 
     const handleLogout = () => {
-      router.push({ path: '/' })
+      appStore.movieCount = -1
+      appStore.bookCount = -1
+      userStore.userInfo = ''
+      userStore.token = ''
+      sessionStorage.removeItem('token')
+      cookies.remove('token')
 
-      setTimeout(function () {
-        appStore.movieCount = -1
-        appStore.bookCount = -1
-        userStore.userInfo = ''
-        userStore.token = ''
-        sessionStorage.removeItem('token')
-        cookies.remove('token')
-      }, 10)
+      // setTimeout(function () {
+      //   appStore.movieCount = -1
+      //   appStore.bookCount = -1
+      //   userStore.userInfo = ''
+      //   userStore.token = ''
+      //   sessionStorage.removeItem('token')
+      //   cookies.remove('token')
+      // }, 10)
+
+      router.push({ path: '/' })
 
       ElNotification({
         title: 'Success',

@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import {reactive, computed, defineComponent, onBeforeMount, toRefs, onMounted} from 'vue'
+import {reactive, computed, defineComponent, onBeforeMount, toRefs } from 'vue'
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
@@ -211,6 +211,7 @@ export default defineComponent({
       toProfile,
       refreshGeneralMovie,
       refreshRecommendMovie,
+      movieCount: computed(() => appStore.movieCount),
       gradientBackground: computed(() => {
         if (appStore.themeConfig.theme === 'theme-dark') {
           return {

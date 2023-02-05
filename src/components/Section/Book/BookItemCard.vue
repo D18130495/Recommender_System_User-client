@@ -95,6 +95,7 @@ export default defineComponent({
 
     return {
       book: toRefs(props).data,
+
       toBook,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

@@ -10,12 +10,12 @@
         <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
-          <router-view v-if="isRouterAlive && userStore.userInfo !== '' && appStore.movieCount !== -1 && appStore.bookCount !== -1" v-slot="{ Component }">
-            <transition name="fade-slide-y" mode="out-in">
-              <component :is="Component"/>
-            </transition>
-          </router-view>
-          <router-view v-else-if="isRouterAlive && userStore.userInfo === ''" v-slot="{ Component }">
+<!--          <router-view v-if="isRouterAlive && userStore.userInfo !== '' && appStore.movieCount !== -1 && appStore.bookCount !== -1" v-slot="{ Component }">-->
+<!--            <transition name="fade-slide-y" mode="out-in">-->
+<!--              <component :is="Component"/>-->
+<!--            </transition>-->
+<!--          </router-view>-->
+          <router-view v-if="isRouterAlive" v-slot="{ Component }">
             <transition name="fade-slide-y" mode="out-in">
               <component :is="Component"/>
             </transition>
@@ -146,8 +146,6 @@ export default defineComponent({
             sessionStorage.setItem('token', response.data.data.token)
             cookies.set('token', response.data.data.token, { expires: expires })
 
-            getUserLikeAndRatingMovieCount()
-            getUserLikeAndRatingBookCount()
           })
       }else {
         userStore.userInfo = ''
@@ -163,20 +161,6 @@ export default defineComponent({
           userStore.drawer = true
         }
       }
-    }
-
-    const getUserLikeAndRatingMovieCount = () => {
-      userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
-          .then((response) => {
-            appStore.movieCount = response.data.data
-          })
-    }
-
-    const getUserLikeAndRatingBookCount = () => {
-      userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
-          .then((response) => {
-            appStore.bookCount = response.data.data
-          })
     }
 
     const cancelClick = () => {
