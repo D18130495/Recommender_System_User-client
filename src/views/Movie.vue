@@ -404,8 +404,6 @@ export default defineComponent({
       userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
           .then((response) => {
             appStore.movieCount = response.data.data
-
-            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
           })
     }
 
@@ -413,8 +411,6 @@ export default defineComponent({
       userApi.getUserLikeAndRatingBookCount(userStore.userInfo.email)
           .then((response) => {
             appStore.bookCount = response.data.data
-
-            userStore.likeOrRateNumber = appStore.movieCount + appStore.bookCount
           })
     }
 

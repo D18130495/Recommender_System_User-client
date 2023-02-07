@@ -5,8 +5,7 @@ export const useUserStore = defineStore('userStore', {
     return {
       userInfo: '' as any,
       token: '' as any,
-      drawer: false,
-      likeOrRateNumber: 0
+      drawer: false
     }
   },
   persist: {
