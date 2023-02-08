@@ -10,9 +10,9 @@
               <input ref="searchInput"
                      id="search-input"
                      class="search-input"
-                    autocomplete="off"
-                    v-model="keywords"
-                    @input="searchByKeywords" />
+                     autocomplete="off"
+                     v-model="keywords"
+                     @input="searchByKeywords" />
               <button class="search-btn"
                       v-if="keywords"
                       type="reset"
@@ -50,6 +50,7 @@
               <div class="search-not-found" v-else-if="isEmpty">
                 <p>No result found</p>
               </div>
+              <div v-else class="search-hit-label">Please input something</div>
             </div>
           </div>
 
@@ -78,7 +79,7 @@ export default defineComponent({
     const router = useRouter()
     const openModel = ref(false)
     const openSearchContainer = ref(false)
-    const searchResults = ref<any>([0, 1])
+    const searchResults = ref<any>([])
     const isEmpty = ref(false)
     const keywords = ref('')
     //

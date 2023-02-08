@@ -24,7 +24,7 @@
             <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
           </p>
 
-          <el-table :data="movieLikeList" style="width: 100%" max-height="281">
+          <el-table v-loading="movieLikedListLoading" :data="movieLikeList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
             <el-table-column prop="title" label="Title" width="400" />
             <el-table-column prop="genres" label="Genres" width="350" />
@@ -89,7 +89,7 @@
             <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
           </p>
 
-          <el-table :data="movieRatingList" style="width: 100%" max-height="281">
+          <el-table v-loading="movieRatingListLoading" :data="movieRatingList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
             <el-table-column prop="title" label="Title" width="355" />
             <el-table-column prop="rating" label="Your rating" width="200" align="center">
@@ -145,14 +145,14 @@
         </span>
         </template>
 
-        <!-- movie like list -->
+        <!-- book like list -->
         <div class="movie-like-list mt-2">
           <p class="relative flex items-center pb-2 pl-4 mb-4 text-ob-bright">
             <span class="w-full text-xl font-bold">Liked list</span>
             <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
           </p>
 
-          <el-table :data="bookLikeList" style="width: 100%" max-height="281">
+          <el-table v-loading="bookLikedListLoading" :data="bookLikeList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
             <el-table-column prop="isbn" label="ISBN" width="200" align="center" />
             <el-table-column prop="title" label="Title" width="350" />
@@ -206,7 +206,7 @@
             <span class="bottom-0 h-1 w-10 rounded-full absolute" :style="gradientBackground" />
           </p>
 
-          <el-table :data="bookRatingList" style="width: 100%" max-height="281">
+          <el-table v-loading="bookRatingListLoading" :data="bookRatingList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
             <el-table-column prop="isbn" label="ISBN" width="200" align="center" />
             <el-table-column prop="title" label="Title" width="350" />
@@ -259,6 +259,10 @@ export default defineComponent({
     const appStore = useAppStore()
     const userStore = useUserStore()
     const router = useRouter()
+    const movieLikedListLoading = ref(true)
+    const movieRatingListLoading = ref(true)
+    const bookLikedListLoading = ref(true)
+    const bookRatingListLoading = ref(true)
     const activeIndex = ref('0')
     const reactiveData = reactive({
       movieLikeList: [],
@@ -297,6 +301,7 @@ export default defineComponent({
       userApi.getUserMovieLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieLikeList = response.data.data
+            movieLikedListLoading.value = false
           })
     }
 
@@ -304,6 +309,7 @@ export default defineComponent({
       userApi.getUserBookLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.bookLikeList = response.data.data
+            bookLikedListLoading.value = false
           })
     }
 
@@ -311,6 +317,7 @@ export default defineComponent({
       userApi.getUserMovieRatingList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieRatingList = response.data.data
+            movieRatingListLoading.value = false
           })
     }
 
@@ -318,6 +325,7 @@ export default defineComponent({
       userApi.getUserBookRatingList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.bookRatingList = response.data.data
+            bookRatingListLoading.value = false
           })
     }
 
@@ -332,6 +340,7 @@ export default defineComponent({
     const handleMovieDelete = (index: number, row: MovieLike) => {
       movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 1})
           .then((response) => {
+            movieLikedListLoading.value = true
             initialMovieLikeList()
 
             getUserLikeAndRatingMovieCount()
@@ -349,6 +358,7 @@ export default defineComponent({
     const handleBookDelete = (index: number, row: BookLike) => {
       bookApi.likeOrUnlikeBook({'isbn': row.isbn, 'email': userStore.userInfo.email, 'favourite':1})
           .then((response) => {
+            bookLikedListLoading.value = true
             initialBookLikeList()
 
             getUserLikeAndRatingMovieCount()
@@ -385,6 +395,10 @@ export default defineComponent({
       handleMovieDelete,
       handleBookDelete,
       InfoFilled,
+      movieLikedListLoading,
+      movieRatingListLoading,
+      bookLikedListLoading,
+      bookRatingListLoading,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

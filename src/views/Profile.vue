@@ -19,9 +19,11 @@
         </div>
 
         <div class="col-span-1">
-          <Sidebar>
-            <SidebarProfile v-if="userStore.userInfo !== ''" />
-          </Sidebar>
+          <el-affix :offset="30">
+            <Sidebar>
+              <SidebarProfile v-if="userStore.userInfo !== ''" />
+            </Sidebar>
+          </el-affix>
         </div>
       </div>
     </div>

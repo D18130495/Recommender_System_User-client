@@ -37,6 +37,10 @@
       @apply block absolute z-20 bg-cover bg-no-repeat object-cover w-full h-11/10;
     }
 
+    .item-unlike-button {
+      @apply absolute z-20 mt-4 right-4 cursor-pointer text-ob;
+    }
+
     .item-image {
       @apply z-30 absolute w-full h-12/10 left-0 pointer-events-none opacity-40;
 
