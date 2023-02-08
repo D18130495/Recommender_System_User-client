@@ -7,14 +7,18 @@
               <label id="search-label" class="items-center flex justify-center">
                 <el-icon size="32px" class="text-ob fill-current stroke-current"><Search class="search-icon"/></el-icon>
               </label>
-              <input class="search-input"
-                  type="search"
-                  autocomplete="off"
-                  v-model="keywords"
-                  @input="searchByKeywords" />
+              <input ref="searchInput"
+                     id="search-input"
+                     class="search-input"
+                    autocomplete="off"
+                    v-model="keywords"
+                    @input="searchByKeywords" />
               <button class="search-btn"
-                  type="reset"
-                  @click="handleResetInput" />
+                      v-if="keywords"
+                      type="reset"
+                      @click="handleResetInput" >
+                <el-icon size="18px" class="text-ob fill-current stroke-current"><CloseBold class="search-icon"/></el-icon>
+              </button>
             </form>
           </header>
 
@@ -43,8 +47,12 @@
                   </li>
                 </ul>
               </section>
+              <div class="search-not-found" v-else-if="isEmpty">
+                <p>No result found</p>
+              </div>
             </div>
           </div>
+
 
           <div class="search-footer">
             <div class="search-logo">
@@ -70,9 +78,10 @@ export default defineComponent({
     const router = useRouter()
     const openModel = ref(false)
     const openSearchContainer = ref(false)
-    const searchResults = ref<any>([])
+    const searchResults = ref<any>([0, 1])
     const isEmpty = ref(false)
     const keywords = ref('')
+    //
     const searchInput = ref<HTMLDivElement>()
 
     onMounted(() => {
@@ -85,10 +94,10 @@ export default defineComponent({
 
     onUpdated(() => {
       keywords.value = ''
-      searchResults.value = [0, 1]
+      // searchResults.value = []
 
       setTimeout(() => {
-        if (searchInput.value) searchInput.value.focus()
+        if(searchInput.value) searchInput.value.focus()
       }, 200)
     })
 
@@ -126,6 +135,7 @@ export default defineComponent({
     }
 
     return {
+      searchInput,
       openModel: computed(() => openModel.value),
       openSearchContainer: computed(() => openSearchContainer.value),
       closeModel,
@@ -133,7 +143,8 @@ export default defineComponent({
       handleResetInput,
       handleLinkClick,
       searchResults,
-      keywords
+      keywords,
+      isEmpty
     }
   }
 })

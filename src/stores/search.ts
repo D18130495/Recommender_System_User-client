@@ -13,7 +13,6 @@ export const useSearchStore = defineStore('searchStore', {
         document.body.classList.add('model--active')
       }else {
         document.body.classList.remove('model--active')
-        document.getElementById('App-Container')?.focus()
       }
     }
   }
