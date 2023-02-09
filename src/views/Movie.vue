@@ -227,7 +227,7 @@
             <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
           </p>
 
-          <button class="grid-cols-1 text-right" @click="refreshGeneralMovie">
+          <button class="grid-cols-1 text-right" @click="refreshRelatedMovieList">
             <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
           </button>
         </div>
@@ -289,7 +289,7 @@ export default defineComponent({
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Movie') {
         getMovieByMovieId(router.currentRoute.value.params.movieId)
-        getRandomMovieList()
+        getRelatedMovieList()
         initialMovieRate()
         initialMovieFavourite()
       }
@@ -297,7 +297,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
       getMovieByMovieId(router.currentRoute.value.params.movieId)
-      getRandomMovieList()
+      getRelatedMovieList()
       initialMovieRate()
       initialMovieFavourite()
     })
@@ -333,13 +333,6 @@ export default defineComponent({
           .then((response) => {
             reactiveData.movie = response.data.data
             loading.value = false
-          })
-    }
-
-    const getRandomMovieList = () => {
-      movieApi.getRandomMovieList()
-          .then((response) => {
-            reactiveData.generalMovies = response.data.data
           })
     }
 
@@ -396,10 +389,6 @@ export default defineComponent({
       }
     }
 
-    const refreshGeneralMovie = () => {
-      getRandomMovieList()
-    }
-
     const getUserLikeAndRatingMovieCount = () => {
       userApi.getUserLikeAndRatingMovieCount(userStore.userInfo.email)
           .then((response) => {
@@ -414,6 +403,17 @@ export default defineComponent({
           })
     }
 
+    const getRelatedMovieList = () => {
+      movieApi.getRandomMovieList()
+          .then((response) => {
+            reactiveData.generalMovies = response.data.data
+          })
+    }
+
+    const refreshRelatedMovieList = () => {
+      getRelatedMovieList()
+    }
+
     return {
       loading,
       starNumber,
@@ -421,7 +421,7 @@ export default defineComponent({
       userStore,
       updateMovieRate,
       updateMovieLike,
-      refreshGeneralMovie,
+      refreshRelatedMovieList,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

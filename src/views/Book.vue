@@ -173,10 +173,20 @@
                             size="large"
                             :max=starNumber
                             disabled
-                            text-color="#ff9900"
+                            :colors=starColor
                         />
-                        <el-button v-if="bookFavourite.favourite === 0" class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Like</el-button>
-                        <el-button v-else class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Unlike</el-button>
+<!--                        -->
+                        <el-select v-model="bookFavouriteValue" class="m-auto ml-0 grid col-span-4" placeholder="Select" size="large">
+                          <el-option
+                              v-for="item in likeOption"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                              @click="updateBookLike"
+                          />
+                        </el-select>
+<!--                        <el-button v-if="bookFavourite.favourite === 0" class="m-auto ml-0 grid col-span-2" >Like</el-button>-->
+<!--                        <el-button v-else class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Unlike</el-button>-->
                       </div>
                     </div>
 
@@ -235,29 +245,29 @@
       </div>
 
       <!-- bottom recommendation -->
-<!--      <div>-->
-<!--        <div class="grid grid-cols-2">-->
-<!--          <p class="relative grid-cols-1 opacity-90 flex items-center pb-2 mb-8 text-3xl text-ob-bright">-->
-<!--            <el-icon class="inline-block mr-2"><Film/></el-icon>-->
-<!--            More like this-->
-<!--            <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>-->
-<!--          </p>-->
+      <div>
+        <div class="grid grid-cols-2">
+          <p class="relative grid-cols-1 opacity-90 flex items-center pb-2 mb-8 text-3xl text-ob-bright">
+            <el-icon class="inline-block mr-2"><Film/></el-icon>
+            More like this
+            <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
+          </p>
 
-<!--          <button class="grid-cols-1 text-right" @click="refreshGeneralMovie">-->
-<!--            <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>-->
-<!--          </button>-->
-<!--        </div>-->
+          <button class="grid-cols-1 text-right" @click="refreshRelatedBookList">
+            <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
+          </button>
+        </div>
 
-<!--        <div class="item-grid">-->
-<!--          <div class="flex flex-col relative">-->
-<!--            <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">-->
-<!--              <li v-for="movie in generalMovies" :key="movie.movieId">-->
-<!--                <MovieItemCard :data="movie" />-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+        <div class="item-grid">
+          <div class="flex flex-col relative">
+            <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
+              <li v-for="book in relatedMovies" :key="book.movieId">
+                <BookItemCard :data="book" />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -285,8 +295,13 @@ export default defineComponent({
     const appStore = useAppStore()
     const userStore = useUserStore()
     const router = useRouter()
+
     const loading = ref(true)
     const starNumber = ref(1)
+
+    const bookFavouriteValue = ref('')
+    const starColor = ref(['#99A9BF', '#f7ba2a', '#ff0000'])
+
     const reactiveData = reactive({
       book: '' as any,
       bookRate: {
@@ -299,9 +314,24 @@ export default defineComponent({
         email: '',
         favourite: 0
       },
-      generalBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
+      relatedMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
+      likeOption: [
+        {
+          value: 'T',
+          label: 'Favourite',
+        },
+        {
+          value: 'N',
+          label: 'Normal',
+        },
+        {
+          value: 'F',
+          label: 'Don\'t like',
+        }
+      ]
     })
 
+    // change book
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Book') {
         getBookByISBN(router.currentRoute.value.params.isbn)
@@ -311,6 +341,15 @@ export default defineComponent({
       }
     });
 
+    // initial page rating and favourite
+    watch(userStore, () => {
+      if(userStore.userInfo !== '') {
+        initialBookRate()
+        initialBookFavourite()
+      }
+    })
+
+    // load page initial
     onBeforeMount(() => {
       getBookByISBN(router.currentRoute.value.params.isbn)
       // getRandomMovieList()
@@ -348,34 +387,61 @@ export default defineComponent({
         bookApi.getUserBookFavourite(reactiveData.bookFavourite.isbn, userStore.userInfo.email)
             .then((response) => {
               reactiveData.bookFavourite.favourite = Number(response.data.data.favourite)
+
+              if(response.data.data.favourite === '1') {
+                bookFavouriteValue.value = 'F'
+              }else if(response.data.data.favourite == '2') {
+                bookFavouriteValue.value = 'N'
+              }else if(response.data.data.favourite == '3') {
+                bookFavouriteValue.value = 'T'
+              }
             })
       }
     }
 
     const updateBookRate = () => {
       bookApi.addOrUpdateUserBookRating(reactiveData.bookRate)
-            .then((response) => {
-              reactiveData.bookRate.isbn = response.data.data.isbn
-              reactiveData.bookRate.email = response.data.data.email
-              reactiveData.bookRate.rating = response.data.data.rating
+          .then((response) => {
+            reactiveData.bookRate.isbn = response.data.data.isbn
+            reactiveData.bookRate.email = response.data.data.email
+            reactiveData.bookRate.rating = response.data.data.rating
 
-              getUserLikeAndRatingMovieCount()
-              getUserLikeAndRatingBookCount()
+            getUserLikeAndRatingMovieCount()
+            getUserLikeAndRatingBookCount()
 
-              ElNotification({
-                title: 'Success',
-                message: response.data.message,
-                type: 'success',
-                duration: 1500
-              })
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
             })
+          })
     }
 
     const updateBookLike = () => {
-      if(reactiveData.bookFavourite.favourite === 0) {
+      if(bookFavouriteValue.value === 'F') {
+        reactiveData.bookFavourite.favourite = 1
+
         bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
             .then((response) => {
-              reactiveData.bookFavourite.favourite = 1
+                reactiveData.bookFavourite.favourite = 1
+
+                getUserLikeAndRatingMovieCount()
+                getUserLikeAndRatingBookCount()
+
+                ElNotification({
+                  title: 'Success',
+                  message: response.data.message,
+                  type: 'success',
+                  duration: 1500
+                })
+              })
+      }else if(bookFavouriteValue.value === 'N') {
+        reactiveData.bookFavourite.favourite = 2
+
+        bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
+            .then((response) => {
+              reactiveData.bookFavourite.favourite = 2
 
               getUserLikeAndRatingMovieCount()
               getUserLikeAndRatingBookCount()
@@ -387,10 +453,12 @@ export default defineComponent({
                 duration: 1500
               })
             })
-      }else {
+      }else if(bookFavouriteValue.value === 'T') {
+        reactiveData.bookFavourite.favourite = 3
+
         bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
             .then((response) => {
-              reactiveData.bookFavourite.favourite = 0
+              reactiveData.bookFavourite.favourite = 3
 
               getUserLikeAndRatingMovieCount()
               getUserLikeAndRatingBookCount()
@@ -403,6 +471,37 @@ export default defineComponent({
               })
             })
       }
+      // if(reactiveData.bookFavourite.favourite === 0) {
+      //   bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
+      //       .then((response) => {
+      //         reactiveData.bookFavourite.favourite = 1
+      //
+      //         getUserLikeAndRatingMovieCount()
+      //         getUserLikeAndRatingBookCount()
+      //
+      //         ElNotification({
+      //           title: 'Success',
+      //           message: response.data.message,
+      //           type: 'success',
+      //           duration: 1500
+      //         })
+      //       })
+      // }else {
+      //   bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
+      //       .then((response) => {
+      //         reactiveData.bookFavourite.favourite = 0
+      //
+      //         getUserLikeAndRatingMovieCount()
+      //         getUserLikeAndRatingBookCount()
+      //
+      //         ElNotification({
+      //           title: 'Success',
+      //           message: response.data.message,
+      //           type: 'success',
+      //           duration: 1500
+      //         })
+      //       })
+      // }
     }
 
     const getUserLikeAndRatingMovieCount = () => {
@@ -419,7 +518,7 @@ export default defineComponent({
           })
     }
 
-    // const getRandomMovieList = () => {
+    // const getRelatedBookList = () => {
     //   movieApi.getRandomMovieList()
     //       .then((response) => {
     //         reactiveData.generalMovies = response.data.data
@@ -427,18 +526,21 @@ export default defineComponent({
     // }
     //
 
-    // const refreshGeneralMovie = () => {
-    //   getRandomMovieList()
-    // }
+    const refreshRelatedBookList = () => {
+      // getRelatedBookList()
+    }
 
     return {
+      userInfo: computed(() => userStore.userInfo),
       loading,
       starNumber,
+      bookFavouriteValue,
+      starColor,
       ...toRefs(reactiveData),
       userStore,
       updateBookRate,
       updateBookLike,
-      // refreshGeneralMovie,
+      refreshRelatedBookList,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {
@@ -460,15 +562,19 @@ a:hover {
   cursor: default;
 }
 
-/deep/ .el-rate__text{
+/deep/ .el-rate__text {
   @apply text-ob-bright;
 }
 
-/deep/ .el-button {
-  @apply bg-ob-deep-800;
+///deep/ .el-button {
+//  @apply bg-ob-deep-800;
+//
+//  span {
+//    @apply text-ob-bright;
+//  }
+//}
 
-  span {
-    @apply text-ob-bright;
-  }
+/deep/ .el-select {
+  @apply text-ob-bright;
 }
 </style>

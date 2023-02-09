@@ -1,9 +1,21 @@
 <template>
-  <div class="item-container">
+  <div class="item-container" @mouseover="hover = true" @mouseleave="hover = false">
     <div class="item">
       <div class="item-image-container">
         <img v-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
         <img v-else src="@/assets/posterNotFound.jpg" />
+        <el-tooltip
+            content="Mark as don'\t like"
+            placement="top"
+            v-if="hover">
+          <button
+              class="item-unlike-button"
+              @click="handleUnlike">
+            <el-icon size="24px" class="fill-current stroke-current">
+              <CloseBold class="search-icon"/>
+            </el-icon>
+          </button>
+        </el-tooltip>
       </div>
 
       <div class="item-content">
@@ -75,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue'
+import {defineComponent, toRefs, computed, ref} from 'vue'
 
 import { useAppStore } from "@/stores/app"
 
@@ -88,15 +100,21 @@ export default defineComponent({
   setup(props) {
     const appStore = useAppStore()
     const router = useRouter()
+    const hover = ref(false)
 
     const toBook = () => {
       router.push({ path: '/book/' + props.data.isbn })
     }
 
+    const handleUnlike = () => {
+
+    }
+
     return {
       book: toRefs(props).data,
-
       toBook,
+      hover,
+      handleUnlike,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

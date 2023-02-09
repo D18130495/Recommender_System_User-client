@@ -1,11 +1,11 @@
 <template>
-  <div class="item-container" @mouseover="hover = true">
+  <div class="item-container" @mouseover="hover = true" @mouseleave="hover = false">
     <div class="item">
       <div class="item-image-container">
         <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
         <img v-else src="@/assets/posterNotFound.jpg" />
         <el-tooltip
-            content="Mark as unlike"
+            content="Mark as don'\t like"
             placement="top"
             v-if="hover">
           <button
