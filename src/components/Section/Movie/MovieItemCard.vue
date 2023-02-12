@@ -5,7 +5,7 @@
         <img v-if="movie.movieImage" v-lazy="movie.movieImage" :key="movie.movieId" />
         <img v-else src="@/assets/posterNotFound.jpg" />
         <el-tooltip
-            content="Mark as don'\t like"
+            content="Mark as don't like"
             placement="top"
             v-if="hover">
           <button

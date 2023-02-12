@@ -39,5 +39,14 @@ export default {
                 type: type
             }
         })
+    },
+    getBooksLikeThis(isbn: any) {
+        return request({
+            url: `/recommendation/getBooksLikeThis`,
+            method: 'get',
+            params: {
+                isbn: isbn
+            }
+        })
     }
 }

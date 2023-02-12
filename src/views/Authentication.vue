@@ -44,6 +44,8 @@
                 </el-form-item>
               </el-form>
 
+              <div class="text-right text-sm mb-2 text-blue-900 underline cursor-pointer" @click="openPasswordModel">Forget password?</div>
+
               <div class="actions">
                 <label>
                   <input type="button" value="Sign In" @click="systemSignIn(signInRef)"/>
@@ -102,6 +104,17 @@
                     </template>
                   </el-input>
                 </el-form-item>
+
+                <el-form-item prop="verification">
+                  <el-input v-model="signUpForm.verification" type="text" autocomplete="off" placeholder="Get your verification code">
+                    <template #prefix>
+                      <el-icon><Checked /></el-icon>
+                    </template>
+                    <template #append>
+                      <el-icon class="cursor-pointer" @click="sendVerificationCode(signUpRef)"><Promotion /></el-icon>
+                    </template>
+                  </el-input>
+                </el-form-item>
               </el-form>
 
               <div class="actions">
@@ -132,18 +145,21 @@ import cookies from 'js-cookie'
 
 import axios from "axios"
 import userApi from '@/api/user'
+import emailApi from "@/api/email"
 
 import 'remixicon/fonts/remixicon.css'
+import email from "@/api/email";
+import {ElMessageBox} from "element-plus";
 
 
 export default defineComponent({
   name: 'Authentication',
-  setup() {
+  setup: function () {
     const appStore = useAppStore()
     const userStore = useUserStore()
     const router = useRouter()
-    const siteStyle = ref({ 'padding': '200px 0' })
-    const authForm:any = ref(null)
+    const siteStyle = ref({'padding': '200px 0'})
+    const authForm: any = ref(null)
     const userInfo = reactive({
       username: '' as any,
       email: '' as any,
@@ -162,13 +178,15 @@ export default defineComponent({
 
     const signInRules = reactive({
       email: [
-        { required: true, message: 'Please input the email address', trigger: 'blur' },
-        { pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: 'Please input valid email address', trigger: 'blur'}
+        {required: true, message: 'Please input the email address', trigger: 'change'},
+        {
+          pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$',
+          message: 'Please input valid email address',
+          trigger: 'change'
+        }
       ],
       password: [
-        { required: true, message: 'Please input the password', trigger: 'blur' },
-        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
-        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'}
+        {required: true, message: 'Please input the password', trigger: 'change'}
       ]
     })
 
@@ -177,39 +195,50 @@ export default defineComponent({
       username: '',
       email: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      verification: ''
     })
 
     const passwordCheck = (rule: any, value: any, callback: any) => {
-      if(signUpForm.password === '') {
+      if (signUpForm.password === '') {
         callback(new Error('Please input the password before entering this field'))
-      }else if(value !== signUpForm.password) {
+      } else if (value !== signUpForm.password) {
         callback(new Error("Password does not match"))
-      }else {
+      } else {
         callback()
       }
     }
 
     const signUpRules = reactive({
       username: [
-        { required: true, message: 'Please input the full name', trigger: 'blur' },
-        { min: 4, message: 'Username should at least have 4 characters', trigger: 'blur'}
+        {required: true, message: 'Please input the full name', trigger: 'change'},
+        {min: 4, message: 'Username should at least have 4 characters', trigger: 'change'}
       ],
       email: [
-        { required: true, message: 'Please input the email address', trigger: 'blur' },
-        { pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: 'Please input valid email address', trigger: 'blur'}
+        {required: true, message: 'Please input the email address', trigger: 'change'},
+        {
+          pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$',
+          message: 'Please input valid email address',
+          trigger: 'change'
+        }
       ],
       password: [
-        { required: true, message: 'Please input the password', trigger: 'blur' },
-        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
-        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'}
+        {required: true, message: 'Please input the password', trigger: 'change'},
+        {
+          pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,16}$',
+          message: 'Password should contain example characters(A, a, 1, #) and between 8 -16',
+          trigger: 'change'
+        }
       ],
       passwordCheck: [
-        { required: true, message: 'Please input the password again', trigger: 'blur' },
-        { min: 6, message: 'Password length should between 6 to 14', trigger: 'blur'},
-        { max: 14, message: 'Password length should between 6 to 14', trigger: 'blur'},
-        { validator: passwordCheck, trigger: 'blur' }
-      ]
+        {required: true, message: 'Please input the password again', trigger: 'change'},
+        {validator: passwordCheck, trigger: 'change'}
+      ],
+      verification: [
+        {required: true, message: 'Please input the verification code', trigger: 'change'},
+        {min: 6, message: 'Password length should be 6', trigger: 'change'},
+        {max: 6, message: 'Password length should be 6', trigger: 'change'}
+      ],
     })
 
     onMounted(() => {
@@ -221,7 +250,7 @@ export default defineComponent({
     const initialApp = (authFormHeight: any) => {
       let pageHeight = innerHeight
 
-      if(typeof authFormHeight === 'number') {
+      if (typeof authFormHeight === 'number') {
         pageHeight = (pageHeight - authFormHeight) / 2
       }
 
@@ -255,29 +284,29 @@ export default defineComponent({
     }
 
     const systemSignIn = (formEl: FormInstance | undefined) => {
-      if(!formEl) return
+      if (!formEl) return
 
       formEl.validate((valid) => {
-        if(valid) {
-          userApi.userSystemLogin({'email':signInForm.email, 'password':signInForm.password})
+        if (valid) {
+          userApi.userSystemLogin({'email': signInForm.email, 'password': signInForm.password})
               .then((response) => {
                 userStore.userInfo = response.data.data
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
-                cookies.set('token', response.data.data.token, { expires: expires })
+                cookies.set('token', response.data.data.token, {expires: expires})
 
                 getUserLikeAndRatingMovieCount()
                 getUserLikeAndRatingBookCount()
 
                 ElMessage.success(response.data.message)
 
-                if(userStore.userInfo.policy === "U") {
+                if (userStore.userInfo.policy === "U") {
                   userStore.drawer = true
                 }
 
                 router.back()
               })
-        }else {
+        } else {
           return false
         }
       })
@@ -288,19 +317,24 @@ export default defineComponent({
 
       formEl.validate((valid) => {
         if(valid) {
-          userApi.userSystemRegister({'username': signUpForm.username, 'email':signUpForm.email, 'password': signUpForm.password})
+          userApi.userSystemRegister({
+            'username': signUpForm.username,
+            'email': signUpForm.email,
+            'password': signUpForm.password,
+            'verification': signUpForm.verification
+          })
               .then((response) => {
                 userStore.userInfo = response.data.data
                 userStore.token = response.data.data.token
                 sessionStorage.setItem('token', response.data.data.token)
-                cookies.set('token', response.data.data.token, { expires: expires })
+                cookies.set('token', response.data.data.token, {expires: expires})
 
                 getUserLikeAndRatingMovieCount()
                 getUserLikeAndRatingBookCount()
 
                 ElMessage.success(response.data.message)
 
-                if(userStore.userInfo.policy === "U") {
+                if (userStore.userInfo.policy === "U") {
                   userStore.drawer = true
                 }
 
@@ -312,6 +346,33 @@ export default defineComponent({
           return false
         }
       })
+    }
+
+    const sendVerificationCode = () => {
+      if(signUpForm.email === "") {
+        ElMessage.info("Please input email address first")
+      }else {
+        emailApi.sendUserSystemRegisterVerificationCode(signUpForm.email)
+            .then((response) => {
+              ElMessage.success(response.data.message)
+            })
+      }
+    }
+
+    const openPasswordModel = () => {
+      ElMessageBox.prompt('Please input your email address', 'Tip', {
+        confirmButtonText: 'Send',
+        cancelButtonText: 'Cancel',
+        inputPattern:
+            /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: 'Invalid email address',
+      })
+          .then(({value}) => {
+            emailApi.sendUserResetPassword(value)
+                .then((response) => {
+                  ElMessage.success(response.data.message)
+                })
+          })
     }
 
     const googleLogin = () => {
@@ -344,14 +405,14 @@ export default defineComponent({
             userStore.userInfo = response.data.data
             userStore.token = response.data.data.token
             sessionStorage.setItem('token', response.data.data.token)
-            cookies.set('token', response.data.data.token, { expires: expires })
+            cookies.set('token', response.data.data.token, {expires: expires})
 
             ElMessage.success(response.data.message)
 
             getUserLikeAndRatingMovieCount()
             getUserLikeAndRatingBookCount()
 
-            if(userStore.userInfo.policy === "U") {
+            if (userStore.userInfo.policy === "U") {
               userStore.drawer = true
             }
 
@@ -388,7 +449,9 @@ export default defineComponent({
       signInRules,
       signUpRules,
       signInRef,
-      signUpRef
+      signUpRef,
+      openPasswordModel,
+      sendVerificationCode
     }
   }
 })

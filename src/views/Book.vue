@@ -175,9 +175,9 @@
                             disabled
                             :colors=starColor
                         />
-<!--                        -->
                         <el-select v-model="bookFavouriteValue" class="m-auto ml-0 grid col-span-4" placeholder="Select" size="large">
                           <el-option
+                              class="text-ob-bright"
                               v-for="item in likeOption"
                               :key="item.value"
                               :label="item.label"
@@ -261,7 +261,7 @@
         <div class="item-grid">
           <div class="flex flex-col relative">
             <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-              <li v-for="book in relatedMovies" :key="book.movieId">
+              <li v-for="book in relatedBooks" :key="book.movieId">
                 <BookItemCard :data="book" />
               </li>
             </ul>
@@ -285,7 +285,8 @@ import { useRouter } from "vue-router"
 import BookItemCard from "@/components/Section/Book/BookItemCard.vue"
 
 import bookApi from "@/api/book"
-import userApi from "@/api/user";
+import userApi from "@/api/user"
+import recommendationApi from "@/api/recommendation"
 
 
 export default defineComponent({
@@ -314,7 +315,7 @@ export default defineComponent({
         email: '',
         favourite: 0
       },
-      relatedMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
+      relatedBooks: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
       likeOption: [
         {
           value: 'T',
@@ -335,7 +336,7 @@ export default defineComponent({
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Book') {
         getBookByISBN(router.currentRoute.value.params.isbn)
-        // getRandomMovieList()
+        getBooksLikeThis()
         initialBookRate()
         initialBookFavourite()
       }
@@ -352,7 +353,7 @@ export default defineComponent({
     // load page initial
     onBeforeMount(() => {
       getBookByISBN(router.currentRoute.value.params.isbn)
-      // getRandomMovieList()
+      getBooksLikeThis()
       initialBookRate()
       initialBookFavourite()
     })
@@ -471,37 +472,6 @@ export default defineComponent({
               })
             })
       }
-      // if(reactiveData.bookFavourite.favourite === 0) {
-      //   bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
-      //       .then((response) => {
-      //         reactiveData.bookFavourite.favourite = 1
-      //
-      //         getUserLikeAndRatingMovieCount()
-      //         getUserLikeAndRatingBookCount()
-      //
-      //         ElNotification({
-      //           title: 'Success',
-      //           message: response.data.message,
-      //           type: 'success',
-      //           duration: 1500
-      //         })
-      //       })
-      // }else {
-      //   bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
-      //       .then((response) => {
-      //         reactiveData.bookFavourite.favourite = 0
-      //
-      //         getUserLikeAndRatingMovieCount()
-      //         getUserLikeAndRatingBookCount()
-      //
-      //         ElNotification({
-      //           title: 'Success',
-      //           message: response.data.message,
-      //           type: 'success',
-      //           duration: 1500
-      //         })
-      //       })
-      // }
     }
 
     const getUserLikeAndRatingMovieCount = () => {
@@ -518,16 +488,15 @@ export default defineComponent({
           })
     }
 
-    // const getRelatedBookList = () => {
-    //   movieApi.getRandomMovieList()
-    //       .then((response) => {
-    //         reactiveData.generalMovies = response.data.data
-    //       })
-    // }
-    //
+    const getBooksLikeThis = () => {
+      recommendationApi.getBooksLikeThis(String(router.currentRoute.value.params.isbn))
+          .then((response) => {
+            reactiveData.relatedBooks = response.data.data
+          })
+    }
 
     const refreshRelatedBookList = () => {
-      // getRelatedBookList()
+      getBooksLikeThis()
     }
 
     return {
@@ -573,6 +542,10 @@ a:hover {
 //    @apply text-ob-bright;
 //  }
 //}
+
+/deep/ .el-input__inner {
+  @apply text-ob-bright;
+}
 
 /deep/ .el-select {
   @apply text-ob-bright;

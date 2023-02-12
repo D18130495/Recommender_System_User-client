@@ -187,10 +187,19 @@
                       size="large"
                       :max=starNumber
                       disabled
-                      text-color="#ff9900"
+                      :colors=starColor
                   />
-                  <el-button v-if="movieFavourite.favourite === 0" class="mx-auto w-2/5" @click="updateMovieLike">Like</el-button>
-                  <el-button v-else class="mx-auto w-2/5" @click="updateMovieLike">Unlike</el-button>
+                  <el-select v-model="movieFavouriteValue" class="mx-auto w-1/2" placeholder="Select" size="large">
+                    <el-option
+                        v-for="item in likeOption"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        @click="updateMovieLike"
+                    />
+                  </el-select>
+<!--                  <el-button v-if="movieFavourite.favourite === 0" class="mx-auto w-2/5" @click="updateMovieLike">Like</el-button>-->
+<!--                  <el-button v-else class="mx-auto w-2/5" @click="updateMovieLike">Unlike</el-button>-->
                 </div>
               </div>
             </div>
@@ -260,6 +269,7 @@ import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
 import movieApi from "@/api/movie"
 import userApi from "@/api/user";
+import bookApi from "@/api/book";
 
 
 export default defineComponent({
@@ -269,8 +279,13 @@ export default defineComponent({
     const appStore = useAppStore()
     const userStore = useUserStore()
     const router = useRouter()
+
     const loading = ref(true)
     const starNumber = ref(1)
+
+    const movieFavouriteValue = ref('')
+    const starColor = ref(['#99A9BF', '#f7ba2a', '#ff0000'])
+
     const reactiveData = reactive({
       movie: '' as any,
       movieRate: {
@@ -283,7 +298,21 @@ export default defineComponent({
         email: '',
         favourite: 0
       },
-      generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any
+      generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
+      likeOption: [
+        {
+          value: 'T',
+          label: 'Favourite',
+        },
+        {
+          value: 'N',
+          label: 'Normal',
+        },
+        {
+          value: 'F',
+          label: 'Don\'t like',
+        }
+      ]
     })
 
     watch(() => router.currentRoute.value.fullPath, () => {
@@ -293,7 +322,15 @@ export default defineComponent({
         initialMovieRate()
         initialMovieFavourite()
       }
-    });
+    })
+
+    // initial page rating and favourite
+    watch(userStore, () => {
+      if(userStore.userInfo !== '') {
+        initialMovieRate()
+        initialMovieFavourite()
+      }
+    })
 
     onBeforeMount(() => {
       getMovieByMovieId(router.currentRoute.value.params.movieId)
@@ -356,7 +393,9 @@ export default defineComponent({
     }
 
     const updateMovieLike = () => {
-      if(reactiveData.movieFavourite.favourite === 0) {
+      if (movieFavouriteValue.value === 'F') {
+        reactiveData.movieFavourite.favourite = 1
+
         movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
             .then((response) => {
               reactiveData.movieFavourite.favourite = 1
@@ -371,10 +410,29 @@ export default defineComponent({
                 duration: 1500
               })
             })
-      }else {
+      } else if (movieFavouriteValue.value === 'N') {
+        reactiveData.movieFavourite.favourite = 2
+
         movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
             .then((response) => {
-              reactiveData.movieFavourite.favourite = 0
+              reactiveData.movieFavourite.favourite = 2
+
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
+
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
+              })
+            })
+      } else if (movieFavouriteValue.value === 'T') {
+        reactiveData.movieFavourite.favourite = 3
+
+        movieApi.likeOrUnlikeMovie(reactiveData.movieFavourite)
+            .then((response) => {
+              reactiveData.movieFavourite.favourite = 3
 
               getUserLikeAndRatingMovieCount()
               getUserLikeAndRatingBookCount()
@@ -417,6 +475,8 @@ export default defineComponent({
     return {
       loading,
       starNumber,
+      movieFavouriteValue,
+      starColor,
       ...toRefs(reactiveData),
       userStore,
       updateMovieRate,

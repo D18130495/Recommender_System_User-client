@@ -121,6 +121,7 @@ import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 
 import movieApi from "@/api/movie"
 import recommendationApi from "@/api/recommendation";
+import cookies from "js-cookie";
 
 
 export default defineComponent({
@@ -139,17 +140,19 @@ export default defineComponent({
     onBeforeMount(() => {
       getRandomMovieList()
 
-      // movie recommendation
-      if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
-        getRecommendMovieListByItemCF()
-      }else if(userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
-        if(appStore.movieCount >= appStore.bookCount) {
-          getRecommendMovieListByUserCF('movie')
-        }else{
-          getRecommendMovieListByUserCF('book')
+      if(cookies.get('token') !== undefined) {
+        // movie recommendation
+        if(userStore.userInfo !== null && appStore.movieCount >= 10) { // like more than 10 movies, use ItemCF
+          getRecommendMovieListByItemCF()
+        }else if(userStore.userInfo != null && appStore.movieCount >= 5 || appStore.bookCount >= 5) { // like movie more than 5, or book more than 5, use UserCF
+          if(appStore.movieCount >= appStore.bookCount) {
+            getRecommendMovieListByUserCF('movie')
+          }else{
+            getRecommendMovieListByUserCF('book')
+          }
+        }else { // not like more than 5 items
+          appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
         }
-      }else { // not like more than 5 items
-        appStore.recommendMovies = [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}]
       }
     })
 

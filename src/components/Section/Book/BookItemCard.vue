@@ -5,14 +5,14 @@
         <img v-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
         <img v-else src="@/assets/posterNotFound.jpg" />
         <el-tooltip
-            content="Mark as don'\t like"
+            content="Mark as don't like"
             placement="top"
             v-if="hover">
           <button
               class="item-unlike-button"
-              @click="handleUnlike">
+              @click="handleUnlike(book.isbn)">
             <el-icon size="24px" class="fill-current stroke-current">
-              <CloseBold class="search-icon"/>
+              <CloseBold class="search-icon" />
             </el-icon>
           </button>
         </el-tooltip>
@@ -87,11 +87,16 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, toRefs, computed, ref} from 'vue'
+import { defineComponent, toRefs, computed, ref } from 'vue'
 
 import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
 
 import { useRouter } from "vue-router"
+
+import bookApi from "@/api/book";
+
+import { ElNotification } from "element-plus";
 
 
 export default defineComponent({
@@ -99,6 +104,7 @@ export default defineComponent({
   props: ['data'],
   setup(props) {
     const appStore = useAppStore()
+    const userStore = useUserStore()
     const router = useRouter()
     const hover = ref(false)
 
@@ -106,8 +112,17 @@ export default defineComponent({
       router.push({ path: '/book/' + props.data.isbn })
     }
 
-    const handleUnlike = () => {
+    const handleUnlike = (isbn: any) => {
+      bookApi.likeOrUnlikeBook({'isbn': isbn, 'email': userStore.userInfo.email, 'favourite': 1})
+          .then((response) => {
 
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
+          })
     }
 
     return {

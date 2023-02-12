@@ -82,7 +82,7 @@ export default defineComponent({
     const searchResults = ref<any>([])
     const isEmpty = ref(false)
     const keywords = ref('')
-    //
+
     const searchInput = ref<HTMLDivElement>()
 
     onMounted(() => {

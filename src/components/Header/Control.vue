@@ -76,7 +76,7 @@ export default defineComponent({
     })
 
     watch(userStore, () => {
-      if(userStore.userInfo !== '') {
+      if(cookies.get('token') !== undefined && userStore.userInfo !== '') {
         getUserLikeAndRatingMovieCount()
         getUserLikeAndRatingBookCount()
       }
