@@ -45,6 +45,13 @@
               </el-input>
             </el-form-item>
           </el-form>
+
+          <button
+              @click="changeSystemUserPassword(passwordRef)"
+              id="submit-button"
+              class="mb-2 w-32 text-white p-2 rounded-lg shadow-lg transition transform hover:scale-105 flex">
+            <span class="text-center flex-grow commit">Update profile</span>
+          </button>
         </div>
       </div>
     </transition>
@@ -55,15 +62,22 @@
 import { computed, defineComponent, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 
 import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
 import { usePasswordStore } from "@/stores/password"
 import { useRouter } from "vue-router"
-import { FormInstance } from "element-plus"
+
+import type { FormInstance } from 'element-plus'
+import { ElMessage, ElNotification } from "element-plus"
+
+import emailApi from "@/api/email"
+import userApi from "@/api/user"
 
 
 export default defineComponent({
   name: 'PasswordModel',
   setup() {
     const appStore = useAppStore()
+    const userStore = useUserStore()
     const passwordStore = usePasswordStore()
     const router = useRouter()
     const openModel = ref(false)
@@ -155,11 +169,34 @@ export default defineComponent({
       passwordForm.verification = ''
     }
 
-    const sendChangePasswordVerificationCode = (formEl: FormInstance | undefined) => {
-      if (!formEl) return
+    const sendChangePasswordVerificationCode = () => {
+      emailApi.sendChangePasswordVerificationCode(userStore.userInfo.email)
+          .then((response) => {
+            ElMessage.success(response.data.message)
+          })
+    }
+
+    const changeSystemUserPassword = (formEl: FormInstance | undefined) => {
+      if(!formEl) return
 
       formEl.validate((valid) => {
-        if (valid) {
+        if(valid) {
+          userApi.updateSystemUserPassword({
+            "email": userStore.userInfo.email,
+            "oldPassword": passwordForm.oldPassword,
+            "newPassword": passwordForm.newPassword,
+            "verification": passwordForm.verification
+          })
+              .then((response) => {
+                passwordStore.setOpenModel(false)
+
+                ElNotification({
+                  title: 'Success',
+                  message: 'Successfully updated password',
+                  type: 'success',
+                  duration: 1500
+                })
+              })
         } else {
           return false
         }
@@ -181,11 +218,16 @@ export default defineComponent({
       passwordRef,
       passwordForm,
       passwordRules,
-      sendChangePasswordVerificationCode
+      sendChangePasswordVerificationCode,
+      changeSystemUserPassword
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+#submit-button {
+  outline: none;
+  background: var(--button-green);
+}
 </style>

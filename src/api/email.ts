@@ -20,4 +20,13 @@ export default {
             }
         })
     },
+    sendChangePasswordVerificationCode(email: any) {
+        return request({
+            url: `/email/sendChangePasswordVerificationCode`,
+            method: 'get',
+            params: {
+                email: email
+            }
+        })
+    }
 }
