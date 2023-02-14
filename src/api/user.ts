@@ -57,6 +57,13 @@ export default {
             data: userInfo
         })
     },
+    updateSystemUserPassword(updatePasswordInfo: any) {
+        return request({
+            url: `/user/updateSystemUserPassword`,
+            method: 'put',
+            data: updatePasswordInfo
+        })
+    },
     getUserLikeAndRatingMovieCount(email: any) {
         return request({
             url: `/user/getUserLikeAndRatingMovieCount`,

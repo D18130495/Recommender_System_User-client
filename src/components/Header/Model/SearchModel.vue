@@ -79,7 +79,7 @@ export default defineComponent({
     const router = useRouter()
     const openModel = ref(false)
     const openSearchContainer = ref(false)
-    const searchResults = ref<any>([])
+    const searchResults = ref<any>([1, 2])
     const isEmpty = ref(false)
     const keywords = ref('')
 

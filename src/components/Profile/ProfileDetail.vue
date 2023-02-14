@@ -86,13 +86,17 @@
       </p>
     </div>
 
-    <div class="justify-between mt-10">
+    <div class="justify-between mt-4 inline-flex">
       <button
           @click="saveDetail"
           id="submit-button"
           class="mt-5 w-32 text-white p-2 rounded-lg shadow-lg transition transform hover:scale-105 flex">
         <span class="text-center flex-grow commit">Update profile</span>
       </button>
+      <div v-if="userStore.userInfo.type === 'S'" class="text-sm mt-5 ml-4 p-2 text-ob-bright underline cursor-pointer flex" @click="openChangePasswordModel">Change password?</div>
+      <teleport to="body">
+        <PasswordModel/>
+      </teleport>
     </div>
   </div>
 </template>
@@ -102,8 +106,11 @@ import { ref, reactive, computed, toRefs, defineComponent, onBeforeMount } from 
 
 import { ElNotification } from "element-plus"
 
-import {useAppStore} from "@/stores/app"
+import PasswordModel from "../Header/Model/PassowrdModel.vue"
+
+import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
+import { usePasswordStore } from "@/stores/password";
 
 import userApi from "@/api/user"
 
@@ -118,11 +125,12 @@ import 'remixicon/fonts/remixicon.css'
 export default defineComponent({
   name: 'ProfileDetail',
   components: {
-    VueAvatar, AvatarCropper
+    VueAvatar, AvatarCropper, PasswordModel
   },
   setup() {
     const appStore = useAppStore()
     const userStore = useUserStore()
+    const passwordStore = usePasswordStore()
 
     let showCropper = ref(false)
 
@@ -180,11 +188,17 @@ export default defineComponent({
           })
     }
 
+    const openChangePasswordModel = (status: boolean) => {
+        passwordStore.setOpenModel(status)
+    }
+
     return {
+      userStore,
       ...toRefs(reactiveData),
       showCropper,
       handleSuccess,
       saveDetail,
+      openChangePasswordModel,
       options: computed(() => {
         return {
           method: 'POST',

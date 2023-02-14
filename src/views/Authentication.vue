@@ -2,7 +2,7 @@
   <div>
     <div id="page" :class="[siteClass]" :style="siteStyle">
       <div class="auth-container">
-        <div class="authform"  ref="authForm">
+        <div class="authform" ref="authForm">
           <div class="play">
             <div class="wrapper">
               <div class="card one"></div>
@@ -136,8 +136,10 @@ import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 
 import { googleTokenLogin, googleOneTap } from 'vue3-google-login'
 import { useRouter } from 'vue-router'
+
 import type { FormInstance } from 'element-plus'
-import { ElMessage } from "element-plus/es";
+import { ElMessage } from "element-plus/es"
+import { ElMessageBox } from "element-plus"
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from '@/stores/user'
@@ -148,8 +150,6 @@ import userApi from '@/api/user'
 import emailApi from "@/api/email"
 
 import 'remixicon/fonts/remixicon.css'
-import email from "@/api/email";
-import {ElMessageBox} from "element-plus";
 
 
 export default defineComponent({
@@ -186,7 +186,12 @@ export default defineComponent({
         }
       ],
       password: [
-        {required: true, message: 'Please input the password', trigger: 'change'}
+        {required: true, message: 'Please input the password', trigger: 'change'},
+        {
+          pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,16}$',
+          message: 'Please include example characters(A, a, 1, #), between 8 - 16',
+          trigger: 'change'
+        }
       ]
     })
 
@@ -200,11 +205,11 @@ export default defineComponent({
     })
 
     const passwordCheck = (rule: any, value: any, callback: any) => {
-      if (signUpForm.password === '') {
+      if(signUpForm.password === '') {
         callback(new Error('Please input the password before entering this field'))
-      } else if (value !== signUpForm.password) {
+      }else if (value !== signUpForm.password) {
         callback(new Error("Password does not match"))
-      } else {
+      }else {
         callback()
       }
     }
@@ -226,7 +231,7 @@ export default defineComponent({
         {required: true, message: 'Please input the password', trigger: 'change'},
         {
           pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,16}$',
-          message: 'Password should contain example characters(A, a, 1, #) and between 8 -16',
+          message: 'Please include example characters(A, a, 1, #), between 8 - 16',
           trigger: 'change'
         }
       ],
@@ -238,7 +243,7 @@ export default defineComponent({
         {required: true, message: 'Please input the verification code', trigger: 'change'},
         {min: 6, message: 'Password length should be 6', trigger: 'change'},
         {max: 6, message: 'Password length should be 6', trigger: 'change'}
-      ],
+      ]
     })
 
     onMounted(() => {
@@ -250,7 +255,7 @@ export default defineComponent({
     const initialApp = (authFormHeight: any) => {
       let pageHeight = innerHeight
 
-      if (typeof authFormHeight === 'number') {
+      if(typeof authFormHeight === 'number') {
         pageHeight = (pageHeight - authFormHeight) / 2
       }
 
@@ -284,10 +289,10 @@ export default defineComponent({
     }
 
     const systemSignIn = (formEl: FormInstance | undefined) => {
-      if (!formEl) return
+      if(!formEl) return
 
       formEl.validate((valid) => {
-        if (valid) {
+        if(valid) {
           userApi.userSystemLogin({'email': signInForm.email, 'password': signInForm.password})
               .then((response) => {
                 userStore.userInfo = response.data.data
@@ -300,13 +305,13 @@ export default defineComponent({
 
                 ElMessage.success(response.data.message)
 
-                if (userStore.userInfo.policy === "U") {
+                if(userStore.userInfo.policy === "U") {
                   userStore.drawer = true
                 }
 
                 router.back()
               })
-        } else {
+        }else {
           return false
         }
       })
@@ -367,12 +372,12 @@ export default defineComponent({
             /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
         inputErrorMessage: 'Invalid email address',
       })
-          .then(({value}) => {
-            emailApi.sendUserResetPassword(value)
-                .then((response) => {
-                  ElMessage.success(response.data.message)
-                })
-          })
+        .then(({value}) => {
+          emailApi.sendUserResetPassword(value)
+              .then((response) => {
+                ElMessage.success(response.data.message)
+              })
+        })
     }
 
     const googleLogin = () => {
