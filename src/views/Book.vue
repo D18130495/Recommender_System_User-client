@@ -37,7 +37,8 @@
               <div class="grid grid-cols-12 gap-4">
                 <!-- bookImage -->
                 <div class="book-image-container">
-                  <img v-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
+                  <img v-if="book.bookImage" v-lazy="book.bookImage" :key="book.isbn" />
+                  <img v-else-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
                   <img v-else src="@/assets/posterNotFound.jpg" />
                 </div>
 
@@ -105,7 +106,7 @@
                       <ul class="book-link">
                         <div class="book-link-border">
                           <li>
-                            <a href="" target="_blank">BookFinder</a>
+                            <a :href="book.bookLink" target="_blank">BookFinder</a>
                           </li>
                         </div>
                       </ul>
@@ -185,16 +186,16 @@
                               @click="updateBookLike"
                           />
                         </el-select>
-<!--                        <el-button v-if="bookFavourite.favourite === 0" class="m-auto ml-0 grid col-span-2" >Like</el-button>-->
-<!--                        <el-button v-else class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Unlike</el-button>-->
+                        <!--                        <el-button v-if="bookFavourite.favourite === 0" class="m-auto ml-0 grid col-span-2" >Like</el-button>-->
+                        <!--                        <el-button v-else class="m-auto ml-0 grid col-span-2" @click="updateBookLike">Unlike</el-button>-->
                       </div>
                     </div>
 
                     <div class="book-description-container">
                       <!-- book description -->
                       <h3>About the book:</h3>
-                      <p v-if="book.description">
-                        {{ book.description }}
+                      <p v-if="book.bookDescription">
+                        {{ book.bookDescription }}
                       </p>
                       <p v-else>
                         Book description is currently not available.
@@ -425,18 +426,18 @@ export default defineComponent({
 
         bookApi.likeOrUnlikeBook(reactiveData.bookFavourite)
             .then((response) => {
-                reactiveData.bookFavourite.favourite = 1
+              reactiveData.bookFavourite.favourite = 1
 
-                getUserLikeAndRatingMovieCount()
-                getUserLikeAndRatingBookCount()
+              getUserLikeAndRatingMovieCount()
+              getUserLikeAndRatingBookCount()
 
-                ElNotification({
-                  title: 'Success',
-                  message: response.data.message,
-                  type: 'success',
-                  duration: 1500
-                })
+              ElNotification({
+                title: 'Success',
+                message: response.data.message,
+                type: 'success',
+                duration: 1500
               })
+            })
       }else if(bookFavouriteValue.value === 'N') {
         reactiveData.bookFavourite.favourite = 2
 
