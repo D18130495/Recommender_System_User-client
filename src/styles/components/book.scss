@@ -121,9 +121,15 @@
     }
 
     .book-description-container {
-      @apply col-span-1 relative;
+      @apply col-span-1 relative h-96;
 
-      h3 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      overflow-y: scroll;
+      -webkit-box-orient: vertical;
+
+      h3, h4 {
         @apply text-ob-bright;
 
         color: var(--text-book);

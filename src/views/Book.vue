@@ -193,13 +193,13 @@
 
                     <div class="book-description-container">
                       <!-- book description -->
-                      <h3>About the book:</h3>
-                      <p v-if="book.bookDescription">
-                        {{ book.bookDescription }}
-                      </p>
-                      <p v-else>
-                        Book description is currently not available.
-                      </p>
+                      <div v-if="book.bookDescription">
+                        <div v-html="book.bookDescription" />
+                      </div>
+                      <div v-else>
+                        <h4>About the book:</h4>
+                        <p>Book description is currently not available.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
