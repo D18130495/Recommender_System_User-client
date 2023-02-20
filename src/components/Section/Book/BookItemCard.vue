@@ -8,7 +8,7 @@
         <el-tooltip
             content="Mark as don't like"
             placement="top"
-            v-if="hover">
+            v-if="hover && userStore.userInfo">
           <button
               class="item-unlike-button"
               @click="handleUnlike(book.isbn)">
@@ -128,6 +128,7 @@ export default defineComponent({
 
     return {
       book: toRefs(props).data,
+      userStore,
       toBook,
       hover,
       handleUnlike,

@@ -24,10 +24,11 @@
 
           <div id="Search-Dropdown" class="search-dropdown" v-if="searchResults !== null">
             <div>
-              <section v-if="searchResults.length > 0">
-                <div class="search-hit-label">Found {{ searchResults.length }} records</div>
+              <div v-if="loading" v-loading="loading" element-loading-text="Loading..." style="height: 100px;" />
+              <section v-if="searchResults.count > 0 && !loading">
+                <div class="search-hit-label">Found {{ searchResults.count }} records</div>
                 <ul id="search-menu">
-                  <li v-for="(result, index) in searchResults" :key="result.id"
+                  <li v-for="(result, index) in searchResults.fuzzySearchReturnVoList" :key="result.title"
                       :class="{'search-hit': true}"
                       :id="'search-hit-item-' + index">
                     <a href="javascript:void(0)" @click="handleLinkClick(result)">
@@ -38,6 +39,7 @@
                         </div>
                         <div class="search-hit-content-wrapper">
                           <!-- content -->
+                          <p>{{ result.title }}</p>
                         </div>
                         <div class="search-hit-action">
                           <el-icon size="24px" class="text-ob fill-current stroke-current"><Back class="text-ob-bright"/></el-icon>
@@ -53,8 +55,7 @@
               <div v-else class="search-hit-label">Please input something</div>
             </div>
           </div>
-
-
+          
           <div class="search-footer">
             <div class="search-logo">
               <span class="text-ob">Search Something You Like</span>
@@ -71,6 +72,8 @@ import { computed, defineComponent, onMounted, onUnmounted, onUpdated, ref, watc
 import { useSearchStore } from "@/stores/search"
 import { useRouter } from "vue-router"
 
+import searchApi from "@/api/search"
+
 
 export default defineComponent({
   name: 'SearchModel',
@@ -79,8 +82,9 @@ export default defineComponent({
     const router = useRouter()
     const openModel = ref(false)
     const openSearchContainer = ref(false)
-    const searchResults = ref<any>([1, 2])
+    const searchResults = ref<any>([])
     const isEmpty = ref(false)
+    const loading = ref(false)
     const keywords = ref('')
 
     const searchInput = ref<HTMLDivElement>()
@@ -95,7 +99,7 @@ export default defineComponent({
 
     onUpdated(() => {
       keywords.value = ''
-      // searchResults.value = []
+      searchResults.value = []
 
       setTimeout(() => {
         if(searchInput.value) searchInput.value.focus()
@@ -121,7 +125,18 @@ export default defineComponent({
     }
 
     const searchByKeywords = () => {
+      isEmpty.value = false
+      searchResults.value = []
+      if(keywords.value === "") return
+      loading.value = true
 
+      searchApi.fuzzySearchMovieAndBookByTitle(keywords.value)
+          .then((response) => {
+            searchResults.value = response.data.data
+            console.log(response.data.data)
+            if(response.data.data.count === 0) isEmpty.value = true
+            loading.value = false
+          })
     }
 
     const handleResetInput = () => {
@@ -137,6 +152,7 @@ export default defineComponent({
 
     return {
       searchInput,
+      loading,
       openModel: computed(() => openModel.value),
       openSearchContainer: computed(() => openSearchContainer.value),
       closeModel,
@@ -150,3 +166,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+/deep/ .el-loading-mask {
+  background-color: var(--background-primary);
+}
+</style>

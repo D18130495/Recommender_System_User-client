@@ -7,10 +7,10 @@
         <el-tooltip
             content="Mark as don't like"
             placement="top"
-            v-if="hover">
+            v-if="hover && userStore.userInfo">
           <button
               class="item-unlike-button"
-              @click="handleUnlike">
+              @click="handleUnlike(movie.movieId)">
             <el-icon size="24px" class="fill-current stroke-current">
               <CloseBold class="search-icon"/>
             </el-icon>
@@ -92,8 +92,13 @@
 import {defineComponent, toRefs, computed, ref} from 'vue'
 
 import { useAppStore } from "@/stores/app"
+import { useUserStore } from "@/stores/user"
 
 import { useRouter } from "vue-router"
+
+import movieApi from "@/api/movie";
+
+import { ElNotification } from "element-plus";
 
 
 export default defineComponent({
@@ -101,6 +106,7 @@ export default defineComponent({
   props: ['data'],
   setup(props) {
     const appStore = useAppStore()
+    const userStore = useUserStore()
     const router = useRouter()
     const hover = ref(false)
 
@@ -108,12 +114,22 @@ export default defineComponent({
       router.push({ path: '/movie/' + props.data.movieId })
     }
 
-    const handleUnlike = () => {
+    const handleUnlike = (movieId: any) => {
+      movieApi.likeOrUnlikeMovie({'movieId': movieId, 'email': userStore.userInfo.email, 'favourite': 1})
+          .then((response) => {
 
+            ElNotification({
+              title: 'Success',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
+          })
     }
 
     return {
       movie: toRefs(props).data,
+      userStore,
       toMovie,
       hover,
       handleUnlike,
