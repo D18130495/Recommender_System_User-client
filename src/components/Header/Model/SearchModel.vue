@@ -39,7 +39,18 @@
                         </div>
                         <div class="search-hit-content-wrapper">
                           <!-- content -->
-                          <p>{{ result.title }}</p>
+                          <div class="grid grid-cols-9 grid-rows-3 items-center">
+                            <div class="col-span-1 row-span-3 col-span-1">
+                              <img v-if="result.image" v-lazy="result.image" />
+                              <img v-else src="@/assets/posterNotFound.jpg" />
+                            </div>
+                            <p class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.title }}</p>
+                            <p v-if="result.type === 'movie'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.director }}</p>
+                            <p v-if="result.type === 'movie'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.actorList }}</p>
+                            <p v-if="result.type === 'book'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.year }}</p>
+                            <p v-if="result.type === 'book'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.author }}</p>
+                          </div>
+
                         </div>
                         <div class="search-hit-action">
                           <el-icon size="24px" class="text-ob fill-current stroke-current"><Back class="text-ob-bright"/></el-icon>
@@ -55,11 +66,47 @@
               <div v-else class="search-hit-label">Please input something</div>
             </div>
           </div>
-          
+
           <div class="search-footer">
             <div class="search-logo">
               <span class="text-ob">Search Something You Like</span>
             </div>
+            <ul class="search-commands">
+              <li>
+                <span class="search-commands-key">
+                  <svg v-if="searchType === 'title'" width="15" height="15">
+                    <g
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2">
+                      <path d="M 7.5 11.5 M 4 8 l 3 2 l 4 -6"></path>
+                    </g>
+                  </svg>
+                </span>
+                <span class="search-commands-label" @click="changeSearchType('title')">
+                  Title
+                </span>
+              </li>
+              <li>
+                <span class="search-commands-key">
+                  <svg v-if="searchType === 'year'" width="15" height="15">
+                    <g
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2">
+                      <path d="M 7.5 11.5 M 4 8 l 3 2 l 4 -6"></path>
+                    </g>
+                  </svg>
+                </span>
+                <span class="search-commands-label" @click="changeSearchType('year')">
+                  Year
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </transition>
@@ -85,6 +132,7 @@ export default defineComponent({
     const searchResults = ref<any>([])
     const isEmpty = ref(false)
     const loading = ref(false)
+    const searchType = ref('title')
     const keywords = ref('')
 
     const searchInput = ref<HTMLDivElement>()
@@ -124,16 +172,27 @@ export default defineComponent({
       searchStore.setOpenModel(status)
     }
 
+    const changeSearchType = (type: any) => {
+      searchType.value = type
+      keywords.value = ''
+      isEmpty.value = false
+      searchResults.value = []
+    }
+
     const searchByKeywords = () => {
       isEmpty.value = false
       searchResults.value = []
       if(keywords.value === "") return
       loading.value = true
 
-      searchApi.fuzzySearchMovieAndBookByTitle(keywords.value)
+      searchApi.fuzzySearchMovieAndBookByTitleOrYear(keywords.value, searchType.value)
           .then((response) => {
-            searchResults.value = response.data.data
-            console.log(response.data.data)
+            if(keywords.value !== "") {
+              searchResults.value = response.data.data
+            }else {
+              searchResults.value = []
+            }
+            
             if(response.data.data.count === 0) isEmpty.value = true
             loading.value = false
           })
@@ -146,13 +205,20 @@ export default defineComponent({
     }
 
     const handleLinkClick = (result: any) => {
-      router.push({ path: '/' + result.type + '/' + result.id })
+      if(result.type === 'movie') {
+        router.push({ path: '/' + result.type + '/' + result.movieId })
+      }else {
+        router.push({ path: '/' + result.type + '/' + result.isbn })
+      }
+
       searchStore.setOpenModel(false)
     }
 
     return {
       searchInput,
       loading,
+      searchType,
+      changeSearchType,
       openModel: computed(() => openModel.value),
       openSearchContainer: computed(() => openSearchContainer.value),
       closeModel,

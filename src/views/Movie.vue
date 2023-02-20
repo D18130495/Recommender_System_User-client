@@ -94,7 +94,7 @@
 
               <!-- movie director -->
               <div class="movie-director">
-                <span v-if="movie.director && movie.director.directorName !== ''">
+                <span v-if="movie.director && movie.director.directorName !== null">
                   Director:
                   <a :href="movie.director.directorLink" target="_blank">
                     {{ movie.director.directorName }}
@@ -118,7 +118,7 @@
                   </li>
                 </ul>
                 <span v-else>
-                  <em>Stars: NA</em>
+                  <em>Stars: Movie stars is currently not available.</em>
                 </span>
               </div>
 
@@ -369,6 +369,7 @@ export default defineComponent({
       movieApi.getMovieByMovieId(movieId)
           .then((response) => {
             reactiveData.movie = response.data.data
+            console.log(response.data.data)
             loading.value = false
           })
     }

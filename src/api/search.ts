@@ -2,12 +2,13 @@ import request from '@/utils/request'
 
 // @ts-ignore
 export default {
-    fuzzySearchMovieAndBookByTitle(titleSubstring: any) {
+    fuzzySearchMovieAndBookByTitleOrYear(substring: any, type:any) {
         return request({
-            url: `/search/fuzzySearchMovieAndBookByTitle`,
+            url: `/search/fuzzySearchMovieAndBookByTitleOrYear`,
             method: 'get',
             params: {
-                titleSubstring: titleSubstring
+                substring: substring,
+                type: type
             }
         })
     }
