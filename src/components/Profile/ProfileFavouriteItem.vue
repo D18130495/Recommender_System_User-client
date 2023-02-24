@@ -26,8 +26,18 @@
 
           <el-table v-loading="movieLikedListLoading" :data="movieLikeList" style="width: 100%" max-height="281">
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
-            <el-table-column prop="title" label="Title" width="400" />
-            <el-table-column prop="genres" label="Genres" width="350" />
+            <el-table-column prop="title" label="Title" width="300" />
+            <el-table-column prop="rating" label="Favourite status" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.favourite === 'T'" type="success">
+                  Favourite
+                </el-tag>
+                <el-tag v-else type="error">
+                  Don't like
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="genres" label="Genres" width="300" />
             <el-table-column label="Director" width="200" align="center">
               <template #default="scope">
                 <a :href="scope.row.director.directorLink" target="_blank">
@@ -156,6 +166,16 @@
             <el-table-column fixed prop="updateDate" label="Liked date" width="160" />
             <el-table-column prop="isbn" label="ISBN" width="200" align="center" />
             <el-table-column prop="title" label="Title" width="350" />
+            <el-table-column prop="rating" label="Favourite status" width="200" align="center">
+              <template #default="scope">
+                <el-tag v-if="scope.row.favourite === 'T'" type="success">
+                  Favourite
+                </el-tag>
+                <el-tag v-else type="error">
+                  Don't like
+                </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column prop="year" label="Year" width="200" align="center">
               <template #default="scope">
                 <el-tag v-if="scope.row.year && scope.row.year !== '0'">
@@ -301,6 +321,7 @@ export default defineComponent({
       userApi.getUserMovieLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieLikeList = response.data.data
+            console.log(response.data.data)
             movieLikedListLoading.value = false
           })
     }
@@ -338,7 +359,7 @@ export default defineComponent({
     }
 
     const handleMovieDelete = (index: number, row: MovieLike) => {
-      movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 1})
+      movieApi.likeOrUnlikeMovie({'movieId': row.movieId, 'email': userStore.userInfo.email, 'favourite': 2})
           .then((response) => {
             movieLikedListLoading.value = true
             initialMovieLikeList()
@@ -356,7 +377,7 @@ export default defineComponent({
     }
 
     const handleBookDelete = (index: number, row: BookLike) => {
-      bookApi.likeOrUnlikeBook({'isbn': row.isbn, 'email': userStore.userInfo.email, 'favourite':1})
+      bookApi.likeOrUnlikeBook({'isbn': row.isbn, 'email': userStore.userInfo.email, 'favourite':2})
           .then((response) => {
             bookLikedListLoading.value = true
             initialBookLikeList()

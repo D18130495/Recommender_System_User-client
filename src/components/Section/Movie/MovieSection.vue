@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import {reactive, computed, defineComponent, onBeforeMount, toRefs } from 'vue'
+import {reactive, computed, defineComponent, onBeforeMount, toRefs, watch} from 'vue'
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
@@ -135,6 +135,13 @@ export default defineComponent({
     const router = useRouter()
     const reactiveData = reactive({
       generalMovies: [{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}] as any
+    })
+
+    watch(() => appStore.recommendMovies, () => {
+      if(appStore.recommendMovies.length === 0) {
+        appStore.recommendMovies = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
+        refreshRecommendMovie()
+      }
     })
 
     onBeforeMount(() => {

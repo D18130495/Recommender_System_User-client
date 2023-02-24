@@ -22,7 +22,7 @@
             </form>
           </header>
 
-          <div id="Search-Dropdown" class="search-dropdown" v-if="searchResults !== null">
+          <div id="Search-Dropdown" class="search-dropdown text-ob-bright" v-if="searchResults !== null">
             <div>
               <div v-if="loading" v-loading="loading" element-loading-text="Loading..." style="height: 100px;" />
               <section v-if="searchResults.count > 0 && !loading">
@@ -73,7 +73,7 @@
             </div>
             <ul class="search-commands">
               <li>
-                <span class="search-commands-key">
+                <span class="search-commands-key" @click="changeSearchType('title')">
                   <svg v-if="searchType === 'title'" width="15" height="15">
                     <g
                         fill="none"
@@ -90,7 +90,7 @@
                 </span>
               </li>
               <li>
-                <span class="search-commands-key">
+                <span class="search-commands-key" @click="changeSearchType('year')">
                   <svg v-if="searchType === 'year'" width="15" height="15">
                     <g
                         fill="none"
@@ -158,8 +158,7 @@ export default defineComponent({
       document.body.classList.remove('modal--active')
     })
 
-    watch(
-      () => searchStore.openModel, (status: any) => {
+    watch(() => searchStore.openModel, (status: any) => {
         openModel.value = status
 
         setTimeout(() => {

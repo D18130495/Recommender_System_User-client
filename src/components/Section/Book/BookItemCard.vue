@@ -88,16 +88,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref } from 'vue'
+import {computed, defineComponent, ref, toRefs} from 'vue'
 
-import { useAppStore } from "@/stores/app"
-import { useUserStore } from "@/stores/user"
+import {useAppStore} from "@/stores/app"
+import {useUserStore} from "@/stores/user"
 
-import { useRouter } from "vue-router"
+import {useRouter} from "vue-router"
 
 import bookApi from "@/api/book";
 
-import { ElNotification } from "element-plus";
+import {ElNotification} from "element-plus";
 
 
 export default defineComponent({
@@ -116,6 +116,7 @@ export default defineComponent({
     const handleUnlike = (isbn: any) => {
       bookApi.likeOrUnlikeBook({'isbn': isbn, 'email': userStore.userInfo.email, 'favourite': 1})
           .then((response) => {
+            appStore.recommendBooks = appStore.recommendBooks.filter((book: { isbn: any; }) => book.isbn !== isbn)
 
             ElNotification({
               title: 'Success',

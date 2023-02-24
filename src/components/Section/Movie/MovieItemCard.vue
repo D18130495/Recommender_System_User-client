@@ -117,6 +117,7 @@ export default defineComponent({
     const handleUnlike = (movieId: any) => {
       movieApi.likeOrUnlikeMovie({'movieId': movieId, 'email': userStore.userInfo.email, 'favourite': 1})
           .then((response) => {
+            appStore.recommendMovies = appStore.recommendMovies.filter((movie: { movieId: any; }) => movie.movieId !== movieId)
 
             ElNotification({
               title: 'Success',
