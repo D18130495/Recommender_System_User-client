@@ -192,7 +192,7 @@ export default defineComponent({
             }else {
               searchResults.value = []
             }
-            
+
             if(response.data.data.count === 0) isEmpty.value = true
             loading.value = false
           })

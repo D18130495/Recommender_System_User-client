@@ -7,7 +7,7 @@
         <el-tooltip
             content="Mark as don't like"
             placement="top"
-            v-if="hover && userStore.userInfo">
+            v-if="hover && userStore.userInfo && router.currentRoute.value.name === 'Home'">
           <button
               class="item-unlike-button"
               @click="handleUnlike(movie.movieId)">
@@ -133,6 +133,7 @@ export default defineComponent({
       toMovie,
       hover,
       handleUnlike,
+      router,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

@@ -390,7 +390,9 @@ export default defineComponent({
             .then((response) => {
               reactiveData.bookFavourite.favourite = Number(response.data.data.favourite)
 
-              if(response.data.data.favourite === '1') {
+              if(response.data.data.favourite === '0') {
+                bookFavouriteValue.value = ''
+              } else if(response.data.data.favourite === '1') {
                 bookFavouriteValue.value = 'F'
               }else if(response.data.data.favourite == '2') {
                 bookFavouriteValue.value = 'N'

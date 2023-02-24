@@ -361,6 +361,16 @@ export default defineComponent({
         movieApi.getUserMovieFavourite(reactiveData.movieFavourite.movieId, userStore.userInfo.email)
             .then((response) => {
               reactiveData.movieFavourite.favourite = Number(response.data.data.favourite)
+
+              if(response.data.data.favourite === '0') {
+                movieFavouriteValue.value = ''
+              } else if(response.data.data.favourite === '1') {
+                movieFavouriteValue.value = 'F'
+              }else if(response.data.data.favourite == '2') {
+                movieFavouriteValue.value = 'N'
+              }else if(response.data.data.favourite == '3') {
+                movieFavouriteValue.value = 'T'
+              }
             })
       }
     }
