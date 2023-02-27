@@ -321,7 +321,6 @@ export default defineComponent({
       userApi.getUserMovieLikeList(userStore.userInfo.email)
           .then((response) => {
             reactiveData.movieLikeList = response.data.data
-            console.log(response.data.data)
             movieLikedListLoading.value = false
           })
     }

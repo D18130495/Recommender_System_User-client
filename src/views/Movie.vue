@@ -60,12 +60,7 @@
                 </div>
 
                 <!-- movieVideo -->
-                <video v-if="movie.movieVideo === 'Video is currently not available'" class="movie-video-container" controls style="max-width: unset; width: 265%">
-                  <source src="" />
-                </video >
-                <video v-else class="movie-video-container" controls style="max-width: unset; width: 235%">
-                  <source :src="movie.movieVideo" />
-                </video>
+                <iframe v-if="movie.movieVideo !== null && movie.movieVideo !== 'Video is currently not available'" class="movie-video-container" :src="movie.movieVideo" controls style="max-width: unset; width: 235%; height: 100%" />
               </div>
 
               <!-- IMDB and TMDB link-->

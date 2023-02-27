@@ -139,7 +139,7 @@ import { useRouter } from 'vue-router'
 
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from "element-plus/es"
-import { ElMessageBox } from "element-plus"
+import {ElMessageBox, ElNotification} from "element-plus"
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from '@/stores/user'
@@ -303,7 +303,12 @@ export default defineComponent({
                 getUserLikeAndRatingMovieCount()
                 getUserLikeAndRatingBookCount()
 
-                ElMessage.success(response.data.message)
+                ElNotification({
+                  title: 'Hi,',
+                  message: response.data.message,
+                  type: 'success',
+                  duration: 1500
+                })
 
                 if(userStore.userInfo.policy === "U") {
                   userStore.drawer = true
@@ -365,7 +370,7 @@ export default defineComponent({
     }
 
     const openPasswordModel = () => {
-      ElMessageBox.prompt('Please input your email address', 'Tip', {
+      ElMessageBox.prompt('Please input your email address', 'Forget Password', {
         confirmButtonText: 'Send',
         cancelButtonText: 'Cancel',
         inputPattern:
@@ -412,7 +417,12 @@ export default defineComponent({
             sessionStorage.setItem('token', response.data.data.token)
             cookies.set('token', response.data.data.token, {expires: expires})
 
-            ElMessage.success(response.data.message)
+            ElNotification({
+              title: 'Hi,',
+              message: response.data.message,
+              type: 'success',
+              duration: 1500
+            })
 
             getUserLikeAndRatingMovieCount()
             getUserLikeAndRatingBookCount()
