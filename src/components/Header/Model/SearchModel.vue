@@ -45,7 +45,7 @@
                               <img v-else src="@/assets/posterNotFound.jpg" />
                             </div>
                             <p class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.title }}</p>
-                            <p v-if="result.type === 'movie'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.director }}</p>
+                            <p v-if="result.type === 'movie'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.year }}</p>
                             <p v-if="result.type === 'movie'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.actorList }}</p>
                             <p v-if="result.type === 'book'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.year }}</p>
                             <p v-if="result.type === 'book'" class="search-hit-title col-span-8 row-span-1 pl-2">{{ result.author }}</p>

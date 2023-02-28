@@ -239,7 +239,7 @@
         <div class="item-grid">
           <div class="flex flex-col relative">
             <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
-              <li v-for="movie in generalMovies" :key="movie.movieId">
+              <li v-for="movie in relatedMovies" :key="movie.movieId">
                 <MovieItemCard :data="movie" />
               </li>
             </ul>
@@ -265,6 +265,7 @@ import MovieItemCard from "@/components/Section/Movie/MovieItemCard.vue"
 import movieApi from "@/api/movie"
 import userApi from "@/api/user";
 import bookApi from "@/api/book";
+import recommendationApi from "@/api/recommendation";
 
 
 export default defineComponent({
@@ -293,7 +294,7 @@ export default defineComponent({
         email: '',
         favourite: 0
       },
-      generalMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
+      relatedMovies: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }] as any,
       likeOption: [
         {
           value: 'T',
@@ -312,6 +313,8 @@ export default defineComponent({
 
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Movie') {
+        reactiveData.movie = ''
+        loading.value = true
         getMovieByMovieId(router.currentRoute.value.params.movieId)
         getRelatedMovieList()
         initialMovieRate()
@@ -374,7 +377,6 @@ export default defineComponent({
       movieApi.getMovieByMovieId(movieId)
           .then((response) => {
             reactiveData.movie = response.data.data
-            console.log(response.data.data)
             loading.value = false
           })
     }
@@ -388,6 +390,8 @@ export default defineComponent({
 
             getUserLikeAndRatingMovieCount()
             getUserLikeAndRatingBookCount()
+
+            getMovieByMovieId(router.currentRoute.value.params.movieId)
 
             ElNotification({
               title: 'Success',
@@ -468,9 +472,9 @@ export default defineComponent({
     }
 
     const getRelatedMovieList = () => {
-      movieApi.getRandomMovieList()
+      recommendationApi.getMoviesLikeThis(String(router.currentRoute.value.params.movieId))
           .then((response) => {
-            reactiveData.generalMovies = response.data.data
+            reactiveData.relatedMovies = response.data.data
           })
     }
 

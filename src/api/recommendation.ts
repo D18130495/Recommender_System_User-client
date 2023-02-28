@@ -40,6 +40,15 @@ export default {
             }
         })
     },
+    getMoviesLikeThis(movieId: any) {
+        return request({
+            url: `/recommendation/getMoviesLikeThis`,
+            method: 'get',
+            params: {
+                movieId: movieId
+            }
+        })
+    },
     getBooksLikeThis(isbn: any) {
         return request({
             url: `/recommendation/getBooksLikeThis`,

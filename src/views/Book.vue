@@ -336,6 +336,8 @@ export default defineComponent({
     // change book
     watch(() => router.currentRoute.value.fullPath, () => {
       if(router.currentRoute.value.name === 'Book') {
+        reactiveData.book = ''
+        loading.value = true
         getBookByISBN(router.currentRoute.value.params.isbn)
         getBooksLikeThis()
         initialBookRate()
@@ -412,6 +414,8 @@ export default defineComponent({
 
             getUserLikeAndRatingMovieCount()
             getUserLikeAndRatingBookCount()
+
+            getBookByISBN(router.currentRoute.value.params.isbn)
 
             ElNotification({
               title: 'Success',
