@@ -33,7 +33,6 @@ export default defineComponent({
     const getRandomMovieTitleList = () => {
       movieApi.getRandomMovieList()
           .then((response) => {
-            console.log(response.data.data)
             reactiveData.movieList = response.data.data
           })
     }

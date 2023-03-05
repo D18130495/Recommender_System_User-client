@@ -48,9 +48,7 @@
     <!-- display movie card -->
     <div v-if="userStore.userInfo !== '' &&
                userStore.userInfo.policy === 'T' &&
-               appStore.recommendMovies &&
-               appStore.movieCount >= 5 ||
-               appStore.bookCount >= 5" class="item-grid">
+               appStore.recommendMovies && (appStore.movieCount >= 5 || appStore.bookCount >= 5)" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
           <li v-for="movie in appStore.recommendMovies" :key="movie.movieId">
@@ -95,7 +93,7 @@
         </button>
       </div>
     </div>
-    <!-- movie like or rate less then 10 -->
+    <!-- movie like or rate less then 5 -->
     <div v-else-if="userStore.userInfo !== '' && appStore.movieCount < 5 && appStore.bookCount < 5" class="item-grid mb-4">
       <div class="flex flex-col relative mx-auto">
         <el-icon class="mx-auto mt-6" size="40px"><CirclePlusFilled class="text-ob-bright"/></el-icon>

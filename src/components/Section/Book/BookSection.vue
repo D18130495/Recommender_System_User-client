@@ -48,9 +48,7 @@
     <!-- display book card -->
     <div v-if="userStore.userInfo !== '' &&
                     userStore.userInfo.policy === 'T' &&
-                    appStore.recommendBooks &&
-                    appStore.movieCount >= 5 ||
-                    appStore.bookCount >= 5" class="item-grid">
+                    appStore.recommendBooks && (appStore.movieCount >= 5 || appStore.bookCount >= 5)" class="item-grid">
       <div class="flex flex-col relative">
         <ul class="grid grid-cols-3 xl:grid-cols-6 gap-8">
           <li v-for="book in appStore.recommendBooks" :key="book.isbn">

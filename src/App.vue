@@ -189,15 +189,7 @@ export default defineComponent({
     }
 
     const fetchWebsiteConfig = () => {
-      // api.getWebsiteConfig().then(({ data }) => {
-      //   appStore.viewCount = data.data.viewCount
-      //   appStore.articleCount = data.data.articleCount
-      //   appStore.talkCount = data.data.talkCount
-      //   appStore.categoryCount = data.data.categoryCount
-      //   appStore.tagCount = data.data.tagCount
-      //   appStore.websiteConfig = data.data.websiteConfigDTO
-      // })
-      appStore.websiteConfig = {'name': 'yushun', 'englishName': 'Recommender System', 'author': 'Yushun Zeng'}
+      appStore.websiteConfig = {'name': 'Finterest', 'englishName': 'Discover your interest', 'author': 'Yushun Zeng'}
     }
 
     return {
