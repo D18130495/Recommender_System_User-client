@@ -8,7 +8,7 @@
         {{ websiteConfig.englishName || 'Website' }}
       </span>
     </div>
-    <img class="logo-image" :src="websiteConfig.logo" alt="site-logo"/>
+<!--    <img class="logo-image" :src="websiteConfig.logo" alt="site-logo"/>-->
   </div>
 </template>
 

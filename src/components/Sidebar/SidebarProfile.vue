@@ -15,6 +15,15 @@
           <p v-if="userInfo.email" class="pt-6 px-10 w-full text-s text-center text-ob-secondary">
             Email: {{ userInfo.email }}
           </p>
+
+          <el-tooltip
+              class="box-item"
+              effect="dark"
+              content="Send to your email"
+              placement="top-start"
+          >
+            <p class="mt-4 text-ob-bright cursor-pointer hover:text-blue-600" @click="openSend()">Require your data</p>
+          </el-tooltip>
         </div>
 
         <div class="h-full w-full flex flex-col flex-1 justify-end items-end">
@@ -43,6 +52,7 @@ import { useUserStore } from "@/stores/user"
 
 import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
+import { ElMessageBox, ElNotification } from "element-plus";
 
 
 export default defineComponent({
@@ -54,8 +64,39 @@ export default defineComponent({
     const appStore = useAppStore()
     const userStore = useUserStore()
 
+    const openSend = () => {
+      ElMessageBox.confirm(
+          'What to request your personal data?',
+          'Personal data request',
+          {
+            confirmButtonText: 'Require',
+            cancelButtonText: 'Cancel',
+            type: 'success',
+          }
+      )
+      .then(() => {
+
+
+        ElNotification({
+          title: 'Success',
+          message: 'Your personal data will send to your email shortly',
+          type: 'success',
+          duration: 1500
+        })
+      })
+      .catch(() => {
+        ElNotification({
+          title: 'Cancel',
+          message: 'Your cancel the request',
+          type: 'info',
+          duration: 1500
+        })
+      })
+    }
+
     return {
       appStore,
+      openSend,
       userInfo: toRef(userStore.$state, 'userInfo'),
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {

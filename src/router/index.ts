@@ -47,6 +47,14 @@ const routes = [
     meta: {
       book: true
     }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('../views/Privacy.vue'),
+    meta: {
+      privacy: true
+    }
   }
 ]
 

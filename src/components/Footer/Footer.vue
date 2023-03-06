@@ -7,7 +7,8 @@
             <li class="text-ob-bright">
               Copyright © {{ currentYear }}
               <b class="font-extrabold">{{ websiteConfig.author }}</b>
-              <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank"> github</a>
+              <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank"> Github </a>
+              <a @click="toPrivacy()" style="cursor: pointer">| Privacy Policy</a>
             </li>
           </ul>
         </div>
@@ -17,17 +18,24 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent } from "vue"
 
-import { useAppStore } from '@/stores/app'
+import { useAppStore } from "@/stores/app"
+import { useRouter } from "vue-router"
 
 
 export default defineComponent({
   name: 'Footer',
   setup() {
     const appStore = useAppStore()
+    const router = useRouter()
+
+    const toPrivacy = () => {
+      router.push({ path: '/privacy' })
+    }
 
     return {
+      toPrivacy,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {

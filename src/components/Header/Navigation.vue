@@ -13,7 +13,6 @@
           <span class="relative z-50">{{ route.name }}</span>
         </div>
       </li>
-
     </ul>
   </nav>
 </template>
@@ -36,28 +35,13 @@ export default defineComponent({
       if(!path) {
         return
       }else {
-        router.push({
-          path: path
-        })
+        router.push({ path: path })
       }
     }
 
-    const reactiveData = reactive({
-      albums: [] as any
-    })
-
-    onMounted(() => {
-    })
-
-    const openPhotoAlbum = (id: any): void => {
-      router.push('/photos/' + id)
-    }
-
     return {
-      ...toRefs(reactiveData),
       routes: menu.routes,
-      redirectPage,
-      openPhotoAlbum
+      redirectPage
     }
   }
 })

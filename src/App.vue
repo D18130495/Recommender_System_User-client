@@ -32,8 +32,8 @@
           </p>
 
           <div class="ml-auto">
-            <el-button @click="cancelClick">cancel</el-button>
-            <el-button type="primary" @click="confirmClick">confirm</el-button>
+            <el-button @click="cancelClick">Reject</el-button>
+            <el-button type="primary" @click="confirmClick">Accept</el-button>
           </div>
         </div>
       </template>
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, nextTick, onBeforeMount, ref, provide, onMounted, watch} from 'vue'
+import { computed, defineComponent, nextTick, onBeforeMount, ref, provide } from 'vue'
 
 import { ElNotification } from "element-plus/es"
 

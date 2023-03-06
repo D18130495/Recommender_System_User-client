@@ -1,8 +1,8 @@
 <template>
   <div>
     <ul class="separator flex flex-row gap-6 text-white">
-      <li>Home</li>
-      <li :to="{ path: '/' }">Profile</li>
+      <li @click="toHome()" style="cursor: pointer">Home</li>
+      <li>Profile</li>
     </ul>
 
     <div class="flex flex-col">
@@ -39,6 +39,7 @@ import Sidebar from "@/components/Sidebar/Sidebar.vue"
 import SidebarProfile from "@/components/Sidebar/SidebarProfile.vue"
 
 import { useUserStore } from "@/stores/user"
+import {useRouter} from "vue-router";
 
 
 export default defineComponent({
@@ -48,9 +49,15 @@ export default defineComponent({
   },
   setup() {
     const userStore = useUserStore()
+    const router = useRouter()
+
+    const toHome = () => {
+      router.push({ path: '/' })
+    }
 
     return {
-      userStore
+      userStore,
+      toHome
     }
   }
 })

@@ -1,0 +1,11 @@
+.privacy-header {
+  @apply mb-4;
+
+  .privacy-title {
+    @apply mt-2 mb-4;
+    font-weight: inherit;
+    font-size: clamp(1.2rem, calc(1rem + 3.5vw), 4rem);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
+    line-height: 1.1;
+  }
+}
