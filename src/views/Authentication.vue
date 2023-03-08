@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>Authentication</title>
     <div id="page" :class="[siteClass]" :style="siteStyle">
       <div class="auth-container">
         <div class="authform" ref="authForm">

@@ -1,11 +1,12 @@
 <template>
-    <div class="block">
-      <Title />
-      <MovieSection v-if="appStore.movieCount !== -1 && appStore.bookCount !== -1" />
-      <BookSection v-if="appStore.bookCount !== -1 && appStore.movieCount !== -1"/>
-      <MovieSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1" />
-      <BookSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1"/>
-    </div>
+  <div class="block">
+    <title>Finterest</title>
+    <Title />
+    <MovieSection v-if="appStore.movieCount !== -1 && appStore.bookCount !== -1" />
+    <BookSection v-if="appStore.bookCount !== -1 && appStore.movieCount !== -1"/>
+    <MovieSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1" />
+    <BookSection v-if="appStore.movieCount === -1 && appStore.bookCount === -1"/>
+  </div>
 </template>
 
 <script lang="ts">

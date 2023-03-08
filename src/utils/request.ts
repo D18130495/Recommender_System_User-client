@@ -37,6 +37,10 @@ service.interceptors.response.use(
         const userStore = useUserStore()
         const res = response.data
 
+        if(response.config.url === '/excel/exportUserData') {
+            return response
+        }
+
         if(res.code !== 200) {
             if(res.code === 201) {
                 ElMessage.error(res.message)

@@ -32,7 +32,7 @@
                 <el-tag v-if="scope.row.favourite === 'T'" type="success">
                   Favourite
                 </el-tag>
-                <el-tag v-else type="error">
+                <el-tag v-else type="danger">
                   Don't like
                 </el-tag>
               </template>
@@ -171,7 +171,7 @@
                 <el-tag v-if="scope.row.favourite === 'T'" type="success">
                   Favourite
                 </el-tag>
-                <el-tag v-else type="error">
+                <el-tag v-else type="danger">
                   Don't like
                 </el-tag>
               </template>

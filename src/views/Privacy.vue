@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>Privacy & Policy</title>
     <ul class="separator flex flex-row gap-6 text-white">
       <li style="cursor: pointer" @click="toHome()">Home</li>
       <li style="cursor: pointer">Privacy</li>

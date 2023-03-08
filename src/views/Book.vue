@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>{{ book.title }}</title>
     <div class="flex flex-col">
       <div class="book-grid">
         <div class="book-header">

@@ -52,7 +52,9 @@ import { useUserStore } from "@/stores/user"
 
 import VueAvatar from "@webzlodimir/vue-avatar"
 import "@webzlodimir/vue-avatar/dist/style.css"
-import { ElMessageBox, ElNotification } from "element-plus";
+import { ElMessageBox, ElNotification } from "element-plus"
+
+import excelApi from "@/api/excel"
 
 
 export default defineComponent({
@@ -75,11 +77,11 @@ export default defineComponent({
           }
       )
       .then(() => {
-
+        downloadFile("http://localhost:9001/excel/exportUserData")
 
         ElNotification({
           title: 'Success',
-          message: 'Your personal data will send to your email shortly',
+          message: 'Successfully required your personal data, will start download shortly',
           type: 'success',
           duration: 1500
         })
@@ -92,6 +94,15 @@ export default defineComponent({
           duration: 1500
         })
       })
+    }
+
+    const downloadFile = (obj:any) => {
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = obj
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
 
     return {

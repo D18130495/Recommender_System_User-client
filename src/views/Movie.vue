@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>{{ movie.title }}</title>
     <div class="flex flex-col">
       <div class="movie-grid">
         <div class="movie-header">

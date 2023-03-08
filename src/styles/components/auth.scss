@@ -52,7 +52,7 @@ body {
   font-weight: 400;
   line-height: 1.8;
   color: var(--dark-color);
-  background-image: url("@/assets/images/1.jpg");
+  background: linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%);
 }
 
 input::placeholder {
