@@ -2,10 +2,14 @@ import request from '@/utils/request'
 
 // @ts-ignore
 export default {
-    exportUserData() {
+    exportUserData(email: any) {
         return request({
             url: `/excel/exportUserData`,
-            method: 'get'
+            method: 'get',
+            params: {
+                email: email
+            },
+            responseType: 'blob'
         })
     }
 }

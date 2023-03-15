@@ -1,7 +1,7 @@
 {
   "name": "recommender-system",
   "version": "1.0.0",
-  "description": "Recommender System User Interface",
+  "description": "Finterest",
   "author": "Yushun Zeng",
   "private": true,
   "scripts": {

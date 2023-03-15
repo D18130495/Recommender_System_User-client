@@ -77,14 +77,17 @@ export default defineComponent({
           }
       )
       .then(() => {
-        downloadFile("http://localhost:9001/excel/exportUserData")
+        excelApi.exportUserData(userStore.userInfo.email)
+            .then((response) => {
+              downloadFile(response)
 
-        ElNotification({
-          title: 'Success',
-          message: 'Successfully required your personal data, will start download shortly',
-          type: 'success',
-          duration: 1500
-        })
+              ElNotification({
+                title: 'Success',
+                message: 'Successfully required your personal data, will start download shortly',
+                type: 'success',
+                duration: 1500
+              })
+            })
       })
       .catch(() => {
         ElNotification({
@@ -96,10 +99,12 @@ export default defineComponent({
       })
     }
 
-    const downloadFile = (obj:any) => {
+    const downloadFile = (response:any) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.style.display = 'none'
-      link.href = obj
+      link.href = url
+      link.setAttribute('download', userStore.userInfo.email + '.xlsx')
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
