@@ -5,22 +5,23 @@
 
 /* Utilities css */
 @import 'tailwindcss/utilities';
-
-/* Components css */
 @import 'tailwindcss/components';
 
-@import './components/auth';
-@import './components/profile.scss';
+/* Main page */
+@import "./404";
+@import './auth';
+@import './book';
+@import './movie';
+@import './privacy';
+@import './profile';
+
+/* Components css */
 @import './components/model';
 @import './components/nprogress';
 @import './components/title.scss';
 @import './components/sidebar-box.scss';
-@import './components/movie.scss';
-@import './components/book.scss';
-@import './components/privacy.scss';
-
-@import './item';
-@import './transitions.scss';
+@import './components/item';
+@import './components/transitions';
 
 button:focus {
   outline: 0;

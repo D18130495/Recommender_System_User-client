@@ -55,6 +55,16 @@ const routes = [
     meta: {
       privacy: true
     }
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../views/404.vue')
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/404',
+    hidden: true
   }
 ]
 

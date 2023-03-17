@@ -103,7 +103,7 @@
 import { defineComponent } from "vue"
 
 import 'remixicon/fonts/remixicon.css'
-import '../../src/styles/components/auth.scss'
+import '../../src/styles/auth.scss'
 
 
 export default defineComponent({
