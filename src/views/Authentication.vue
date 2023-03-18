@@ -428,7 +428,7 @@ export default defineComponent({
             getUserLikeAndRatingMovieCount()
             getUserLikeAndRatingBookCount()
 
-            if (userStore.userInfo.policy === "U") {
+            if(userStore.userInfo.policy === "U") {
               userStore.drawer = true
             }
 

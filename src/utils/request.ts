@@ -44,7 +44,11 @@ service.interceptors.response.use(
 
         if(res.code !== 200) {
             if(res.code === 201) {
-                ElMessage.error(res.message)
+                if(res.message === "Can not find this movie" || res.message === "Can not find this book") {
+                    router.push({ path: '/404' })
+                }else {
+                    ElMessage.error(res.message)
+                }
             }else if(res.code === 202) {
                 // server token expired, front cookie not expired
                 userStore.userInfo = ''

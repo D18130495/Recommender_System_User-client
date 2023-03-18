@@ -6,21 +6,21 @@ export default {
         return request({
             url: `/authentication/userSystemRegister`,
             method: 'post',
-            params: userInfo
+            data: userInfo
         })
     },
     userSystemLogin(userInfo: any) {
         return request({
             url: `/authentication/userSystemLogin`,
             method: 'post',
-            params: userInfo
+            data: userInfo
         })
     },
     googleLogin(userInfo: any) {
         return request({
             url: `/authentication/googleLogin`,
             method: 'post',
-            params: userInfo
+            data: userInfo
         })
     },
     tokenLoginRefresh(token: any) {
