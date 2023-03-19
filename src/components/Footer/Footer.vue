@@ -8,7 +8,8 @@
               Copyright © {{ currentYear }}
               <b class="font-extrabold">{{ websiteConfig.author }}</b>
               <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank"> Github </a>
-              <a @click="toPrivacy()" style="cursor: pointer">| Privacy Policy</a>
+              <a @click="toPrivacy()" style="cursor: pointer">| Privacy Policy </a>
+              <a @click="toService()" style="cursor: pointer">| Terms of Service</a>
             </li>
           </ul>
         </div>
@@ -34,8 +35,13 @@ export default defineComponent({
       router.push({ path: '/privacy' })
     }
 
+    const toService = () => {
+      router.push({ path: '/service' })
+    }
+
     return {
       toPrivacy,
+      toService,
       gradientBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {
