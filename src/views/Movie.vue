@@ -232,7 +232,7 @@
             <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
           </p>
 
-          <button class="grid-cols-1 text-right" @click="refreshRelatedMovieList">
+          <button class="ml-auto" @click="refreshRelatedMovieList">
             <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
           </button>
         </div>

@@ -11,8 +11,8 @@ import router from "@/router";
 
 // create an axios instance
 const service = axios.create({
-    baseURL: 'http://localhost:9001',
-    // baseURL: 'https://server.finterests.com/',
+    // baseURL: 'http://localhost:9001',
+    baseURL: 'https://server.finterests.com/',
     timeout: 50000
 })
 

@@ -194,7 +194,7 @@
 
                     <div class="book-description-container">
                       <!-- book description -->
-                      <div v-if="book.bookDescription">
+                      <div v-if="book.bookDescription !== 'None'">
                         <div v-html="book.bookDescription" />
                       </div>
                       <div v-else>
@@ -255,7 +255,7 @@
             <span class="absolute bottom-0 h-1 w-24 rounded-full" :style="gradientBackground"/>
           </p>
 
-          <button class="grid-cols-1 text-right" @click="refreshRelatedBookList">
+          <button class="ml-auto" @click="refreshRelatedBookList">
             <el-icon size="25px"><Refresh class="text-ob-bright" /></el-icon>
           </button>
         </div>

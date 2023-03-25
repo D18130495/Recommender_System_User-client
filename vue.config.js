@@ -16,8 +16,8 @@ module.exports = defineConfig({
     },
     proxy: {
       'api': {
-        target: 'http://localhost:9001',
-        // target: 'https://server.finterests.com',
+        // target: 'http://localhost:9001',
+        target: 'https://server.finterests.com/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
