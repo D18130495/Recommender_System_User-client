@@ -22,7 +22,7 @@
     <Footer id="footer" :class="[theme]" :style="themeSetting"/>
 
     <!-- GDPR -->
-    <el-drawer v-model="userStore.drawer" direction="btt" :with-header="false" size="">
+    <el-drawer v-model="userStore.drawer" direction="btt" :with-header="false" size="" :close-on-click-modal="false">
       <template #default>
         <h4 class="text-xl mb-3">We value your privacy</h4>
 

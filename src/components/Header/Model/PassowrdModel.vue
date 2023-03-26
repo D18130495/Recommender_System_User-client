@@ -1,10 +1,19 @@
 <template>
-  <div v-if="openModel" id="password-model" @click.self="closeModel(false)" tabindex="-1">
+  <div v-if="openModel" id="password-model" tabindex="-1">
     <transition name="fade-bounce-pure-y" mode="out-in">
       <div class="password-container" v-if="openPasswordContainer">
         <div class="pb-4 pt-6 pl-14 pr-14">
           <header class="search-header">
-            <p class="text-ob-bright text-xl">Change your password:</p>
+            <p class="text-ob-bright text-xl">
+              Change your password:
+              <button
+                  class="absolute z-20 right-6 cursor-pointer text-ob;"
+                  @click="closeModel(false)">
+                <el-icon size="24px" class="fill-current stroke-current">
+                  <CloseBold class="search-icon" />
+                </el-icon>
+              </button>
+            </p>
           </header>
           <el-form size="large" ref="passwordRef" :model="passwordForm" :rules="passwordRules" status-icon>
             <el-form-item  prop="oldPassword">
