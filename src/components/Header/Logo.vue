@@ -5,7 +5,7 @@
         {{ websiteConfig.name || 'Website' }}
       </span>
       <span class="font-extrabold text-xs uppercase">
-        {{ websiteConfig.englishName || 'Website' }}
+        {{ websiteConfig.description || 'Website' }}
       </span>
     </div>
     <img class="logo-image" src="@/assets/logo.png" alt="site-logo"/>

@@ -8,8 +8,10 @@
               Copyright © {{ currentYear }}
               <b class="font-extrabold">{{ websiteConfig.author }}</b>
               <a href='https://github.com/D18130495/Recommender_System_User-client' target="_blank"> Github </a>
-              <a @click="toPrivacy()" style="cursor: pointer">| Privacy Policy </a>
-              <a @click="toService()" style="cursor: pointer">| Terms of Service</a>
+              <b>|</b>
+              <a @click="toPrivacy()" style="color: #5799ef; cursor: pointer"> Privacy Policy </a>
+              <b>|</b>
+              <a @click="toService()" style="color: #5799ef; cursor: pointer"> Terms of Service</a>
             </li>
           </ul>
         </div>

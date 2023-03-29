@@ -161,7 +161,7 @@
                               show-score
                               text-color="#ff9900"
                               score-template="{value}"
-                              @click="updateBookRate"
+                              @change="updateBookRate"
                           />
                         </div>
                       </div>

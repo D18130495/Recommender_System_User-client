@@ -169,7 +169,7 @@
                       show-score
                       text-color="#ff9900"
                       score-template="{value}"
-                      @click="updateMovieRate"
+                      @change="updateMovieRate"
                   />
                 </div>
 

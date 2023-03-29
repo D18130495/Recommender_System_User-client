@@ -2,7 +2,7 @@
   <div class="title-container">
     <div class="title">
       <div class="title-image">
-        <img v-if="movie.moviePhoto" class="ob-title-image" v-lazy="movie.moviePhoto" />
+        <img v-if="movie.moviePhoto" class="ob-title-image" v-lazy="movie.moviePhoto" @click="goToMovie" />
         <img v-else class="ob-title-image" src="@/assets/posterNotFound.jpg"/>
       </div>
       <div class="title-content">
@@ -53,7 +53,7 @@ export default defineComponent({
 }
 
 .article-title:hover {
-  cursor: default;
+  cursor: pointer;
 }
 
 .title-content h1 {

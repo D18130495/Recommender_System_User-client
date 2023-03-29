@@ -1,7 +1,6 @@
 <template>
   <div class="button" @click="changeStatus">
-    <div
-      class="slider"
+    <div class="slider"
       :style="{
         transform: switchStyle.transform,
         backgroundColor: switchStyle.background

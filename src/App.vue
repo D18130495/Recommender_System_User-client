@@ -7,7 +7,6 @@
         tabindex="-1"
         :style="themeSetting">
         <Header v-if="isRouterAlive"/>
-        <img class="app-banner app-banner-image" :style="headerImage"/>
         <div class="app-banner app-banner-screen" :style="headerBaseBackground"/>
         <div class="relative z-10">
           <router-view v-if="isRouterAlive" v-slot="{ Component }">
@@ -56,7 +55,6 @@ import { ElNotification } from "element-plus/es"
 
 import { useAppStore } from "@/stores/app"
 import { useUserStore } from "@/stores/user"
-import { useHeaderImageStore } from "@/stores/headerImage"
 
 import cookies from "js-cookie"
 
@@ -74,7 +72,6 @@ export default defineComponent({
   setup() {
     const appStore = useAppStore()
     const userStore = useUserStore()
-    const commonStore = useHeaderImageStore()
 
     const isRouterAlive = ref(true)
 
@@ -189,27 +186,19 @@ export default defineComponent({
     }
 
     const fetchWebsiteConfig = () => {
-      appStore.websiteConfig = {'name': 'Finterest', 'englishName': 'Discover your interest', 'author': 'Yushun Zeng'}
+      appStore.websiteConfig = {'name': 'Finterest', 'description': 'Discover your interest', 'author': 'Yushun Zeng'}
     }
 
     return {
       theme: computed(() => appStore.themeConfig.theme),
-      headerImage: computed(() => {
-        return {
-          backgroundImage: `url(${commonStore.headerImage}), url(${require('@/assets/posterNotFound.jpg')})`,
-          opacity: commonStore.headerImage !== '' ? 1 : 0
-        }
-      }),
       headerBaseBackground: computed(() => {
         if(appStore.themeConfig.theme === 'theme-dark') {
           return {
-            background: appStore.themeConfig.header_gradient_dark,
-            opacity: commonStore.headerImage !== '' ? 0.90 : 1
+            background: appStore.themeConfig.header_gradient_dark
           }
         }else {
           return {
-            background: appStore.themeConfig.header_gradient_light,
-            opacity: commonStore.headerImage !== '' ? 0.90 : 1
+            background: appStore.themeConfig.header_gradient_light
           }
         }
       }),

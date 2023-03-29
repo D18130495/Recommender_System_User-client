@@ -2,8 +2,8 @@
   <div class="item-container" @mouseover="hover = true" @mouseleave="hover = false">
     <div class="item">
       <div class="item-image-container">
-        <img v-if="book.bookImage" v-lazy="book.bookImage" :key="book.isbn" />
-        <img v-else-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" />
+        <img v-if="book.bookImage" v-lazy="book.bookImage" :key="book.isbn" @click="toBook" />
+        <img v-else-if="book.bookImageL" v-lazy="book.bookImageL" :key="book.isbn" @click="toBook" />
         <img v-else src="@/assets/posterNotFound.jpg" />
         <el-tooltip
             content="Mark as don't like"
@@ -162,7 +162,7 @@ export default defineComponent({
 }
 
 .item-title:hover {
-  cursor: default;
+  cursor: pointer;
 }
 
 /deep/ .el-rate__text{
